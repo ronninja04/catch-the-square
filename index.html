@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>תפוס את הריבוע</title>
+<meta name="theme-color" content="#10162a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="תפוס את הריבוע">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%23765cff'/%3E%3Cstop offset='1' stop-color='%2331b8ff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='110' fill='%2310162a'/%3E%3Crect x='115' y='115' width='282' height='282' rx='55' fill='url(%23g)'/%3E%3Ccircle cx='190' cy='185' r='18' fill='white' fill-opacity='.85'/%3E%3C/svg%3E">
+
+<style>
+*{box-sizing:border-box}
+:root{
+  --bg:#10162a;--card:#18213b;--card2:#202b49;--text:#fff;--muted:#aab5d0;
+  --blue:#4d8dff;--purple:#7d5cff;--gold:#ffd34d;--green:#36d98a;--red:#ff5d72;
+}
+body{
+  margin:0;font-family:Arial,system-ui,sans-serif;color:var(--text);
+  background:linear-gradient(145deg,#0d1325,#17213d 55%,#10162a);
+  min-height:100vh;
+}
+button,input{font:inherit}
+button{cursor:pointer;border:0}
+.hidden{display:none!important}
+.container{width:min(1050px,94%);margin:auto}
+header{
+  padding:18px 0;position:sticky;top:0;z-index:20;
+  background:rgba(16,22,42,.94);backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.headerRow{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.logo{font-size:25px;font-weight:900}
+.logo span{color:#7d8dff}
+.nav{display:flex;gap:8px;flex-wrap:wrap}
+.btn{
+  padding:10px 15px;border-radius:12px;color:#fff;background:#293657;
+  font-weight:800;transition:.18s;box-shadow:0 5px 15px #0002
+}
+.btn:hover{transform:translateY(-2px);filter:brightness(1.08)}
+.primary{background:linear-gradient(135deg,#7258ff,#4c83ff)}
+.gold{background:linear-gradient(135deg,#ffb82e,#ff8a22);color:#1d1608}
+.green{background:linear-gradient(135deg,#23c982,#2d9cff)}
+.red{background:linear-gradient(135deg,#ff5570,#e7375b)}
+.hero{text-align:center;padding:42px 0 25px}
+h1{font-size:clamp(42px,8vw,76px);margin:5px 0 10px;font-weight:1000}
+.subtitle{color:var(--muted);font-size:17px}
+.stats{
+  display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin:22px 0
+}
+.stat{
+  background:var(--card);border:1px solid #ffffff12;border-radius:15px;
+  padding:10px 18px;min-width:125px
+}
+.stat b{display:block;font-size:25px;margin-top:3px}
+.stat small{color:var(--muted)}
+.scoreRun{
+  font-size:55px;font-weight:1000;margin:4px 0;
+  transition:transform .1s;color:#fff
+}
+.bump{animation:pop .12s}
+@keyframes pop{50%{transform:scale(1.2)}}
+.timer{font-size:30px;font-weight:900;color:#ffd34d}
+.card{
+  background:linear-gradient(145deg,#1b2542,#151d34);
+  border:1px solid #ffffff10;border-radius:22px;padding:22px;
+  box-shadow:0 14px 35px #0003;margin:18px 0
+}
+.arena{
+  position:relative;height:500px;overflow:hidden;border-radius:20px;
+  background:
+    linear-gradient(#ffffff08 1px,transparent 1px),
+    linear-gradient(90deg,#ffffff08 1px,transparent 1px),
+    #111a30;
+  background-size:40px 40px;
+  border:2px solid #ffffff10;
+}
+.target{
+  position:absolute;width:62px;height:62px;border-radius:13px;
+  background:linear-gradient(135deg,#7658ff,#31b8ff);
+  box-shadow:0 8px 25px #0007,0 0 20px #5e82ff88;
+  transition:width .15s,height .15s,transform .08s;
+}
+.target:active{transform:scale(.9)}
+.center{text-align:center}
+.startArea{padding:18px}
+.nameBox{
+  display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:18px 0
+}
+.nameBox input{width:min(300px,90%);padding:12px;border-radius:12px;border:1px solid #ffffff18;background:#0f162a;color:#fff}
+.actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:16px}
+.panelTitle{font-size:26px;font-weight:900;margin:0 0 12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.item{
+  background:#111a30;border:1px solid #ffffff0d;border-radius:18px;padding:18px;text-align:center
+}
+.item .emoji{font-size:48px}
+.item h3{margin:8px 0}
+.item p{color:var(--muted);line-height:1.5}
+.shop{margin-top:30px}
+.chest{min-height:250px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.chestIcon{font-size:75px;filter:drop-shadow(0 8px 12px #0005)}
+.countdown{color:#ffd34d;font-weight:900;margin:10px}
+.tableWrap{overflow:auto}
+table{width:100%;border-collapse:collapse}
+th,td{padding:11px;text-align:center;border-bottom:1px solid #ffffff0c}
+th{color:#aab5d0;font-size:14px}
+td{font-weight:700}
+.creator{min-height:2600px}
+.secret{
+  margin-top:4200px;text-align:center;padding:30px;border-radius:20px;
+  background:#0d1426;border:1px solid #ffffff08
+}
+.secret button{margin-top:12px}
+footer{text-align:center;color:#76829e;padding:40px 0}
+.toast{
+  position:fixed;bottom:22px;left:50%;transform:translateX(-50%);
+  background:#0c1324;color:#fff;padding:13px 18px;border-radius:12px;
+  border:1px solid #ffffff18;box-shadow:0 8px 30px #0007;z-index:100;
+  opacity:0;pointer-events:none;transition:.2s
+}
+.toast.show{opacity:1}
+.loading{
+  position:fixed;inset:0;z-index:200;background:#0b1120;
+  display:flex;align-items:center;justify-content:center;flex-direction:column
+}
+.loading h2{font-size:38px;margin:0 0 20px}
+.progress{width:min(400px,80%);height:13px;background:#202b49;border-radius:20px;overflow:hidden}
+.progressBar{height:100%;width:0;background:linear-gradient(90deg,#7658ff,#31b8ff);transition:.08s}
+.progressText{margin-top:10px;color:#aab5d0;font-weight:800}
+.endPanel{margin-top:15px;padding:18px;border-radius:17px;background:#111a30;border:1px solid #ffffff0d}
+.small{font-size:13px;color:#8591ab}
+.sale{color:#52e69d;font-weight:900}
+@media(max-width:650px){
+  .arena{height:390px}.target{width:55px;height:55px}
+  .scoreRun{font-size:45px}
+}
+
+.shake-screen{animation:screenShake .18s ease-in-out}
+@keyframes screenShake{
+  0%{transform:translate(0,0) rotate(0)}
+  15%{transform:translate(-5px,2px) rotate(-.4deg)}
+  30%{transform:translate(5px,-2px) rotate(.4deg)}
+  45%{transform:translate(-4px,-2px) rotate(-.3deg)}
+  60%{transform:translate(4px,2px) rotate(.3deg)}
+  75%{transform:translate(-2px,0) rotate(-.15deg)}
+  100%{transform:translate(0,0) rotate(0)}
+}
+
+#appSplash{
+  position:fixed;inset:0;z-index:1000;background:
+    radial-gradient(circle at 50% 28%,#4d62d544,transparent 30%),
+    linear-gradient(145deg,#0a1020,#151f3a);
+  display:flex;align-items:center;justify-content:center;text-align:center;
+  transition:opacity .45s ease,visibility .45s ease;
+}
+#appSplash.hide{opacity:0;visibility:hidden;pointer-events:none}
+.splashBox{width:min(430px,88%);padding:30px}
+.appLogo{
+  width:150px;height:150px;margin:0 auto 24px;border-radius:38px;
+  display:grid;place-items:center;font-size:82px;
+  background:linear-gradient(145deg,#765cff,#31b8ff);
+  box-shadow:0 22px 55px #0008,0 0 45px #6d68ff55;
+  animation:logoFloat 2.2s ease-in-out infinite;
+}
+@keyframes logoFloat{50%{transform:translateY(-8px) rotate(2deg)}}
+.splashTitle{font-size:clamp(38px,10vw,58px);font-weight:1000;margin:0 0 8px}
+.splashSub{color:#aab5d0;font-size:16px;margin-bottom:22px}
+.enterApp{
+  width:100%;padding:15px!important;border-radius:15px!important;
+  background:linear-gradient(135deg,#7258ff,#4c83ff)!important;
+  font-size:18px!important
+}
+.appLoading{margin-top:18px;color:#687692;font-size:12px}
+</style>
+</head>
+<body>
+
+<div id="appSplash">
+  <div class="splashBox">
+    <div class="appLogo">🎯</div>
+    <h1 class="splashTitle">תפוס את הריבוע</h1>
+    <div class="splashSub">המשחק של רון 🎮</div>
+    <button class="enterApp" onclick="enterApp()">▶️ כניסה למשחק</button>
+    <div class="appLoading">משחק HTML</div>
+  </div>
+</div>
+
+
+<div id="loading" class="loading">
+  <h2 data-i18n="gameTitle">תפוס את הריבוע</h2>
+  <div class="progress"><div id="progressBar" class="progressBar"></div></div>
+  <div id="progressText" class="progressText">0%</div>
+</div>
+
+<header>
+  <div class="container headerRow">
+    <div class="logo">🎮 <span data-i18n="gameTitle">תפוס את הריבוע</span></div>
+    <div class="nav">
+      <button class="btn" onclick="showSection('game')" data-i18n="game">משחק</button>
+      <button class="btn gold" onclick="showSection('shop')" data-i18n="shop">חנות</button>
+      <button class="btn" onclick="showSection('leaderboard')" data-i18n="top50">טופ 50</button>
+      <button class="btn" onclick="showSection('creator')" data-i18n="creator">יוצר המשחק: רון</button>
+      <button class="btn" onclick="toggleLang()">🌐 <span id="langText">EN</span></button>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+
+<section id="game">
+  <div class="hero">
+    <h1 data-i18n="gameTitle">תפוס את הריבוע</h1>
+    <div class="subtitle" data-i18n="subtitle">תפוס כמה שיותר ריבועים לפני שהזמן נגמר!</div>
+    <div class="stats">
+      <div class="stat"><small data-i18n="score">ניקוד</small><b id="score">0</b></div>
+      <div class="stat"><small data-i18n="diamonds">יהלומים</small><b>💎 <span id="diamonds">0</span></b></div>
+      <div class="stat"><small data-i18n="stored">שניות שמורות</small><b>⏱️ <span id="storedTime">0</span></b></div>
+      <div class="stat"><small data-i18n="best">שיא</small><b id="best">0</b></div>
+    </div>
+    <div class="timer">⏳ <span id="time">30</span></div>
+  </div>
+
+  <div class="card">
+    <div class="center startArea" id="startArea">
+      <div data-i18n="enterName">הכנס שם כדי להתחיל:</div>
+      <div class="nameBox">
+        <input id="nameInput" maxlength="18" placeholder="השם שלך">
+        <button class="btn primary" onclick="startGame()" data-i18n="start">התחל משחק</button>
+      </div>
+      <div class="small" data-i18n="gameRule">יש לך 30 שניות. כל 10 תפיסות = יהלום אחד.</div>
+    </div>
+
+    <div id="scoreRunning" class="center hidden">
+      <div class="scoreRun" id="liveScore">0</div>
+      <div class="arena" id="arena">
+        <button id="target" class="target" aria-label="target"></button>
+      </div>
+    </div>
+
+    <div id="endPanel" class="endPanel center hidden">
+      <h2 data-i18n="timeUp">נגמר הזמן!</h2>
+      <div><span data-i18n="yourScore">הניקוד שלך:</span> <b id="finalScore">0</b></div>
+      <div class="actions">
+        <button id="useStoredBtn" class="btn green" onclick="useStoredTime()">⏱️ <span data-i18n="useTime">השתמש בתוספת הזמן</span></button>
+        <button id="buy5Btn" class="btn gold" onclick="buyFiveSeconds()">💎 <span data-i18n="buy5">קנה 5 שניות</span> — 50 💎</button>
+        <button class="btn primary" onclick="startGame()" data-i18n="newGame">משחק חדש</button>
+      </div>
+      <div id="purchaseInfo" class="small"></div>
+    </div>
+  </div>
+</section>
+
+<section id="shop" class="card hidden">
+  <h2 class="panelTitle">🛒 <span data-i18n="shop">חנות</span></h2>
+  <div class="grid">
+    <div class="item chest">
+      <div class="chestIcon">🎁</div>
+      <h3 data-i18n="dailyChest">תיבה יומית</h3>
+      <p data-i18n="dailyDesc">תיבה אחת בחינם בכל יום. מקבלים בין 5 ל־75 יהלומים.</p>
+      <div id="dailyCountdown" class="countdown"></div>
+      <button id="dailyBtn" class="btn green" onclick="openDailyChest()" data-i18n="openFree">פתח בחינם</button>
+    </div>
+    <div class="item chest">
+      <div class="chestIcon">⏱️</div>
+      <h3 data-i18n="timeChest">תיבת זמן</h3>
+      <p data-i18n="timeDesc">מקבלים בין 1 ל־30 שניות, שנשמרות עד שתשתמש בהן.</p>
+      <div id="saleText" class="sale"></div>
+      <button id="timeChestBtn" class="btn gold" onclick="openTimeChest()">50 💎</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="center">
+      <h3 data-i18n="savedTime">תוספת זמן שמורה</h3>
+      <div style="font-size:42px">⏱️ <b id="shopStored">0</b></div>
+      <div class="actions">
+        <button class="btn green" onclick="useStoredFromShop()" data-i18n="useSaved">השתמש בזמן השמור</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="leaderboard" class="card hidden">
+  <h2 class="panelTitle">🏆 <span data-i18n="top50">טופ 50</span></h2>
+  <p class="small" data-i18n="localBoard">הלוח נשמר כרגע במכשיר הזה. בשלב הבא נחבר אותו ל־Firebase ללוח עולמי אמיתי.</p>
+  <div class="tableWrap">
+    <table>
+      <thead><tr><th>#</th><th data-i18n="player">שחקן</th><th data-i18n="bestScore">שיא</th><th data-i18n="records">משחקים</th></tr></thead>
+      <tbody id="leaderboardBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<section id="creator" class="card creator hidden">
+  <h2 class="panelTitle">👑 <span data-i18n="creator">יוצר המשחק: רון</span></h2>
+  <p data-i18n="creatorText">תפוס את הריבוע הוא משחק מהיר שבו המטרה היא לתפוס כמה שיותר ריבועים בזמן מוגבל.</p>
+  <p data-i18n="creatorText2">צוברים ניקוד, יהלומים וזמן נוסף, ויכולים להתחרות על המקום הראשון.</p>
+  <div class="secret">
+    <div style="font-size:50px">🔒</div>
+    <h2 data-i18n="secretTitle">מצאת את הסוד?</h2>
+    <p data-i18n="secretText">סוד קטן למי שהגיע עד לכאן...</p>
+    <button class="btn gold" onclick="claimSecret()" data-i18n="claimSecret">קבל 500 יהלומים</button>
+  </div>
+</section>
+
+</main>
+
+<footer>🎮 <span data-i18n="gameTitle">תפוס את הריבוע</span> • <span data-i18n="creator">יוצר המשחק: רון</span></footer>
+<div id="toast" class="toast"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+
+let lang=localStorage.getItem("cs_lang")||"he";
+let playerName=localStorage.getItem("cs_name")||"";
+let diamonds=Number(localStorage.getItem("cs_diamonds")||0);
+let storedTime=Number(localStorage.getItem("cs_storedTime")||0);
+let scores=JSON.parse(localStorage.getItem("cs_scores")||"[]");
+let secretClaimed=localStorage.getItem("cs_secretClaimed")==="1";
+let dailyClaim=localStorage.getItem("cs_dailyClaim")||"";
+let score=0,best=0,timeLeft=30,running=false,timer=null,purchasesThisGame=0;
+let targetClicks=0;
+
+const T={
+he:{
+gameTitle:"תפוס את הריבוע",game:"משחק",shop:"חנות",top50:"טופ 50",creator:"יוצר המשחק: רון",
+subtitle:"תפוס כמה שיותר ריבועים לפני שהזמן נגמר!",score:"ניקוד",diamonds:"יהלומים",stored:"שניות שמורות",best:"שיא",
+enterName:"הכנס שם כדי להתחיל:",start:"התחל משחק",gameRule:"יש לך 30 שניות. כל 10 תפיסות = יהלום אחד.",
+timeUp:"נגמר הזמן!",yourScore:"הניקוד שלך:",useTime:"השתמש בתוספת הזמן",buy5:"קנה 5 שניות",newGame:"משחק חדש",
+dailyChest:"תיבה יומית",dailyDesc:"תיבה אחת בחינם בכל יום. מקבלים בין 5 ל־75 יהלומים.",openFree:"פתח בחינם",
+timeChest:"תיבת זמן",timeDesc:"מקבלים בין 1 ל־30 שניות, שנשמרות עד שתשתמש בהן.",savedTime:"תוספת זמן שמורה",
+useSaved:"השתמש בזמן השמור",localBoard:"הלוח נשמר כרגע במכשיר הזה. בשלב הבא נחבר אותו ל־Firebase ללוח עולמי אמיתי.",
+player:"שחקן",bestScore:"שיא",records:"משחקים",creatorText:"תפוס את הריבוע הוא משחק מהיר שבו המטרה היא לתפוס כמה שיותר ריבועים בזמן מוגבל.",
+creatorText2:"צוברים ניקוד, יהלומים וזמן נוסף, ויכולים להתחרות על המקום הראשון.",secretTitle:"מצאת את הסוד?",
+secretText:"סוד קטן למי שהגיע עד לכאן...",claimSecret:"קבל 500 יהלומים",need:"אין מספיק יהלומים",purchaseLimit:"הגעת למגבלה של 3 רכישות במשחק הזה",
+noTime:"אין תוספת זמן שמורה",dailyDone:"כבר פתחת את התיבה היומית היום",reward:"קיבלת",seconds:"שניות",diamondsWord:"יהלומים",
+secretDone:"כבר לקחת את הפרס הסודי!",secretWin:"קיבלת 500 יהלומים!",sale:"מבצע 50% עד יום שלישי ב־00:00",remaining:"נשארו",saved:"נשמרו",
+timeSaved:"השניות נשמרו בהצלחה",chestReward:"התיבה העניקה לך"
+},
+en:{
+gameTitle:"Catch the Square",game:"Game",shop:"Shop",top50:"Top 50",creator:"Game Creator: Ron",
+subtitle:"Catch as many squares as you can before time runs out!",score:"Score",diamonds:"Diamonds",stored:"Saved Seconds",best:"Best",
+enterName:"Enter your name to start:",start:"Start Game",gameRule:"You have 30 seconds. Every 10 catches = 1 diamond.",
+timeUp:"Time's up!",yourScore:"Your score:",useTime:"Use saved time",buy5:"Buy 5 seconds",newGame:"New Game",
+dailyChest:"Daily Chest",dailyDesc:"One free chest every day. Get 5–75 diamonds.",openFree:"Open for free",
+timeChest:"Time Chest",timeDesc:"Get 1–30 seconds, saved until you use them.",savedTime:"Saved Time",
+useSaved:"Use saved time",localBoard:"The board is currently saved on this device. Next we'll connect Firebase for a real global leaderboard.",
+player:"Player",bestScore:"Best",records:"Games",creatorText:"Catch the Square is a fast game where the goal is to catch as many squares as possible before time runs out.",
+creatorText2:"Earn score, diamonds and extra time, and compete for the top spot.",secretTitle:"Found the secret?",
+secretText:"A little secret for those who made it this far...",claimSecret:"Claim 500 Diamonds",need:"Not enough diamonds",purchaseLimit:"You reached the 3 purchases limit for this game",
+noTime:"No saved time",dailyDone:"You already opened today's chest",reward:"You got",seconds:"seconds",diamondsWord:"diamonds",
+secretDone:"You already claimed the secret reward!",secretWin:"You got 500 diamonds!",sale:"50% sale until Tuesday 00:00",remaining:"left",saved:"saved",
+timeSaved:"Seconds saved successfully",chestReward:"The chest gave you"
+}};
+
+function tr(k){return (T[lang]&&T[lang][k])||k}
+function save(){
+  localStorage.setItem("cs_name",playerName);
+  localStorage.setItem("cs_diamonds",diamonds);
+  localStorage.setItem("cs_storedTime",storedTime);
+  localStorage.setItem("cs_scores",JSON.stringify(scores));
+  localStorage.setItem("cs_secretClaimed",secretClaimed?"1":"0");
+}
+function toast(msg){
+  $("toast").textContent=msg;$("toast").classList.add("show");
+  clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>$("toast").classList.remove("show"),2200);
+}
+function updateUI(){
+  $("diamonds").textContent=diamonds;
+  $("storedTime").textContent=storedTime;
+  $("shopStored").textContent=storedTime;
+  $("score").textContent=score;
+  $("liveScore").textContent=score;
+  $("time").textContent=timeLeft;
+  $("best").textContent=best;
+  $("nameInput").value=playerName;
+  $("useStoredBtn").classList.toggle("hidden",storedTime<=0);
+  $("buy5Btn").classList.toggle("hidden",purchasesThisGame>=3);
+  $("purchaseInfo").textContent=purchasesThisGame<3 ? `${3-purchasesThisGame} ${tr("remaining")}` : tr("purchaseLimit");
+}
+function applyLang(){
+  document.documentElement.lang=lang;
+  document.documentElement.dir=lang==="he"?"rtl":"ltr";
+  document.querySelectorAll("[data-i18n]").forEach(el=>el.textContent=tr(el.dataset.i18n));
+  $("langText").textContent=lang==="he"?"EN":"עב";
+  updateUI();updateLeaderboard();updateShop();
+}
+function toggleLang(){lang=lang==="he"?"en":"he";localStorage.setItem("cs_lang",lang);applyLang()}
+function showSection(id){
+  ["game","shop","leaderboard","creator"].forEach(x=>$(x).classList.toggle("hidden",x!==id));
+  if(id==="leaderboard")updateLeaderboard();
+  if(id==="shop")updateShop();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function weightedInt(min,max,power=2.7){
+  const u=Math.random();
+  return Math.floor(min+(max-min+1)*(1-Math.pow(u,power)));
+}
+function placeTarget(){
+  const arena=$("arena"),t=$("target");
+  const pad=8;
+  const maxX=Math.max(0,arena.clientWidth-t.offsetWidth-pad*2);
+  const maxY=Math.max(0,arena.clientHeight-t.offsetHeight-pad*2);
+  t.style.left=(pad+Math.random()*maxX)+"px";
+  t.style.top=(pad+Math.random()*maxY)+"px";
+}
+function targetSize(){
+  return Math.max(27,62-Math.floor(score/8)*3);
+}
+function resizeTarget(){
+  const s=targetSize();$("target").style.width=s+"px";$("target").style.height=s+"px";
+}
+function startTimer(){
+  clearInterval(timer);
+  timer=setInterval(()=>{
+    if(!running)return;
+    timeLeft--;updateUI();
+    if(timeLeft<=0)endGame();
+  },1000);
+}
+function startGame(){
+  playerName=($("nameInput").value||"").trim().slice(0,18);
+  if(!playerName){toast(lang==="he"?"נא להכניס שם":"Please enter a name");return}
+  save();
+  score=0;timeLeft=30;running=true;purchasesThisGame=0;targetClicks=0;
+  $("startArea").classList.add("hidden");
+  $("endPanel").classList.add("hidden");
+  $("scoreRunning").classList.remove("hidden");
+  $("target").classList.remove("hidden");
+  resizeTarget();placeTarget();updateUI();startTimer();
+  setTimeout(()=>$("arena").scrollIntoView({behavior:"smooth",block:"center"}),80);
+}
+function endGame(){
+  if(!running)return;
+  running=false;clearInterval(timer);
+  $("target").classList.add("hidden");
+  scores.push({name:playerName,score,at:Date.now()});
+  scores.sort((a,b)=>b.score-a.score);scores=scores.slice(0,1000);
+  best=Math.max(best,score);
+  save();updateLeaderboard();updateUI();
+  $("finalScore").textContent=score;
+  $("endPanel").classList.remove("hidden");
+}
+
+function shakeScreen(){
+  document.body.classList.remove("shake-screen");
+  void document.body.offsetWidth;
+  document.body.classList.add("shake-screen");
+  clearTimeout(window.shakeTimer);
+  window.shakeTimer=setTimeout(()=>document.body.classList.remove("shake-screen"),190);
+}
+
+function hit(){
+  if(!running)return;
+  shakeScreen();
+  score++;targetClicks++;
+  if(score%10===0){
+    diamonds++;toast("💎 +1");
+    save();
+  }
+  const s=$("liveScore");s.classList.remove("bump");void s.offsetWidth;s.classList.add("bump");
+  resizeTarget();placeTarget();updateUI();
+}
+$("target").addEventListener("click",hit);
+
+function useStoredTime(){
+  if(running||storedTime<=0)return;
+  timeLeft=storedTime;storedTime=0;running=true;
+  $("endPanel").classList.add("hidden");$("target").classList.remove("hidden");
+  resizeTarget();placeTarget();save();updateUI();startTimer();
+  setTimeout(()=>$("arena").scrollIntoView({behavior:"smooth",block:"center"}),80);
+}
+function useStoredFromShop(){
+  if(storedTime<=0){toast(tr("noTime"));return}
+  showSection("game");useStoredTime();
+}
+function buyFiveSeconds(){
+  if(running)return;
+  if(purchasesThisGame>=3){toast(tr("purchaseLimit"));return}
+  if(diamonds<50){toast(tr("need"));return}
+  diamonds-=50;purchasesThisGame++;timeLeft=5;running=true;
+  $("startArea").classList.add("hidden");$("endPanel").classList.add("hidden");
+  $("scoreRunning").classList.remove("hidden");$("target").classList.remove("hidden");
+  resizeTarget();placeTarget();save();updateUI();startTimer();
+  setTimeout(()=>$("arena").scrollIntoView({behavior:"smooth",block:"center"}),80);
+}
+function updateLeaderboard(){
+  const groups={};
+  scores.forEach(x=>{
+    const n=x.name||"Unknown";
+    if(!groups[n])groups[n]={name:n,best:0,count:0};
+    groups[n].best=Math.max(groups[n].best,x.score);
+    groups[n].count++;
+  });
+  const arr=Object.values(groups).sort((a,b)=>b.best-a.best).slice(0,50);
+  $("leaderboardBody").innerHTML=arr.length?arr.map((x,i)=>`
+    <tr><td>${i+1}</td><td>${escapeHtml(x.name)}</td><td>🏆 ${x.best}</td><td>${x.count}</td></tr>
+  `).join(""):`<tr><td colspan="4">${lang==="he"?"עדיין אין משחקים":"No games yet"}</td></tr>`;
+}
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+}
+function israelNow(){
+  return new Date(new Date().toLocaleString("en-US",{timeZone:"Asia/Jerusalem"}));
+}
+function dayKey(){
+  const d=israelNow();
+  return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+}
+function nextMidnight(){
+  const d=israelNow();d.setHours(24,0,0,0);return d;
+}
+function updateShop(){
+  const d=israelNow(),next=nextMidnight(),ms=next-d;
+  const h=Math.floor(ms/3600000),m=Math.floor(ms%3600000/60000),s=Math.floor(ms%60000/1000);
+  $("dailyCountdown").textContent=`${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+  $("dailyBtn").disabled=dailyClaim===dayKey();
+  $("dailyBtn").style.opacity=dailyClaim===dayKey()?.5:1;
+  $("dailyBtn").textContent=dailyClaim===dayKey()?tr("dailyDone"):tr("openFree");
+  const saleEnd=new Date("2026-09-22T00:00:00+03:00");
+  const sale=Date.now()<saleEnd.getTime();
+  $("timeChestBtn").textContent=sale?"25 💎":"50 💎";
+  $("saleText").textContent=sale?tr("sale"):"";
+}
+function openDailyChest(){
+  if(dailyClaim===dayKey()){toast(tr("dailyDone"));return}
+  const reward=weightedInt(5,75,2.7);
+  diamonds+=reward;dailyClaim=dayKey();localStorage.setItem("cs_dailyClaim",dailyClaim);save();updateUI();updateShop();
+  toast(`🎁 ${tr("chestReward")} ${reward} ${tr("diamondsWord")}!`);
+}
+function openTimeChest(){
+  const saleEnd=new Date("2026-09-22T00:00:00+03:00");
+  const cost=Date.now()<saleEnd.getTime()?25:50;
+  if(diamonds<cost){toast(tr("need"));return}
+  diamonds-=cost;
+  const reward=weightedInt(1,30,2.7);
+  storedTime+=reward;save();updateUI();updateShop();
+  toast(`⏱️ ${tr("chestReward")} ${reward} ${tr("seconds")} ${tr("saved")}!`);
+}
+function claimSecret(){
+  if(secretClaimed){toast(tr("secretDone"));return}
+  secretClaimed=true;diamonds+=500;save();updateUI();toast(tr("secretWin"));
+}
+function resetGame(){
+  clearInterval(timer);running=false;score=0;timeLeft=30;purchasesThisGame=0;
+  $("scoreRunning").classList.add("hidden");$("endPanel").classList.add("hidden");$("startArea").classList.remove("hidden");
+  updateUI();
+}
+window.addEventListener("resize",()=>{if(running)placeTarget()});
+
+
+function enterApp(){
+  const splash=$("appSplash");
+  splash.classList.add("hide");
+  setTimeout(()=>splash.remove(),500);
+}
+
+function loading(){
+  let p=0;
+  const iv=setInterval(()=>{
+    p+=2;
+    $("progressBar").style.width=p+"%";$("progressText").textContent=p+"%";
+    if(p>=100){
+      clearInterval(iv);
+      setTimeout(()=>{$("loading").classList.add("hidden")},250);
+    }
+  },100);
+}
+applyLang();updateShop();loading();
+</script>
+</body>
+</html>
