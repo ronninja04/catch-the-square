@@ -2,573 +2,425 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>תפוס את הריבוע</title>
-<meta name="theme-color" content="#10162a">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="תפוס את הריבוע">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%23765cff'/%3E%3Cstop offset='1' stop-color='%2331b8ff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='110' fill='%2310162a'/%3E%3Crect x='115' y='115' width='282' height='282' rx='55' fill='url(%23g)'/%3E%3Ccircle cx='190' cy='185' r='18' fill='white' fill-opacity='.85'/%3E%3C/svg%3E">
-
 <style>
 *{box-sizing:border-box}
 :root{
-  --bg:#10162a;--card:#18213b;--card2:#202b49;--text:#fff;--muted:#aab5d0;
-  --blue:#4d8dff;--purple:#7d5cff;--gold:#ffd34d;--green:#36d98a;--red:#ff5d72;
+ --bg:#07111f;--card:#101e32;--card2:#152842;--line:#294263;
+ --text:#fff;--muted:#a9bdd8;--accent:#49a7ff;--accent2:#7b61ff;
+ --good:#35df91;--gold:#ffd34d;--danger:#ff5577;
 }
-body{
-  margin:0;font-family:Arial,system-ui,sans-serif;color:var(--text);
-  background:linear-gradient(145deg,#0d1325,#17213d 55%,#10162a);
-  min-height:100vh;
-}
+html,body{margin:0;min-height:100%;font-family:Arial,Helvetica,sans-serif;background:
+ radial-gradient(circle at 20% 10%,#173d69 0,#07111f 38%),
+ radial-gradient(circle at 90% 80%,#271b5d 0,#07111f 42%);
+color:var(--text);overflow-x:hidden}
 button,input{font:inherit}
-button{cursor:pointer;border:0}
+button{border:0;cursor:pointer}
 .hidden{display:none!important}
-.container{width:min(1050px,94%);margin:auto}
-header{
-  padding:18px 0;position:sticky;top:0;z-index:20;
-  background:rgba(16,22,42,.94);backdrop-filter:blur(10px);
-  border-bottom:1px solid rgba(255,255,255,.08);
-}
-.headerRow{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.logo{font-size:25px;font-weight:900}
-.logo span{color:#7d8dff}
-.nav{display:flex;gap:8px;flex-wrap:wrap}
-.btn{
-  padding:10px 15px;border-radius:12px;color:#fff;background:#293657;
-  font-weight:800;transition:.18s;box-shadow:0 5px 15px #0002
-}
-.btn:hover{transform:translateY(-2px);filter:brightness(1.08)}
-.primary{background:linear-gradient(135deg,#7258ff,#4c83ff)}
-.gold{background:linear-gradient(135deg,#ffb82e,#ff8a22);color:#1d1608}
-.green{background:linear-gradient(135deg,#23c982,#2d9cff)}
-.red{background:linear-gradient(135deg,#ff5570,#e7375b)}
-.hero{text-align:center;padding:42px 0 25px}
-h1{font-size:clamp(42px,8vw,76px);margin:5px 0 10px;font-weight:1000}
-.subtitle{color:var(--muted);font-size:17px}
-.stats{
-  display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin:22px 0
-}
-.stat{
-  background:var(--card);border:1px solid #ffffff12;border-radius:15px;
-  padding:10px 18px;min-width:125px
-}
-.stat b{display:block;font-size:25px;margin-top:3px}
-.stat small{color:var(--muted)}
-.scoreRun{
-  font-size:55px;font-weight:1000;margin:4px 0;
-  transition:transform .1s;color:#fff
-}
-.bump{animation:pop .12s}
-@keyframes pop{50%{transform:scale(1.2)}}
-.timer{font-size:30px;font-weight:900;color:#ffd34d}
-.card{
-  background:linear-gradient(145deg,#1b2542,#151d34);
-  border:1px solid #ffffff10;border-radius:22px;padding:22px;
-  box-shadow:0 14px 35px #0003;margin:18px 0
-}
-.arena{
-  position:relative;height:500px;overflow:hidden;border-radius:20px;
-  background:
-    linear-gradient(#ffffff08 1px,transparent 1px),
-    linear-gradient(90deg,#ffffff08 1px,transparent 1px),
-    #111a30;
-  background-size:40px 40px;
-  border:2px solid #ffffff10;
-}
-.target{
-  position:absolute;width:62px;height:62px;border-radius:13px;
-  background:linear-gradient(135deg,#7658ff,#31b8ff);
-  box-shadow:0 8px 25px #0007,0 0 20px #5e82ff88;
-  transition:width .15s,height .15s,transform .08s;
-}
-.target:active{transform:scale(.9)}
-.center{text-align:center}
-.startArea{padding:18px}
-.nameBox{
-  display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:18px 0
-}
-.nameBox input{width:min(300px,90%);padding:12px;border-radius:12px;border:1px solid #ffffff18;background:#0f162a;color:#fff}
-.actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:16px}
-.panelTitle{font-size:26px;font-weight:900;margin:0 0 12px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
-.item{
-  background:#111a30;border:1px solid #ffffff0d;border-radius:18px;padding:18px;text-align:center
-}
-.item .emoji{font-size:48px}
-.item h3{margin:8px 0}
-.item p{color:var(--muted);line-height:1.5}
-.shop{margin-top:30px}
-.chest{min-height:250px;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.chestIcon{font-size:75px;filter:drop-shadow(0 8px 12px #0005)}
-.countdown{color:#ffd34d;font-weight:900;margin:10px}
-.tableWrap{overflow:auto}
-table{width:100%;border-collapse:collapse}
-th,td{padding:11px;text-align:center;border-bottom:1px solid #ffffff0c}
-th{color:#aab5d0;font-size:14px}
-td{font-weight:700}
-.creator{min-height:2600px}
-.secret{
-  margin-top:4200px;text-align:center;padding:30px;border-radius:20px;
-  background:#0d1426;border:1px solid #ffffff08
-}
-.secret button{margin-top:12px}
-footer{text-align:center;color:#76829e;padding:40px 0}
-.toast{
-  position:fixed;bottom:22px;left:50%;transform:translateX(-50%);
-  background:#0c1324;color:#fff;padding:13px 18px;border-radius:12px;
-  border:1px solid #ffffff18;box-shadow:0 8px 30px #0007;z-index:100;
-  opacity:0;pointer-events:none;transition:.2s
-}
-.toast.show{opacity:1}
-.loading{
-  position:fixed;inset:0;z-index:200;background:#0b1120;
-  display:flex;align-items:center;justify-content:center;flex-direction:column
-}
-.loading h2{font-size:38px;margin:0 0 20px}
-.progress{width:min(400px,80%);height:13px;background:#202b49;border-radius:20px;overflow:hidden}
-.progressBar{height:100%;width:0;background:linear-gradient(90deg,#7658ff,#31b8ff);transition:.08s}
-.progressText{margin-top:10px;color:#aab5d0;font-weight:800}
-.endPanel{margin-top:15px;padding:18px;border-radius:17px;background:#111a30;border:1px solid #ffffff0d}
-.small{font-size:13px;color:#8591ab}
-.sale{color:#52e69d;font-weight:900}
-@media(max-width:650px){
-  .arena{height:390px}.target{width:55px;height:55px}
-  .scoreRun{font-size:45px}
-}
+#app{min-height:100vh;padding-bottom:45px}
+header{position:sticky;top:0;z-index:20;background:rgba(5,12,24,.82);backdrop-filter:blur(14px);border-bottom:1px solid #233957;padding:14px 16px}
+.header-row{max-width:1050px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.brand{font-weight:900;font-size:clamp(22px,5vw,34px);text-shadow:0 4px 20px #000}
+.gear{width:48px;height:48px;border-radius:16px;background:#182a44;color:#fff;font-size:25px;box-shadow:0 8px 20px #0004}
+main{max-width:1050px;margin:auto;padding:18px}
+.hero{text-align:center;padding:18px 8px 12px}
+.hero h1{font-size:clamp(36px,9vw,72px);margin:8px 0;font-weight:1000}
+.hero p{color:var(--muted);font-size:18px;margin:0 0 20px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:720px;margin:0 auto 16px}
+.stat{background:linear-gradient(145deg,#12243d,#0d1b2e);border:1px solid var(--line);border-radius:20px;padding:14px;box-shadow:0 12px 35px #0003}
+.stat b{display:block;font-size:25px;margin-top:4px}
+.stat span{color:var(--muted);font-size:13px}
+.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:760px;margin:18px auto}
+.bigbtn{min-height:72px;border-radius:22px;color:#fff;font-weight:900;font-size:20px;background:linear-gradient(135deg,#2f8fff,#7158ff);box-shadow:0 12px 28px #286fff3d;transition:.15s}
+.bigbtn:active{transform:scale(.96)}
+.bigbtn.alt{background:linear-gradient(135deg,#172a45,#213b60)}
+.bigbtn.gold{background:linear-gradient(135deg,#d79520,#ffcf4c);color:#1a1200}
+#gamePanel{margin:18px auto;max-width:900px}
+.game-card{background:rgba(10,22,39,.86);border:1px solid var(--line);border-radius:28px;padding:16px;box-shadow:0 18px 55px #0005}
+.game-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+.timer{font-size:34px;font-weight:1000;color:var(--gold)}
+.live-score{font-size:25px;font-weight:900}
+.arena{height:min(62vh,520px);min-height:350px;border-radius:24px;position:relative;overflow:hidden;background:
+ radial-gradient(circle at 50% 45%,#18375d,#0a1628 70%);
+ border:2px solid #28486e;touch-action:manipulation}
+.arena:before{content:"";position:absolute;inset:0;background-image:linear-gradient(#ffffff08 1px,transparent 1px),linear-gradient(90deg,#ffffff08 1px,transparent 1px);background-size:36px 36px}
+#square{position:absolute;width:74px;height:74px;border-radius:17px;background:linear-gradient(145deg,#fff,#5fc1ff);box-shadow:0 0 28px #53b9ff,0 10px 25px #0007;z-index:3;transition:left .08s,top .08s,width .08s,height .08s;cursor:pointer}
+.game-hint{text-align:center;color:var(--muted);padding:10px}
+.overlay{position:fixed;inset:0;z-index:100;background:rgba(2,7,15,.93);display:flex;align-items:center;justify-content:center;padding:20px}
+.loader{width:min(560px,100%);text-align:center;background:linear-gradient(145deg,#10213a,#0b1628);border:1px solid #2d4669;border-radius:30px;padding:34px 24px;box-shadow:0 30px 80px #0009}
+.loader h2{font-size:40px;margin:4px 0 10px}.loader p{color:var(--muted)}
+.loadnum{font-size:64px;font-weight:1000;margin:18px}.bar{height:18px;background:#07111e;border-radius:99px;overflow:hidden;border:1px solid #28405f}.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#48a9ff,#8d6bff);transition:width .15s}
+.modal{position:fixed;inset:0;z-index:70;background:#02070fcc;display:flex;align-items:center;justify-content:center;padding:16px}
+.modalbox{width:min(700px,100%);max-height:88vh;overflow:auto;background:linear-gradient(145deg,#12243c,#0a1627);border:1px solid #2b466a;border-radius:28px;padding:22px;box-shadow:0 30px 90px #000b}
+.modalbox h2{font-size:32px;margin:0 0 12px}.close{float:left;background:#213653;color:white;border-radius:13px;padding:9px 13px;font-weight:900}
+.item{background:#0d1b2e;border:1px solid #27415f;border-radius:20px;padding:16px;margin:10px 0}
+.item h3{margin:0 0 7px}.item p{color:var(--muted);line-height:1.5}
+.row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.buy{background:linear-gradient(135deg,#2d91ff,#6b5cff);color:#fff;border-radius:14px;padding:11px 15px;font-weight:900}
+.buy:disabled{opacity:.45;cursor:not-allowed}
+input[type=text]{width:100%;background:#091626;color:white;border:1px solid #345173;border-radius:14px;padding:13px;outline:none}
+.langs{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.langbtn{padding:15px;border-radius:16px;background:#162b46;color:#fff;font-weight:800}
+.chest{font-size:100px;text-align:center;padding:22px;cursor:pointer;animation:float 1.4s infinite ease-in-out}.chest.open{animation:pop .45s}.reward{text-align:center;font-size:28px;font-weight:1000;color:var(--gold)}
+@keyframes float{50%{transform:translateY(-9px) rotate(-2deg)}}@keyframes pop{50%{transform:scale(1.25) rotate(5deg)}}
+.maint{text-align:center}.maint h1{font-size:clamp(38px,9vw,68px);margin:8px 0}.maint h2{font-size:30px;margin:4px 0 22px}
+.preview{border:1px solid #355277;border-radius:24px;padding:22px;background:linear-gradient(120deg,#102845,#1c2149);animation:pulse 2s infinite}.preview h3{font-size:27px;margin:0 0 10px}.preview p{font-size:20px;color:#dbe9ff}
+@keyframes pulse{50%{transform:scale(1.015);box-shadow:0 0 35px #5e8dff33}}
+.loader:after{content:"";position:absolute;width:220px;height:220px;border-radius:50%;background:#55b9ff18;filter:blur(35px);top:-80px;right:-80px;pointer-events:none}
 
-.shake-screen{animation:screenShake .18s ease-in-out}
-@keyframes screenShake{
-  0%{transform:translate(0,0) rotate(0)}
-  15%{transform:translate(-5px,2px) rotate(-.4deg)}
-  30%{transform:translate(5px,-2px) rotate(.4deg)}
-  45%{transform:translate(-4px,-2px) rotate(-.3deg)}
-  60%{transform:translate(4px,2px) rotate(.3deg)}
-  75%{transform:translate(-2px,0) rotate(-.15deg)}
-  100%{transform:translate(0,0) rotate(0)}
-}
-
-#appSplash{
-  position:fixed;inset:0;z-index:1000;background:
-    radial-gradient(circle at 50% 28%,#4d62d544,transparent 30%),
-    linear-gradient(145deg,#0a1020,#151f3a);
-  display:flex;align-items:center;justify-content:center;text-align:center;
-  transition:opacity .45s ease,visibility .45s ease;
-}
-#appSplash.hide{opacity:0;visibility:hidden;pointer-events:none}
-.splashBox{width:min(430px,88%);padding:30px}
-.appLogo{
-  width:150px;height:150px;margin:0 auto 24px;border-radius:38px;
-  display:grid;place-items:center;font-size:82px;
-  background:linear-gradient(145deg,#765cff,#31b8ff);
-  box-shadow:0 22px 55px #0008,0 0 45px #6d68ff55;
-  animation:logoFloat 2.2s ease-in-out infinite;
-}
-@keyframes logoFloat{50%{transform:translateY(-8px) rotate(2deg)}}
-.splashTitle{font-size:clamp(38px,10vw,58px);font-weight:1000;margin:0 0 8px}
-.splashSub{color:#aab5d0;font-size:16px;margin-bottom:22px}
-.enterApp{
-  width:100%;padding:15px!important;border-radius:15px!important;
-  background:linear-gradient(135deg,#7258ff,#4c83ff)!important;
-  font-size:18px!important
-}
-.appLoading{margin-top:18px;color:#687692;font-size:12px}
+.maintenance-gift{font-size:21px;font-weight:900;color:#ffd85a;margin:20px}
+#toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(30px);z-index:300;background:#fff;color:#07111f;border-radius:15px;padding:12px 18px;font-weight:900;opacity:0;pointer-events:none;transition:.25s;box-shadow:0 10px 35px #0008}.toastshow{opacity:1!important;transform:translateX(-50%) translateY(0)!important}
+.toplist{display:grid;gap:8px}.rank{display:grid;grid-template-columns:50px 1fr 90px;align-items:center;background:#0d1b2e;border:1px solid #223b59;border-radius:14px;padding:11px}.rank strong{font-size:20px}.rank span:last-child{text-align:left;color:var(--gold);font-weight:900}
+.creator-text{line-height:1.7;color:#d5e4f8}.secret-space{height:14000px}.secret{display:none;text-align:center;padding:30px;border:1px dashed #334b68;border-radius:20px}
+.shake{animation:shake .18s linear}@keyframes shake{25%{transform:translate(5px,-3px)}50%{transform:translate(-5px,3px)}75%{transform:translate(3px,2px)}}
+@media(max-width:650px){.actions{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.stat{padding:10px}.stat b{font-size:21px}.arena{min-height:330px}.langs{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
+<div id="app">
+<header><div class="header-row">
+<div class="brand">◼️ תפוס את הריבוע</div>
+<div style="display:flex;align-items:center;gap:8px">
+<div id="roomNumber" style="background:#142b48;border:1px solid #345579;border-radius:14px;padding:10px 12px;font-weight:900;color:#dcecff">🏠 חדר: —</div>
+<button class="gear" onclick="openModal('settings')">⚙️</button>
+</div></div></header>
 
-<div id="appSplash">
-  <div class="splashBox">
-    <div class="appLogo">🎯</div>
-    <h1 class="splashTitle">תפוס את הריבוע</h1>
-    <div class="splashSub">המשחק של רון 🎮</div>
-    <button class="enterApp" onclick="enterApp()">▶️ כניסה למשחק</button>
-    <div class="appLoading">משחק HTML</div>
-  </div>
+<main>
+<section class="hero">
+<h1>תפוס את הריבוע</h1>
+<p id="welcome">תפוס כמה שיותר פעמים לפני שהזמן נגמר! 🔊 המוזיקה מתחילה אחרי הלחיצה הראשונה.</p>
+<div class="stats">
+<div class="stat">💎<span>יהלומים</span><b id="diamonds">0</b></div>
+<div class="stat">⏱️<span>שניות שמורות</span><b id="stored">0</b></div>
+<div class="stat">🏆<span>שיא</span><b id="best">0</b></div>
+<div class="stat">👤<span>שחקן</span><b id="player">רון</b></div>
 </div>
-
-
-<div id="loading" class="loading">
-  <h2 data-i18n="gameTitle">תפוס את הריבוע</h2>
-  <div class="progress"><div id="progressBar" class="progressBar"></div></div>
-  <div id="progressText" class="progressText">0%</div>
+<div class="actions">
+<button class="bigbtn" onclick="startGame()">▶️ התחל משחק</button>
+<button class="bigbtn alt" onclick="openModal('shop')">🛒 חנות</button>
+<button class="bigbtn alt" onclick="openModal('creator')">👑 יוצר המשחק: רון</button>
+<button class="bigbtn alt" onclick="openModal('friends')">👥 חברים</button>
+<button class="bigbtn gold" onclick="openModal('top')">🏆 טופ</button>
 </div>
-
-<header>
-  <div class="container headerRow">
-    <div class="logo">🎮 <span data-i18n="gameTitle">תפוס את הריבוע</span></div>
-    <div class="nav">
-      <button class="btn" onclick="showSection('game')" data-i18n="game">משחק</button>
-      <button class="btn gold" onclick="showSection('shop')" data-i18n="shop">חנות</button>
-      <button class="btn" onclick="showSection('leaderboard')" data-i18n="top50">טופ 50</button>
-      <button class="btn" onclick="showSection('creator')" data-i18n="creator">יוצר המשחק: רון</button>
-      <button class="btn" onclick="toggleLang()">🌐 <span id="langText">EN</span></button>
-    </div>
-  </div>
-</header>
-
-<main class="container">
-
-<section id="game">
-  <div class="hero">
-    <h1 data-i18n="gameTitle">תפוס את הריבוע</h1>
-    <div class="subtitle" data-i18n="subtitle">תפוס כמה שיותר ריבועים לפני שהזמן נגמר!</div>
-    <div class="stats">
-      <div class="stat"><small data-i18n="score">ניקוד</small><b id="score">0</b></div>
-      <div class="stat"><small data-i18n="diamonds">יהלומים</small><b>💎 <span id="diamonds">0</span></b></div>
-      <div class="stat"><small data-i18n="stored">שניות שמורות</small><b>⏱️ <span id="storedTime">0</span></b></div>
-      <div class="stat"><small data-i18n="best">שיא</small><b id="best">0</b></div>
-    </div>
-    <div class="timer">⏳ <span id="time">30</span></div>
-  </div>
-
-  <div class="card">
-    <div class="center startArea" id="startArea">
-      <div data-i18n="enterName">הכנס שם כדי להתחיל:</div>
-      <div class="nameBox">
-        <input id="nameInput" maxlength="18" placeholder="השם שלך">
-        <button class="btn primary" onclick="startGame()" data-i18n="start">התחל משחק</button>
-      </div>
-      <div class="small" data-i18n="gameRule">יש לך 30 שניות. כל 10 תפיסות = יהלום אחד.</div>
-    </div>
-
-    <div id="scoreRunning" class="center hidden">
-      <div class="scoreRun" id="liveScore">0</div>
-      <div class="arena" id="arena">
-        <button id="target" class="target" aria-label="target"></button>
-      </div>
-    </div>
-
-    <div id="endPanel" class="endPanel center hidden">
-      <h2 data-i18n="timeUp">נגמר הזמן!</h2>
-      <div><span data-i18n="yourScore">הניקוד שלך:</span> <b id="finalScore">0</b></div>
-      <div class="actions">
-        <button id="useStoredBtn" class="btn green" onclick="useStoredTime()">⏱️ <span data-i18n="useTime">השתמש בתוספת הזמן</span></button>
-        <button id="buy5Btn" class="btn gold" onclick="buyFiveSeconds()">💎 <span data-i18n="buy5">קנה 5 שניות</span> — 50 💎</button>
-        <button class="btn primary" onclick="startGame()" data-i18n="newGame">משחק חדש</button>
-      </div>
-      <div id="purchaseInfo" class="small"></div>
-    </div>
-  </div>
+<div id="playWindowTimer" style="max-width:760px;margin:10px auto 0;text-align:center;padding:12px 16px;border-radius:16px;background:#0e2036;border:1px solid #2b4869;color:#dcecff;font-weight:900">🎮 זמן משחק זמין: מחשב...</div>
 </section>
 
-<section id="shop" class="card hidden">
-  <h2 class="panelTitle">🛒 <span data-i18n="shop">חנות</span></h2>
-  <div class="grid">
-    <div class="item chest">
-      <div class="chestIcon">🎁</div>
-      <h3 data-i18n="dailyChest">תיבה יומית</h3>
-      <p data-i18n="dailyDesc">תיבה אחת בחינם בכל יום. מקבלים בין 5 ל־75 יהלומים.</p>
-      <div id="dailyCountdown" class="countdown"></div>
-      <button id="dailyBtn" class="btn green" onclick="openDailyChest()" data-i18n="openFree">פתח בחינם</button>
-    </div>
-    <div class="item chest">
-      <div class="chestIcon">⏱️</div>
-      <h3 data-i18n="timeChest">תיבת זמן</h3>
-      <p data-i18n="timeDesc">מקבלים בין 1 ל־30 שניות, שנשמרות עד שתשתמש בהן.</p>
-      <div id="saleText" class="sale"></div>
-      <button id="timeChestBtn" class="btn gold" onclick="openTimeChest()">50 💎</button>
-    </div>
-  </div>
-  <div class="card">
-    <div class="center">
-      <h3 data-i18n="savedTime">תוספת זמן שמורה</h3>
-      <div style="font-size:42px">⏱️ <b id="shopStored">0</b></div>
-      <div class="actions">
-        <button class="btn green" onclick="useStoredFromShop()" data-i18n="useSaved">השתמש בזמן השמור</button>
-      </div>
-    </div>
-  </div>
+<section id="gamePanel" class="hidden">
+<div class="game-card">
+<div class="game-top"><div class="timer" id="timer">00:30</div><div class="live-score">🎯 <span id="score">0</span></div></div>
+<div class="arena" id="arena"><div id="square" onclick="hitSquare(event)"></div></div>
+<div class="game-hint">לחץ על הריבוע כמה שיותר מהר!</div>
+</div>
 </section>
-
-<section id="leaderboard" class="card hidden">
-  <h2 class="panelTitle">🏆 <span data-i18n="top50">טופ 50</span></h2>
-  <p class="small" data-i18n="localBoard">הלוח נשמר כרגע במכשיר הזה. בשלב הבא נחבר אותו ל־Firebase ללוח עולמי אמיתי.</p>
-  <div class="tableWrap">
-    <table>
-      <thead><tr><th>#</th><th data-i18n="player">שחקן</th><th data-i18n="bestScore">שיא</th><th data-i18n="records">משחקים</th></tr></thead>
-      <tbody id="leaderboardBody"></tbody>
-    </table>
-  </div>
-</section>
-
-<section id="creator" class="card creator hidden">
-  <h2 class="panelTitle">👑 <span data-i18n="creator">יוצר המשחק: רון</span></h2>
-  <p data-i18n="creatorText">תפוס את הריבוע הוא משחק מהיר שבו המטרה היא לתפוס כמה שיותר ריבועים בזמן מוגבל.</p>
-  <p data-i18n="creatorText2">צוברים ניקוד, יהלומים וזמן נוסף, ויכולים להתחרות על המקום הראשון.</p>
-  <div class="secret">
-    <div style="font-size:50px">🔒</div>
-    <h2 data-i18n="secretTitle">מצאת את הסוד?</h2>
-    <p data-i18n="secretText">סוד קטן למי שהגיע עד לכאן...</p>
-    <button class="btn gold" onclick="claimSecret()" data-i18n="claimSecret">קבל 500 יהלומים</button>
-  </div>
-</section>
-
 </main>
+</div>
 
-<footer>🎮 <span data-i18n="gameTitle">תפוס את הריבוע</span> • <span data-i18n="creator">יוצר המשחק: רון</span></footer>
-<div id="toast" class="toast"></div>
+<div id="loader" class="overlay">
+<div class="loader" style="position:relative;overflow:hidden">
+<div style="font-size:76px;animation:float 1.5s infinite">◼️</div>
+<div style="font-size:14px;letter-spacing:3px;color:#69baff;font-weight:900;margin-top:4px">RON STUDIOS</div>
+<h2 style="font-size:clamp(32px,8vw,52px);margin:8px 0;background:linear-gradient(90deg,#fff,#70c7ff,#a68cff);-webkit-background-clip:text;color:transparent">תפוס את הריבוע</h2>
+<p style="font-size:17px">מתכוננים למשחק שלך...</p>
+<div class="loadnum" id="loadnum" style="text-shadow:0 0 25px #55b9ff">0%</div>
+<div class="bar"><i id="loadbar"></i></div>
+</div>
+</div>
+
+<div id="maint" class="overlay hidden">
+<div class="loader maint">
+<div style="font-size:70px">🛠️</div>
+<h1>יצאנו לעבודות תחזוקה</h1>
+<h2>חוזרים ב־12:00</h2>
+<div class="preview">
+<h3>🎬 מה יהיה אחרי התחזוקה?</h3>
+<p>עיצוב חדש • סידור חדש • בלי באגים ועוד!</p>
+</div>
+<div class="maintenance-gift">🎁 כפיצוי החלטנו לתת לכם תיבת זמן בחינם!</div>
+<div class="loadnum" id="maintTime">מחשב זמן...</div>
+<button class="bigbtn" id="maintBtn" onclick="maintenanceGift()">🎁 קבלו תיבת זמן בחינם</button>
+</div>
+</div>
+
+<div id="modal" class="modal hidden"><div class="modalbox" id="modalBox"></div></div>
+<div id="toast"></div>
 
 <script>
+const KEY='catchSquareNew2026';
+const defaultState={name:'רון',diamonds:100,stored:0,best:0,scores:[],daily:null,timeChest:null,maintenanceGift:false,savedFriends:[],lang:'he'};
+let S=JSON.parse(localStorage.getItem(KEY)||'null')||structuredClone(defaultState); S.secretClaimed=!!S.secretClaimed; S.room=S.room||'';
+let game={active:false,time:0,score:0,interval:null,endAt:0,buys:0};
 const $=id=>document.getElementById(id);
+function save(){localStorage.setItem(KEY,JSON.stringify(S));ui()}
+function ui(){$('diamonds').textContent=S.diamonds;$('stored').textContent=S.stored||0;$('best').textContent=S.best;$('player').textContent=S.name||'רון';$('roomNumber').textContent='🏠 חדר: '+(S.room||'—')}
+function toast(t){let x=$('toast');x.textContent=t;x.classList.add('toastshow');clearTimeout(window.tt);window.tt=setTimeout(()=>x.classList.remove('toastshow'),2300)}
+function openModal(type){let b=$('modalBox');$('modal').classList.remove('hidden');let close='<button class="close" onclick="closeModal()">✕</button>';
+if(type==='shop') shopModal(b,close);
+if(type==='creator') creatorModal(b,close);
+if(type==='settings') settingsModal(b,close);
+if(type==='friends') friendsModal(b,close);
+if(type==='top') topModal(b,close);
+}
+function closeModal(){$('modal').classList.add('hidden')}
+$('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()});
 
-let lang=localStorage.getItem("cs_lang")||"he";
-let playerName=localStorage.getItem("cs_name")||"";
-let diamonds=Number(localStorage.getItem("cs_diamonds")||0);
-let storedTime=Number(localStorage.getItem("cs_storedTime")||0);
-let scores=JSON.parse(localStorage.getItem("cs_scores")||"[]");
-let secretClaimed=localStorage.getItem("cs_secretClaimed")==="1";
-let dailyClaim=localStorage.getItem("cs_dailyClaim")||"";
-let score=0,best=0,timeLeft=30,running=false,timer=null,purchasesThisGame=0;
-let targetClicks=0;
+function israelParts(){
+ const parts=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Jerusalem',weekday:'short',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).formatToParts(new Date());
+ const get=k=>parts.find(x=>x.type===k)?.value;
+ return {day:{Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6}[get('weekday')],h:+get('hour'),m:+get('minute'),s:+get('second')};
+}
+function timeChestPrice(){
+ const x=israelParts(), mins=x.day*1440+x.h*60+x.m+x.s/60;
+ const tue=2*1440, thu=4*1440;
+ if(mins<tue)return 25;
+ if(mins<thu)return 50;
+ return 100;
+}
+function priceText(price){
+ if(price===25)return '🔥 75% הנחה — עד יום שלישי 00:00';
+ if(price===50)return '⚡ 50% הנחה — משלישי 00:01 עד חמישי 00:00';
+ return 'מחיר רגיל — מחמישי 00:01';
+}
+function shopModal(b,c){
+ let price=timeChestPrice();
+ b.innerHTML=c+`<h2>🛒 החנות</h2>
+ <div class="item"><h3>🎁 תיבה יומית</h3><p>פעם ביום בלבד. פתח את התיבה וקבל יהלומים: 10–100. הסכומים הגדולים נדירים יותר.</p>
+ <div class="row"><b id="dailyTimer">בודק...</b><button class="buy" onclick="dailyChest()">🎁 פתח תיבה</button></div></div>
+ <div class="item"><h3>⏱️ תיבת שניות</h3><p>קונים תיבה, לוחצים עליה כדי לפתוח אותה, ואז מקבלים זמן שמור למשחק הבא. 3–30 שניות, כאשר זמן גבוה נדיר מאוד.</p>
+ <p style="color:#ffd34d;font-weight:900">${priceText(price)}</p>
+ <div class="row"><b>מחיר עכשיו: 💎 ${price}</b><button class="buy" onclick="buyTimeChest(${price})">קנה תיבה</button></div></div>
+ <div class="item"><h3>⚡ עוד 5 שניות</h3><p>אחרי שהמשחק נגמר יש 20 שניות להחליט אם לקנות זמן נוסף. עד 5 רכישות בכל משחק.</p>
+ <div class="row"><b>30 💎</b><button class="buy" onclick="buyFive()">+5 שניות</button></div></div>`;
+ dailyUI();clearInterval(window.shopTimer);window.shopTimer=setInterval(()=>{if(!$('modal').classList.contains('hidden')){dailyUI();}},1000);
+}
+function dailyUI(){let el=$('dailyTimer');if(!el)return;let n=new Date(),next=new Date(n);next.setHours(24,0,0,0);let ms=next-n;el.textContent='הטענה בעוד '+fmt(ms)}
+function fmt(ms){ms=Math.max(0,ms);let s=Math.floor(ms/1000),h=Math.floor(s/3600),m=Math.floor((s%3600)/60),x=s%60;return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(x).padStart(2,'0')}
+function weighted(min,max,pow=4){let r=Math.pow(Math.random(),pow);return Math.floor(min+r*(max-min+1))}
+function todayKey(){return new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Jerusalem'}).format(new Date())}
+function dailyChest(){
+ if(S.daily===todayKey())return toast('כבר פתחת את התיבה היומית היום ❤️');
+ S.daily=todayKey();save();
+ let reward=weighted(10,100,4); showChest('🎁 תיבה יומית',{diamonds:reward},()=>{S.diamonds+=reward;save();closeModal()});
+}
+function buyTimeChest(price){
+ if(S.diamonds<price)return toast('אין מספיק יהלומים 💎');
+ S.diamonds-=price;save();
+ let reward=weighted(3,30,8);showChest('⏱️ תיבת זמן',{time:reward},()=>{S.stored+=reward;save();closeModal()});
+}
+function showChest(title,reward,done){
+ let b=$('modalBox');$('modal').classList.remove('hidden');
+ let shown=reward.diamonds?`💎 ${reward.diamonds} יהלומים`:`⏱️ ${reward.time} שניות`;
+ b.innerHTML=`<button class="close" onclick="closeModal()">✕</button><h2>${title}</h2><p style="text-align:center;color:#aac0db">לחץ על התיבה כדי לפתוח אותה!</p>
+ <div class="chest" id="chestBox" onclick="openChest()">🎁</div><div id="reward" class="reward hidden">${shown}</div>
+ <button class="bigbtn hidden" id="claim" onclick="claimReward()">✨ קבל</button>`;
+ window.pendingChest={reward,done};
+}
+function openChest(){let c=$('chestBox');if(!c)return;c.textContent='📦';c.classList.add('open');$('reward').classList.remove('hidden');$('claim').classList.remove('hidden');beep(700)}
+function claimReward(){let p=window.pendingChest;if(!p)return;p.done();window.pendingChest=null;closeModal()}
 
-const T={
+function creatorModal(b,c){
+ b.innerHTML=c+`<h2>👑 יוצר המשחק: רון</h2><div class="creator-text">
+ <p><b>תפוס את הריבוע</b> הוא משחק תגובה ומהירות שבו המטרה היא ללחוץ על הריבוע כמה שיותר פעמים לפני שהזמן נגמר.</p>
+ <p>🎯 בכל לחיצה מוצלחת הניקוד עולה והריבוע זז למקום חדש. ככל שמתקדמים, הריבוע קטן יותר.</p>
+ <p>💎 בכל 10 לחיצות מוצלחות מתקבל יהלום. יהלומים משמשים לקניית זמן נוסף ותיבות.</p>
+ <p>⏱️ בסיום משחק יש חלון של 20 שניות שבו אפשר להשתמש בזמן שמור או לקנות עד 5 פעמים +5 שניות במחיר של 30 יהלומים לכל רכישה.</p>
+ <p>🎁 בחנות יש תיבה יומית, תיבת זמן ומבצעים משתנים. תיבה נפתחת רק אחרי שלוחצים עליה.</p>
+ <p>🏆 „רק טופ” מציג את 50 התוצאות הטובות ביותר שנשמרו במכשיר הזה.</p>
+ <p>👥 במערכת החברים אפשר ליצור חדר ולשתף קוד עם חבר כדי לשחק יחד.</p>
+ <p>⚙️ בהגדרות אפשר לבחור שפה ולהדליק או לכבות צלילים ומוזיקה.</p>
+ <p>🌟 תודה שאתם משחקים! עוד שיפורים יכולים להגיע בהמשך.</p></div>
+ <div class="secret-space" id="secretSpace"></div><div class="secret" id="secret">💎 מצאתם סוד! +500 יהלומים <button class="buy" onclick="claimSecret()">קבלו</button></div>`;
+}
+
+const I18N={
 he:{
-gameTitle:"תפוס את הריבוע",game:"משחק",shop:"חנות",top50:"טופ 50",creator:"יוצר המשחק: רון",
-subtitle:"תפוס כמה שיותר ריבועים לפני שהזמן נגמר!",score:"ניקוד",diamonds:"יהלומים",stored:"שניות שמורות",best:"שיא",
-enterName:"הכנס שם כדי להתחיל:",start:"התחל משחק",gameRule:"יש לך 30 שניות. כל 10 תפיסות = יהלום אחד.",
-timeUp:"נגמר הזמן!",yourScore:"הניקוד שלך:",useTime:"השתמש בתוספת הזמן",buy5:"קנה 5 שניות",newGame:"משחק חדש",
-dailyChest:"תיבה יומית",dailyDesc:"תיבה אחת בחינם בכל יום. מקבלים בין 5 ל־75 יהלומים.",openFree:"פתח בחינם",
-timeChest:"תיבת זמן",timeDesc:"מקבלים בין 1 ל־30 שניות, שנשמרות עד שתשתמש בהן.",savedTime:"תוספת זמן שמורה",
-useSaved:"השתמש בזמן השמור",localBoard:"הלוח נשמר כרגע במכשיר הזה. בשלב הבא נחבר אותו ל־Firebase ללוח עולמי אמיתי.",
-player:"שחקן",bestScore:"שיא",records:"משחקים",creatorText:"תפוס את הריבוע הוא משחק מהיר שבו המטרה היא לתפוס כמה שיותר ריבועים בזמן מוגבל.",
-creatorText2:"צוברים ניקוד, יהלומים וזמן נוסף, ויכולים להתחרות על המקום הראשון.",secretTitle:"מצאת את הסוד?",
-secretText:"סוד קטן למי שהגיע עד לכאן...",claimSecret:"קבל 500 יהלומים",need:"אין מספיק יהלומים",purchaseLimit:"הגעת למגבלה של 3 רכישות במשחק הזה",
-noTime:"אין תוספת זמן שמורה",dailyDone:"כבר פתחת את התיבה היומית היום",reward:"קיבלת",seconds:"שניות",diamondsWord:"יהלומים",
-secretDone:"כבר לקחת את הפרס הסודי!",secretWin:"קיבלת 500 יהלומים!",sale:"מבצע 50% עד יום שלישי ב־00:00",remaining:"נשארו",saved:"נשמרו",
-timeSaved:"השניות נשמרו בהצלחה",chestReward:"התיבה העניקה לך"
+ brand:"◼️ תפוס את הריבוע", title:"תפוס את הריבוע", welcome:"תפוס כמה שיותר פעמים לפני שהזמן נגמר!",
+ diamonds:"יהלומים", stored:"שניות שמורות", best:"שיא", player:"שחקן",
+ start:"▶️ התחל משחק", shop:"🛒 חנות", creator:"👑 יוצר המשחק: רון", friends:"👥 חברים", top:"🏆 טופ",
+ settings:"⚙️ הגדרות", room:"🏠 חדר", gameHint:"לחץ על הריבוע כמה שיותר מהר!"
 },
 en:{
-gameTitle:"Catch the Square",game:"Game",shop:"Shop",top50:"Top 50",creator:"Game Creator: Ron",
-subtitle:"Catch as many squares as you can before time runs out!",score:"Score",diamonds:"Diamonds",stored:"Saved Seconds",best:"Best",
-enterName:"Enter your name to start:",start:"Start Game",gameRule:"You have 30 seconds. Every 10 catches = 1 diamond.",
-timeUp:"Time's up!",yourScore:"Your score:",useTime:"Use saved time",buy5:"Buy 5 seconds",newGame:"New Game",
-dailyChest:"Daily Chest",dailyDesc:"One free chest every day. Get 5–75 diamonds.",openFree:"Open for free",
-timeChest:"Time Chest",timeDesc:"Get 1–30 seconds, saved until you use them.",savedTime:"Saved Time",
-useSaved:"Use saved time",localBoard:"The board is currently saved on this device. Next we'll connect Firebase for a real global leaderboard.",
-player:"Player",bestScore:"Best",records:"Games",creatorText:"Catch the Square is a fast game where the goal is to catch as many squares as possible before time runs out.",
-creatorText2:"Earn score, diamonds and extra time, and compete for the top spot.",secretTitle:"Found the secret?",
-secretText:"A little secret for those who made it this far...",claimSecret:"Claim 500 Diamonds",need:"Not enough diamonds",purchaseLimit:"You reached the 3 purchases limit for this game",
-noTime:"No saved time",dailyDone:"You already opened today's chest",reward:"You got",seconds:"seconds",diamondsWord:"diamonds",
-secretDone:"You already claimed the secret reward!",secretWin:"You got 500 diamonds!",sale:"50% sale until Tuesday 00:00",remaining:"left",saved:"saved",
-timeSaved:"Seconds saved successfully",chestReward:"The chest gave you"
-}};
+ brand:"◼️ Catch the Square", title:"Catch the Square", welcome:"Catch the square as many times as possible before time runs out!",
+ diamonds:"Diamonds", stored:"Saved Seconds", best:"Best", player:"Player",
+ start:"▶️ Start Game", shop:"🛒 Shop", creator:"👑 Game Creator: Ron", friends:"👥 Friends", top:"🏆 Top",
+ settings:"⚙️ Settings", room:"🏠 Room", gameHint:"Click the square as fast as you can!"
+},
+de:{
+ brand:"◼️ Fang das Quadrat", title:"Fang das Quadrat", welcome:"Fange das Quadrat so oft wie möglich, bevor die Zeit abläuft!",
+ diamonds:"Diamanten", stored:"Gespeicherte Sekunden", best:"Rekord", player:"Spieler",
+ start:"▶️ Spiel starten", shop:"🛒 Shop", creator:"👑 Spieleentwickler: Ron", friends:"👥 Freunde", top:"🏆 Top",
+ settings:"⚙️ Einstellungen", room:"🏠 Raum", gameHint:"Klicke so schnell wie möglich auf das Quadrat!"
+},
+zh:{
+ brand:"◼️ 抓住方块", title:"抓住方块", welcome:"在时间结束前尽可能多地点击方块！",
+ diamonds:"钻石", stored:"保存的秒数", best:"最高分", player:"玩家",
+ start:"▶️ 开始游戏", shop:"🛒 商店", creator:"👑 游戏作者：Ron", friends:"👥 好友", top:"🏆 排行榜",
+ settings:"⚙️ 设置", room:"🏠 房间", gameHint:"尽快点击方块！"
+},
+pt:{
+ brand:"◼️ Pegue o Quadrado", title:"Pegue o Quadrado", welcome:"Pegue o quadrado o máximo de vezes antes do tempo acabar!",
+ diamonds:"Diamantes", stored:"Segundos salvos", best:"Recorde", player:"Jogador",
+ start:"▶️ Começar jogo", shop:"🛒 Loja", creator:"👑 Criador do jogo: Ron", friends:"👥 Amigos", top:"🏆 Top",
+ settings:"⚙️ Configurações", room:"🏠 Sala", gameHint:"Clique no quadrado o mais rápido que puder!"
+}
+};
+function applyLanguage(){
+ const l=I18N[S.lang]||I18N.he;
+ document.documentElement.lang=S.lang||'he';
+ document.documentElement.dir=S.lang==='he'?'rtl':'ltr';
+ const brand=document.querySelector('.brand'); if(brand)brand.textContent=l.brand;
+ const h1=document.querySelector('.hero h1'); if(h1)h1.textContent=l.title;
+ const w=document.getElementById('welcome'); if(w)w.textContent=l.welcome+' 🔊';
+ const stats=document.querySelectorAll('.stat span');
+ if(stats[0])stats[0].textContent=l.diamonds;
+ if(stats[1])stats[1].textContent=l.stored;
+ if(stats[2])stats[2].textContent=l.best;
+ if(stats[3])stats[3].textContent=l.player;
+ const bs=document.querySelectorAll('.actions .bigbtn');
+ if(bs[0])bs[0].textContent=l.start;
+ if(bs[1])bs[1].textContent=l.shop;
+ if(bs[2])bs[2].textContent=l.creator;
+ if(bs[3])bs[3].textContent=l.friends;
+ if(bs[4])bs[4].textContent=l.top;
+ const gear=document.querySelector('.gear'); if(gear)gear.setAttribute('aria-label',l.settings);
+ const room=document.getElementById('roomNumber'); if(room)room.textContent=l.room+': '+(S.room||'—');
+ const hint=document.querySelector('.game-hint'); if(hint)hint.textContent=l.gameHint;
+}
+function settingsModal(b,c){
+ b.innerHTML=c+`<h2>⚙️ הגדרות</h2>
+ <div class="item"><h3>👤 שם השחקן</h3><input id="nameInput" type="text" value="${esc(S.name)}" maxlength="20"><button class="buy" style="margin-top:10px" onclick="setName()">שמור שם</button></div>
+ <div class="item"><h3>🌍 שפה</h3><div class="langs">
+ <button class="langbtn" onclick="setLang('he')">🇮🇱 עברית</button><button class="langbtn" onclick="setLang('en')">🇺🇸 English</button>
+ <button class="langbtn" onclick="setLang('de')">🇩🇪 Deutsch</button><button class="langbtn" onclick="setLang('zh')">🇨🇳 中文</button>
+ <button class="langbtn" onclick="setLang('pt')">🇧🇷 Português</button></div></div>
+ <div class="item"><h3>⏱️ זמן שמור</h3><p>כרגע שמורות לך <b id="settingsStored">${S.stored||0}</b> שניות למשחק הבא.</p></div>
+ <div class="item"><h3>🔊 צלילים ומוזיקה</h3><p id="soundStatus">המוזיקה והצלילים פעילים</p><button class="buy" onclick="toggleSound()">החלף מצב צלילים</button><button class="buy" style="margin-right:8px" onclick="music()">▶️ הפעל מוזיקה</button></div>
+ <div class="item"><h3>🗑️ משתמש</h3><button class="buy" onclick="deleteUser()">מחק את המשתמש שלי מהמכשיר</button></div>`;
+}
+function esc(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function setName(){let n=$('nameInput').value.trim();if(!n)return toast('צריך לכתוב שם');S.name=n;save();toast('השם נשמר ✔️');}
+function setLang(x){
+ S.lang=x;save();applyLanguage();
+ const names={he:'עברית 🇮🇱',en:'English 🇺🇸',de:'Deutsch 🇩🇪',zh:'中文 🇨🇳',pt:'Português 🇧🇷'};
+ toast(names[x]+' ✓');
+ setTimeout(()=>{if(!$('modal').classList.contains('hidden'))settingsModal($('modalBox'),'<button class="close" onclick="closeModal()">✕</button>')},50);
+}
+let soundOn=true,musicOn=true;
+function toggleSound(){soundOn=!soundOn;musicOn=soundOn;toast(soundOn?'🔊 הצלילים והמוזיקה פועלים':'🔇 הצלילים והמוזיקה כבויים')}
+let audioCtx=null,musicTimer=null;
+function beep(f=600){if(!soundOn)return;try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();let o=audioCtx.createOscillator(),g=audioCtx.createGain();o.frequency.value=f;o.type='sine';g.gain.setValueAtTime(.0001,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.08,audioCtx.currentTime+.01);g.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+.12);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+.13)}catch(e){}}
+function music(){if(!musicOn||musicTimer)return;try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();let notes=[220,277,330,277,247,330,370,330],i=0;musicTimer=setInterval(()=>{if(!musicOn)return;let o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type='sine';o.frequency.value=notes[i++%notes.length];g.gain.value=.018;o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+.35)},480)}catch(e){}}
+document.addEventListener('pointerdown',()=>{beep(420);music()},{once:true});
 
-function tr(k){return (T[lang]&&T[lang][k])||k}
-function save(){
-  localStorage.setItem("cs_name",playerName);
-  localStorage.setItem("cs_diamonds",diamonds);
-  localStorage.setItem("cs_storedTime",storedTime);
-  localStorage.setItem("cs_scores",JSON.stringify(scores));
-  localStorage.setItem("cs_secretClaimed",secretClaimed?"1":"0");
+function topModal(b,c){
+ let arr=[...S.scores].sort((a,b)=>b.score-a.score).slice(0,50);
+ let list=arr.length?arr.map((x,i)=>`<div class="rank"><strong>#${i+1}</strong><span>${esc(x.name)}</span><span>${x.score} 🎯</span></div>`).join(''):'<div class="item">עדיין אין תוצאות. שחקו כדי להיכנס לטופ!</div>';
+ b.innerHTML=c+`<h2>🏆 טופ</h2><p style="color:#aac0db">מוצגות עד 50 התוצאות הטובות ביותר במכשיר הזה.</p><div class="toplist">${list}</div>`;
 }
-function toast(msg){
-  $("toast").textContent=msg;$("toast").classList.add("show");
-  clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>$("toast").classList.remove("show"),2200);
+function friendsModal(b,c){
+ b.innerHTML=c+`<h2>👥 חברים</h2>
+ <div class="item"><h3>🎮 דרך כיפית לשחק</h3><p>פתחו חדר, שלחו לחבר את הקוד, ושניכם מנסים לנצח באותו אתגר. מי שמקבל יותר לחיצות ב־30 שניות מנצח!</p>
+ <button class="buy" onclick="createRoom()">➕ צור חדר</button></div>
+ <div class="item"><h3>🔗 הצטרפות לחבר</h3><input id="friendCode" placeholder="הדבק כאן קוד חדר"><button class="buy" style="margin-top:10px" onclick="joinRoom()">הצטרף</button></div>
+ <div class="item"><h3>⭐ החברים שלי</h3>${S.savedFriends.length?S.savedFriends.map(x=>`<p>👤 ${esc(x)}</p>`).join(''):'<p>עדיין אין חברים שמורים.</p>'}</div>`;
 }
-function updateUI(){
-  $("diamonds").textContent=diamonds;
-  $("storedTime").textContent=storedTime;
-  $("shopStored").textContent=storedTime;
-  $("score").textContent=score;
-  $("liveScore").textContent=score;
-  $("time").textContent=timeLeft;
-  $("best").textContent=best;
-  $("nameInput").value=playerName;
-  $("useStoredBtn").classList.toggle("hidden",storedTime<=0);
-  $("buy5Btn").classList.toggle("hidden",purchasesThisGame>=3);
-  $("purchaseInfo").textContent=purchasesThisGame<3 ? `${3-purchasesThisGame} ${tr("remaining")}` : tr("purchaseLimit");
+function createRoom(){
+ let code=Math.random().toString(36).slice(2,8).toUpperCase();
+ S.room=code;save();ui();
+ const copied=prompt('קוד החדר שלך — שלח אותו לחבר:',code);
+ toast('החדר '+code+' נוצר! 🎮');
 }
-function applyLang(){
-  document.documentElement.lang=lang;
-  document.documentElement.dir=lang==="he"?"rtl":"ltr";
-  document.querySelectorAll("[data-i18n]").forEach(el=>el.textContent=tr(el.dataset.i18n));
-  $("langText").textContent=lang==="he"?"EN":"עב";
-  updateUI();updateLeaderboard();updateShop();
+function joinRoom(){
+ let code=$('friendCode').value.trim().toUpperCase();
+ if(!code)return toast('הכנס קוד');
+ if(!S.savedFriends.includes(code))S.savedFriends.push(code);
+ save();toast('הצטרפת לחדר '+code+' 🎮');ui();
 }
-function toggleLang(){lang=lang==="he"?"en":"he";localStorage.setItem("cs_lang",lang);applyLang()}
-function showSection(id){
-  ["game","shop","leaderboard","creator"].forEach(x=>$(x).classList.toggle("hidden",x!==id));
-  if(id==="leaderboard")updateLeaderboard();
-  if(id==="shop")updateShop();
-  window.scrollTo({top:0,behavior:"smooth"});
-}
-function weightedInt(min,max,power=2.7){
-  const u=Math.random();
-  return Math.floor(min+(max-min+1)*(1-Math.pow(u,power)));
-}
-function placeTarget(){
-  const arena=$("arena"),t=$("target");
-  const pad=8;
-  const maxX=Math.max(0,arena.clientWidth-t.offsetWidth-pad*2);
-  const maxY=Math.max(0,arena.clientHeight-t.offsetHeight-pad*2);
-  t.style.left=(pad+Math.random()*maxX)+"px";
-  t.style.top=(pad+Math.random()*maxY)+"px";
-}
-function targetSize(){
-  return Math.max(27,62-Math.floor(score/8)*3);
-}
-function resizeTarget(){
-  const s=targetSize();$("target").style.width=s+"px";$("target").style.height=s+"px";
-}
-function startTimer(){
-  clearInterval(timer);
-  timer=setInterval(()=>{
-    if(!running)return;
-    timeLeft--;updateUI();
-    if(timeLeft<=0)endGame();
-  },1000);
-}
+
 function startGame(){
-  playerName=($("nameInput").value||"").trim().slice(0,18);
-  if(!playerName){toast(lang==="he"?"נא להכניס שם":"Please enter a name");return}
-  save();
-  score=0;timeLeft=30;running=true;purchasesThisGame=0;targetClicks=0;
-  $("startArea").classList.add("hidden");
-  $("endPanel").classList.add("hidden");
-  $("scoreRunning").classList.remove("hidden");
-  $("target").classList.remove("hidden");
-  resizeTarget();placeTarget();updateUI();startTimer();
-  setTimeout(()=>$("arena").scrollIntoView({behavior:"smooth",block:"center"}),80);
+ closeModal();$('gamePanel').classList.remove('hidden');$('gamePanel').scrollIntoView({behavior:'smooth',block:'center'});
+ game.active=true;game.score=0;game.buys=0;game.time=30+(S.stored||0);S.stored=0;save();placeSquare();renderGame();clearInterval(game.interval);game.endAt=Date.now()+game.time*1000;game.interval=setInterval(tick,100);beep(900);
+}
+function tick(){game.time=Math.max(0,(game.endAt-Date.now())/1000);renderGame();if(game.time<=0)endGame()}
+function renderGame(){$('timer').textContent='00:'+String(Math.ceil(game.time)).padStart(2,'0');$('score').textContent=game.score}
+function placeSquare(){
+ let a=$('arena'),s=$('square'),size=Math.max(34,74-Math.floor(game.score/8)*2);s.style.width=size+'px';s.style.height=size+'px';
+ let maxX=Math.max(0,a.clientWidth-size),maxY=Math.max(0,a.clientHeight-size);
+ s.style.left=Math.random()*maxX+'px';s.style.top=Math.random()*maxY+'px';
+}
+function hitSquare(e){
+ if(!game.active)return;e.stopPropagation();game.score++;if(game.score%10===0)S.diamonds++;document.body.classList.remove('shake');void document.body.offsetWidth;document.body.classList.add('shake');beep(300);setTimeout(()=>beep(850),25);placeSquare();renderGame();save();
 }
 function endGame(){
-  if(!running)return;
-  running=false;clearInterval(timer);
-  $("target").classList.add("hidden");
-  scores.push({name:playerName,score,at:Date.now()});
-  scores.sort((a,b)=>b.score-a.score);scores=scores.slice(0,1000);
-  best=Math.max(best,score);
-  save();updateLeaderboard();updateUI();
-  $("finalScore").textContent=score;
-  $("endPanel").classList.remove("hidden");
+ if(!game.active)return;game.active=false;clearInterval(game.interval);game.interval=null;
+ let sc=game.score;if(sc>S.best)S.best=sc;S.scores.push({name:S.name||'רון',score:sc,date:Date.now()});S.scores=S.scores.sort((a,b)=>b.score-a.score).slice(0,200);save();
+ $('score').textContent=sc;
+ let until=Date.now()+20000;
+ let b=$('modalBox');$('modal').classList.remove('hidden');
+ b.innerHTML=`<h2>🏁 המשחק נגמר!</h2><div class="item"><h3>התוצאה שלך: ${sc} 🎯</h3><p>יש לך <b>20 שניות</b> להחליט מה לעשות.</p><p>זמן שמור: ⏱️ ${S.stored} שניות</p></div>
+ <div class="row"><button class="bigbtn" onclick="useStored()">⏱️ השתמש בזמן שמור</button><button class="bigbtn alt" onclick="buyFive()">+5 שניות • 30 💎</button></div>
+ <p id="decision" style="text-align:center;color:#ffcf4d;font-weight:900;margin-top:15px"></p>
+ <button class="bigbtn alt" onclick="closeModal()">משחק חדש</button>`;
+ let timer=setInterval(()=>{let ms=until-Date.now();let d=$('decision');if(d)d.textContent='נשארו '+Math.ceil(ms/1000)+' שניות';if(ms<=0){clearInterval(timer);closeModal();toast('הזמן נגמר — צריך להתחיל משחק חדש')}} ,100);
 }
+function useStored(){if(S.stored<=0)return toast('אין לך זמן שמור');let t=S.stored;S.stored=0;save();closeModal();continueGame(t)}
+function continueGame(t){$('gamePanel').classList.remove('hidden');$('gamePanel').scrollIntoView({behavior:'smooth',block:'center'});game.active=true;game.time=t;game.endAt=Date.now()+t*1000;clearInterval(game.interval);game.interval=setInterval(tick,100);placeSquare()}
+function buyFive(){
+ if(game.buys>=5)return toast('הגעת למקסימום של 5 רכישות במשחק');
+ if(S.diamonds<30)return toast('אין מספיק יהלומים 💎');
+ S.diamonds-=30;game.buys++;save();closeModal();continueGame(5);toast('+5 שניות נוספו ⚡');
+}
+function deleteUser(){if(confirm('למחוק את המשתמש המקומי, השיא והטופ מהמכשיר?')){localStorage.removeItem(KEY);location.reload()}}
 
-function shakeScreen(){
-  document.body.classList.remove("shake-screen");
-  void document.body.offsetWidth;
-  document.body.classList.add("shake-screen");
-  clearTimeout(window.shakeTimer);
-  window.shakeTimer=setTimeout(()=>document.body.classList.remove("shake-screen"),190);
-}
-
-function hit(){
-  if(!running)return;
-  shakeScreen();
-  score++;targetClicks++;
-  if(score%10===0){
-    diamonds++;toast("💎 +1");
-    save();
-  }
-  const s=$("liveScore");s.classList.remove("bump");void s.offsetWidth;s.classList.add("bump");
-  resizeTarget();placeTarget();updateUI();
-}
-$("target").addEventListener("click",hit);
-
-function useStoredTime(){
-  if(running||storedTime<=0)return;
-  timeLeft=storedTime;storedTime=0;running=true;
-  $("endPanel").classList.add("hidden");$("target").classList.remove("hidden");
-  resizeTarget();placeTarget();save();updateUI();startTimer();
-  setTimeout(()=>$("arena").scrollIntoView({behavior:"smooth",block:"center"}),80);
-}
-function useStoredFromShop(){
-  if(storedTime<=0){toast(tr("noTime"));return}
-  showSection("game");useStoredTime();
-}
-function buyFiveSeconds(){
-  if(running)return;
-  if(purchasesThisGame>=3){toast(tr("purchaseLimit"));return}
-  if(diamonds<50){toast(tr("need"));return}
-  diamonds-=50;purchasesThisGame++;timeLeft=5;running=true;
-  $("startArea").classList.add("hidden");$("endPanel").classList.add("hidden");
-  $("scoreRunning").classList.remove("hidden");$("target").classList.remove("hidden");
-  resizeTarget();placeTarget();save();updateUI();startTimer();
-  setTimeout(()=>$("arena").scrollIntoView({behavior:"smooth",block:"center"}),80);
-}
-function updateLeaderboard(){
-  const groups={};
-  scores.forEach(x=>{
-    const n=x.name||"Unknown";
-    if(!groups[n])groups[n]={name:n,best:0,count:0};
-    groups[n].best=Math.max(groups[n].best,x.score);
-    groups[n].count++;
-  });
-  const arr=Object.values(groups).sort((a,b)=>b.best-a.best).slice(0,50);
-  $("leaderboardBody").innerHTML=arr.length?arr.map((x,i)=>`
-    <tr><td>${i+1}</td><td>${escapeHtml(x.name)}</td><td>🏆 ${x.best}</td><td>${x.count}</td></tr>
-  `).join(""):`<tr><td colspan="4">${lang==="he"?"עדיין אין משחקים":"No games yet"}</td></tr>`;
-}
-function escapeHtml(s){
-  return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
-}
-function israelNow(){
-  return new Date(new Date().toLocaleString("en-US",{timeZone:"Asia/Jerusalem"}));
-}
-function dayKey(){
-  const d=israelNow();
-  return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
-}
-function nextMidnight(){
-  const d=israelNow();d.setHours(24,0,0,0);return d;
-}
-function updateShop(){
-  const d=israelNow(),next=nextMidnight(),ms=next-d;
-  const h=Math.floor(ms/3600000),m=Math.floor(ms%3600000/60000),s=Math.floor(ms%60000/1000);
-  $("dailyCountdown").textContent=`${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
-  $("dailyBtn").disabled=dailyClaim===dayKey();
-  $("dailyBtn").style.opacity=dailyClaim===dayKey()?.5:1;
-  $("dailyBtn").textContent=dailyClaim===dayKey()?tr("dailyDone"):tr("openFree");
-  const saleEnd=new Date("2026-09-22T00:00:00+03:00");
-  const sale=Date.now()<saleEnd.getTime();
-  $("timeChestBtn").textContent=sale?"25 💎":"50 💎";
-  $("saleText").textContent=sale?tr("sale"):"";
-}
-function openDailyChest(){
-  if(dailyClaim===dayKey()){toast(tr("dailyDone"));return}
-  const reward=weightedInt(5,75,2.7);
-  diamonds+=reward;dailyClaim=dayKey();localStorage.setItem("cs_dailyClaim",dailyClaim);save();updateUI();updateShop();
-  toast(`🎁 ${tr("chestReward")} ${reward} ${tr("diamondsWord")}!`);
-}
-function openTimeChest(){
-  const saleEnd=new Date("2026-09-22T00:00:00+03:00");
-  const cost=Date.now()<saleEnd.getTime()?25:50;
-  if(diamonds<cost){toast(tr("need"));return}
-  diamonds-=cost;
-  const reward=weightedInt(1,30,2.7);
-  storedTime+=reward;save();updateUI();updateShop();
-  toast(`⏱️ ${tr("chestReward")} ${reward} ${tr("seconds")} ${tr("saved")}!`);
-}
+let secretShown=false;
 function claimSecret(){
-  if(secretClaimed){toast(tr("secretDone"));return}
-  secretClaimed=true;diamonds+=500;save();updateUI();toast(tr("secretWin"));
+ if(S.secretClaimed)return toast('כבר אספת את הסוד הזה 💎');
+ S.secretClaimed=true;S.diamonds+=500;save();toast('🎉 קיבלת 500 יהלומים!');
+ const el=$('secret');if(el)el.innerHTML='💎 הסוד נאסף — 500 יהלומים נוספו!';
 }
-function resetGame(){
-  clearInterval(timer);running=false;score=0;timeLeft=30;purchasesThisGame=0;
-  $("scoreRunning").classList.add("hidden");$("endPanel").classList.add("hidden");$("startArea").classList.remove("hidden");
-  updateUI();
+function secretWatcher(){
+ const el=$('secret'), sp=$('secretSpace');
+ if(!el||!sp)return;
+ const r=sp.getBoundingClientRect();
+ if(r.top<window.innerHeight*1.15&&!S.secretClaimed){el.style.display='block'}
 }
-window.addEventListener("resize",()=>{if(running)placeTarget()});
+window.addEventListener('scroll',secretWatcher);
 
-
-function enterApp(){
-  const splash=$("appSplash");
-  splash.classList.add("hide");
-  setTimeout(()=>splash.remove(),500);
+function maintenanceGift(){
+ if(S.maintenanceGift)return toast('כבר קיבלת את תיבת הפיצוי 🎁');
+ S.maintenanceGift=true;save();let t=weighted(3,15,8);showChest('🎁 תיבת פיצוי',{time:t},()=>{S.stored+=t;save();ui();toast('קיבלת '+t+' שניות שמורות! ⏱️');maintenance()});
 }
+function maintenance(){
+ let now=new Date();
+ let start=new Date(now.getFullYear(),now.getMonth(),now.getDate(),22,0,0);
+ let end=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1,12,0,0);
+ let n=Date.now(), active=n>=start.getTime()&&n<end.getTime();
 
+ // The maintenance screen is shown only during 22:00-12:00.
+ $('maint').classList.toggle('hidden',!active);
+
+ if(active){
+   $('maintTime').textContent='⏳ נשאר עד החזרה: '+fmt(end.getTime()-n);
+   $('maintBtn').disabled=!!S.maintenanceGift;
+ }else{
+   // Outside maintenance, show the current playable-window timer in the game page.
+   let nextStart;
+   if(n<start.getTime()) nextStart=start;
+   else nextStart=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1,22,0,0);
+   let playableStart=end.getTime();
+   let playableEnd=nextStart.getTime();
+   let label='';
+   if(n>=playableStart && n<playableEnd) label='🎮 זמן משחק זמין: '+fmt(playableEnd-n);
+   else label='🛠️ התחזוקה הבאה בעוד: '+fmt(nextStart.getTime()-n);
+   const pt=$('playWindowTimer');
+   if(pt)pt.textContent=label;
+ }
+}
 function loading(){
-  let p=0;
-  const iv=setInterval(()=>{
-    p+=2;
-    $("progressBar").style.width=p+"%";$("progressText").textContent=p+"%";
-    if(p>=100){
-      clearInterval(iv);
-      setTimeout(()=>{$("loading").classList.add("hidden")},250);
-    }
-  },100);
+ let start=Date.now(),dur=10000;
+ let iv=setInterval(()=>{let p=Math.min(100,Math.floor((Date.now()-start)/dur*100));$('loadnum').textContent=p+'%';$('loadbar').style.width=p+'%';if(p>=100){clearInterval(iv);setTimeout(()=>{$('loader').classList.add('hidden');maintenance()},250)}},100);
 }
-applyLang();updateShop();loading();
+setInterval(maintenance,1000);setInterval(()=>{if(game.active)renderGame()},200);
+ui();applyLanguage();maintenance();loading();
 </script>
 </body>
 </html>
