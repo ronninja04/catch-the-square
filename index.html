@@ -63,15 +63,25 @@ input[type=text]{width:100%;background:#091626;color:white;border:1px solid #345
 .langs{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.langbtn{padding:15px;border-radius:16px;background:#162b46;color:#fff;font-weight:800}
 .chest{font-size:100px;text-align:center;padding:22px;cursor:pointer;animation:float 1.4s infinite ease-in-out}.chest.open{animation:pop .45s}.reward{text-align:center;font-size:28px;font-weight:1000;color:var(--gold)}
 @keyframes float{50%{transform:translateY(-9px) rotate(-2deg)}}@keyframes pop{50%{transform:scale(1.25) rotate(5deg)}}
-.maint{text-align:center}.maint h1{font-size:clamp(38px,9vw,68px);margin:8px 0}.maint h2{font-size:30px;margin:4px 0 22px}
-.preview{border:1px solid #355277;border-radius:24px;padding:22px;background:linear-gradient(120deg,#102845,#1c2149);animation:pulse 2s infinite}.preview h3{font-size:27px;margin:0 0 10px}.preview p{font-size:20px;color:#dbe9ff}
-@keyframes pulse{50%{transform:scale(1.015);box-shadow:0 0 35px #5e8dff33}}
-.loader:after{content:"";position:absolute;width:220px;height:220px;border-radius:50%;background:#55b9ff18;filter:blur(35px);top:-80px;right:-80px;pointer-events:none}
-
-.maintenance-gift{font-size:21px;font-weight:900;color:#ffd85a;margin:20px}
+.maint-screen{width:min(560px,94vw);position:relative;overflow:hidden;text-align:center;padding:18px 16px 20px;border:1px solid #36577e;border-radius:26px;background:linear-gradient(145deg,rgba(16,32,54,.98),rgba(8,17,30,.99));box-shadow:0 24px 70px #000a}
+.maint-screen:before,.maint-screen:after{width:130px;height:130px;background:#8b63ff15;bottom:-70px;left:-45px}
+.maint-screen:before{width:150px;height:150px;background:#39a9ff18;top:-85px;right:-50px}
+.maint-screen:after{width:220px;height:220px;background:#8b63ff1c;bottom:-120px;left:-70px}
+.maint-icon{width:58px;height:58px;margin:0 auto 7px;border-radius:17px;display:grid;place-items:center;font-size:31px;background:linear-gradient(145deg,#1d3a61,#14243d);border:1px solid #416589;box-shadow:0 0 25px #48a9ff1b;animation:float 2s infinite ease-in-out}
+.maint-badge{display:inline-block;padding:4px 9px;border-radius:999px;background:#183354;border:1px solid #3d638e;color:#9fd7ff;font-size:10px;font-weight:1000;letter-spacing:.4px}
+.maint-screen h1{font-size:clamp(38px,8vw,58px);line-height:1.02;margin:13px 0 7px;font-weight:1000}
+.maint-sub{font-size:clamp(25px,5vw,34px);font-weight:1000;color:#d9eaff;margin:0 0 13px}
+.maint-preview{display:grid;gap:5px;margin:12px 0;padding:11px;border-radius:17px;background:linear-gradient(135deg,#142e4d,#211f4a);border:1px solid #344f70;text-align:right}
+.maint-preview h3{margin:0;font-size:17px}.maint-preview p{margin:0;color:#cbdcf0;font-size:13px;line-height:1.4}
+.maint-features{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:9px 0}
+.maint-feature{padding:8px 5px;border-radius:12px;background:#0c1c30;border:1px solid #294665;font-size:12px;font-weight:900}
+.maint-count{display:flex;align-items:center;justify-content:center;min-height:64px;padding:7px 14px;margin:9px auto 11px;width:min(420px,90%);box-sizing:border-box;border-radius:18px;border:1px solid #55759a;background:linear-gradient(135deg,#0d2239,#1b294b);font-size:clamp(30px,6vw,44px);font-weight:1000;color:#ffd85a;text-shadow:0 0 22px #ffd85a33;box-shadow:inset 0 0 25px #4da7ff0c,0 8px 25px #0005}
+.maintenance-gift{font-size:13px;font-weight:1000;color:#ffe48a;margin:10px 0}
+.maint-note{color:#8fa7c1;font-size:11px;margin-top:8px}
+@media(max-width:650px){.maint-features{grid-template-columns:1fr}.maint-screen{padding:24px 16px}}
 #toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(30px);z-index:300;background:#fff;color:#07111f;border-radius:15px;padding:12px 18px;font-weight:900;opacity:0;pointer-events:none;transition:.25s;box-shadow:0 10px 35px #0008}.toastshow{opacity:1!important;transform:translateX(-50%) translateY(0)!important}
 .toplist{display:grid;gap:8px}.rank{display:grid;grid-template-columns:50px 1fr 90px;align-items:center;background:#0d1b2e;border:1px solid #223b59;border-radius:14px;padding:11px}.rank strong{font-size:20px}.rank span:last-child{text-align:left;color:var(--gold);font-weight:900}
-.creator-text{line-height:1.7;color:#d5e4f8}.secret-space{height:14000px}.secret{display:none;text-align:center;padding:30px;border:1px dashed #334b68;border-radius:20px}
+.creator-text{line-height:1.7;color:#d5e4f8}.secret-space{height:22000px}.secret{display:none;text-align:center;padding:30px;border:1px dashed #334b68;border-radius:20px}
 .shake{animation:shake .18s linear}@keyframes shake{25%{transform:translate(5px,-3px)}50%{transform:translate(-5px,3px)}75%{transform:translate(3px,2px)}}
 @media(max-width:650px){.actions{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.stat{padding:10px}.stat b{font-size:21px}.arena{min-height:330px}.langs{grid-template-columns:1fr}}
 </style>
@@ -127,17 +137,27 @@ input[type=text]{width:100%;background:#091626;color:white;border:1px solid #345
 </div>
 
 <div id="maint" class="overlay hidden">
-<div class="loader maint">
-<div style="font-size:70px">🛠️</div>
-<h1>יצאנו לעבודות תחזוקה</h1>
-<h2>חוזרים ב־12:00</h2>
-<div class="preview">
-<h3>🎬 מה יהיה אחרי התחזוקה?</h3>
-<p>עיצוב חדש • סידור חדש • בלי באגים ועוד!</p>
+<div class="maint-screen">
+<div class="maint-icon">🛠️</div>
+<div class="maint-badge">RON STUDIOS • MAINTENANCE</div>
+<h1>אנחנו משדרגים<br>את המשחק ✨</h1>
+<div class="maint-sub">חוזרים ב־12:00</div>
+
+<div class="maint-preview">
+<h3>🎬 מה מחכה לכם אחרי התחזוקה?</h3>
+<p>הכנו רענון גדול למשחק — עיצוב חדש, סידור חדש, שיפורים ותיקוני באגים כדי שהכול יעבוד חלק יותר.</p>
 </div>
-<div class="maintenance-gift">🎁 כפיצוי החלטנו לתת לכם תיבת זמן בחינם!</div>
-<div class="loadnum" id="maintTime">מחשב זמן...</div>
-<button class="bigbtn" id="maintBtn" onclick="maintenanceGift()">🎁 קבלו תיבת זמן בחינם</button>
+
+<div class="maint-features">
+<div class="maint-feature">🎨 עיצוב חדש</div>
+<div class="maint-feature">⚡ שיפורים</div>
+<div class="maint-feature">🐞 תיקוני באגים</div>
+</div>
+
+<div class="maintenance-gift">🎁 מתנת פיצוי: תיבת זמן בחינם לכולם!</div>
+<div class="maint-count" id="maintTime">מחשב זמן...</div>
+<button class="bigbtn" id="maintBtn" onclick="maintenanceGift()">🎁 קבלו את תיבת הזמן</button>
+<div class="maint-note">התיבה ניתנת פעם אחת בלבד לחשבון.</div>
 </div>
 </div>
 
@@ -145,9 +165,19 @@ input[type=text]{width:100%;background:#091626;color:white;border:1px solid #345
 <div id="toast"></div>
 
 <script>
-const KEY='catchSquareNew2026';
+const KEY='catchSquareAccountV1';
+const OLD_KEYS=['catchSquareNew2026','catchSquareFinal','catchSquare','catchSquareAccount'];
+function loadPersistentAccount(){
+  const rawCurrent=localStorage.getItem(KEY);
+  if(rawCurrent){try{return JSON.parse(rawCurrent)}catch(e){}}
+  for(const k of OLD_KEYS){
+    const raw=localStorage.getItem(k);
+    if(raw){try{const old=JSON.parse(raw);localStorage.setItem(KEY,JSON.stringify(old));return old}catch(e){}}
+  }
+  return null;
+}
 const defaultState={name:'רון',diamonds:100,stored:0,best:0,scores:[],daily:null,timeChest:null,maintenanceGift:false,savedFriends:[],lang:'he'};
-let S=JSON.parse(localStorage.getItem(KEY)||'null')||structuredClone(defaultState); S.secretClaimed=!!S.secretClaimed; S.room=S.room||'';
+let S=loadPersistentAccount()||structuredClone(defaultState); if(S.lang!=='he'&&S.lang!=='en')S.lang='he'; S.secretClaimed=!!S.secretClaimed; S.room=S.room||''; S.maintenanceGift=!!S.maintenanceGift;
 let game={active:false,time:0,score:0,interval:null,endAt:0,buys:0};
 const $=id=>document.getElementById(id);
 function save(){localStorage.setItem(KEY,JSON.stringify(S));ui()}
@@ -224,11 +254,11 @@ function creatorModal(b,c){
  <p>💎 בכל 10 לחיצות מוצלחות מתקבל יהלום. יהלומים משמשים לקניית זמן נוסף ותיבות.</p>
  <p>⏱️ בסיום משחק יש חלון של 20 שניות שבו אפשר להשתמש בזמן שמור או לקנות עד 5 פעמים +5 שניות במחיר של 30 יהלומים לכל רכישה.</p>
  <p>🎁 בחנות יש תיבה יומית, תיבת זמן ומבצעים משתנים. תיבה נפתחת רק אחרי שלוחצים עליה.</p>
- <p>🏆 „רק טופ” מציג את 50 התוצאות הטובות ביותר שנשמרו במכשיר הזה.</p>
+ <p>🏆 „טופ” מציג את 50 התוצאות הטובות ביותר שנשמרו במכשיר הזה.</p>
  <p>👥 במערכת החברים אפשר ליצור חדר ולשתף קוד עם חבר כדי לשחק יחד.</p>
  <p>⚙️ בהגדרות אפשר לבחור שפה ולהדליק או לכבות צלילים ומוזיקה.</p>
- <p>🌟 תודה שאתם משחקים! עוד שיפורים יכולים להגיע בהמשך.</p></div>
- <div class="secret-space" id="secretSpace"></div><div class="secret" id="secret">💎 מצאתם סוד! +500 יהלומים <button class="buy" onclick="claimSecret()">קבלו</button></div>`;
+ <p>💾 המשתמש נשמר גם בגרסאות חדשות של המשחק, כדי שההתקדמות לא תתחיל מחדש.</p><p>🌟 תודה שאתם משחקים! עוד שיפורים יכולים להגיע בהמשך.</p></div>
+ <div class="secret-space" id="secretSpace"></div><div class="secret" id="secret">💎 +500 יהלומים <button class="buy" onclick="claimSecret()">קבלו</button></div>`;
 }
 
 const I18N={
@@ -243,24 +273,6 @@ en:{
  diamonds:"Diamonds", stored:"Saved Seconds", best:"Best", player:"Player",
  start:"▶️ Start Game", shop:"🛒 Shop", creator:"👑 Game Creator: Ron", friends:"👥 Friends", top:"🏆 Top",
  settings:"⚙️ Settings", room:"🏠 Room", gameHint:"Click the square as fast as you can!"
-},
-de:{
- brand:"◼️ Fang das Quadrat", title:"Fang das Quadrat", welcome:"Fange das Quadrat so oft wie möglich, bevor die Zeit abläuft!",
- diamonds:"Diamanten", stored:"Gespeicherte Sekunden", best:"Rekord", player:"Spieler",
- start:"▶️ Spiel starten", shop:"🛒 Shop", creator:"👑 Spieleentwickler: Ron", friends:"👥 Freunde", top:"🏆 Top",
- settings:"⚙️ Einstellungen", room:"🏠 Raum", gameHint:"Klicke so schnell wie möglich auf das Quadrat!"
-},
-zh:{
- brand:"◼️ 抓住方块", title:"抓住方块", welcome:"在时间结束前尽可能多地点击方块！",
- diamonds:"钻石", stored:"保存的秒数", best:"最高分", player:"玩家",
- start:"▶️ 开始游戏", shop:"🛒 商店", creator:"👑 游戏作者：Ron", friends:"👥 好友", top:"🏆 排行榜",
- settings:"⚙️ 设置", room:"🏠 房间", gameHint:"尽快点击方块！"
-},
-pt:{
- brand:"◼️ Pegue o Quadrado", title:"Pegue o Quadrado", welcome:"Pegue o quadrado o máximo de vezes antes do tempo acabar!",
- diamonds:"Diamantes", stored:"Segundos salvos", best:"Recorde", player:"Jogador",
- start:"▶️ Começar jogo", shop:"🛒 Loja", creator:"👑 Criador do jogo: Ron", friends:"👥 Amigos", top:"🏆 Top",
- settings:"⚙️ Configurações", room:"🏠 Sala", gameHint:"Clique no quadrado o mais rápido que puder!"
 }
 };
 function applyLanguage(){
@@ -289,9 +301,7 @@ function settingsModal(b,c){
  b.innerHTML=c+`<h2>⚙️ הגדרות</h2>
  <div class="item"><h3>👤 שם השחקן</h3><input id="nameInput" type="text" value="${esc(S.name)}" maxlength="20"><button class="buy" style="margin-top:10px" onclick="setName()">שמור שם</button></div>
  <div class="item"><h3>🌍 שפה</h3><div class="langs">
- <button class="langbtn" onclick="setLang('he')">🇮🇱 עברית</button><button class="langbtn" onclick="setLang('en')">🇺🇸 English</button>
- <button class="langbtn" onclick="setLang('de')">🇩🇪 Deutsch</button><button class="langbtn" onclick="setLang('zh')">🇨🇳 中文</button>
- <button class="langbtn" onclick="setLang('pt')">🇧🇷 Português</button></div></div>
+ <button class="langbtn" onclick="setLang('he')">🇮🇱 עברית</button><button class="langbtn" onclick="setLang('en')">🇺🇸 English</button></div></div>
  <div class="item"><h3>⏱️ זמן שמור</h3><p>כרגע שמורות לך <b id="settingsStored">${S.stored||0}</b> שניות למשחק הבא.</p></div>
  <div class="item"><h3>🔊 צלילים ומוזיקה</h3><p id="soundStatus">המוזיקה והצלילים פעילים</p><button class="buy" onclick="toggleSound()">החלף מצב צלילים</button><button class="buy" style="margin-right:8px" onclick="music()">▶️ הפעל מוזיקה</button></div>
  <div class="item"><h3>🗑️ משתמש</h3><button class="buy" onclick="deleteUser()">מחק את המשתמש שלי מהמכשיר</button></div>`;
@@ -299,8 +309,9 @@ function settingsModal(b,c){
 function esc(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function setName(){let n=$('nameInput').value.trim();if(!n)return toast('צריך לכתוב שם');S.name=n;save();toast('השם נשמר ✔️');}
 function setLang(x){
+ if(x!=='he'&&x!=='en')x='he';
  S.lang=x;save();applyLanguage();
- const names={he:'עברית 🇮🇱',en:'English 🇺🇸',de:'Deutsch 🇩🇪',zh:'中文 🇨🇳',pt:'Português 🇧🇷'};
+ const names={he:'עברית 🇮🇱',en:'English 🇺🇸'};
  toast(names[x]+' ✓');
  setTimeout(()=>{if(!$('modal').classList.contains('hidden'))settingsModal($('modalBox'),'<button class="close" onclick="closeModal()">✕</button>')},50);
 }
@@ -387,40 +398,38 @@ window.addEventListener('scroll',secretWatcher);
 
 function maintenanceGift(){
  if(S.maintenanceGift)return toast('כבר קיבלת את תיבת הפיצוי 🎁');
- S.maintenanceGift=true;save();let t=weighted(3,15,8);showChest('🎁 תיבת פיצוי',{time:t},()=>{S.stored+=t;save();ui();toast('קיבלת '+t+' שניות שמורות! ⏱️');maintenance()});
+ let t=weighted(3,15,8);
+ showChest('🎁 תיבת זמן בחינם',{time:t},()=>{
+   S.maintenanceGift=true; S.stored+=t; save(); ui();
+   toast('🎉 קיבלת תיבת זמן בחינם: '+t+' שניות!'); maintenance();
+ });
 }
 function maintenance(){
- let now=new Date();
- let start=new Date(now.getFullYear(),now.getMonth(),now.getDate(),22,0,0);
- let end=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1,12,0,0);
- let n=Date.now(), active=n>=start.getTime()&&n<end.getTime();
-
- // The maintenance screen is shown only during 22:00-12:00.
- $('maint').classList.toggle('hidden',!active);
-
- if(active){
-   $('maintTime').textContent='⏳ נשאר עד החזרה: '+fmt(end.getTime()-n);
-   $('maintBtn').disabled=!!S.maintenanceGift;
- }else{
-   // Outside maintenance, show the current playable-window timer in the game page.
-   let nextStart;
-   if(n<start.getTime()) nextStart=start;
-   else nextStart=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1,22,0,0);
-   let playableStart=end.getTime();
-   let playableEnd=nextStart.getTime();
-   let label='';
-   if(n>=playableStart && n<playableEnd) label='🎮 זמן משחק זמין: '+fmt(playableEnd-n);
-   else label='🛠️ התחזוקה הבאה בעוד: '+fmt(nextStart.getTime()-n);
-   const pt=$('playWindowTimer');
-   if(pt)pt.textContent=label;
- }
-}
-function loading(){
- let start=Date.now(),dur=10000;
- let iv=setInterval(()=>{let p=Math.min(100,Math.floor((Date.now()-start)/dur*100));$('loadnum').textContent=p+'%';$('loadbar').style.width=p+'%';if(p>=100){clearInterval(iv);setTimeout(()=>{$('loader').classList.add('hidden');maintenance()},250)}},100);
+  const start=new Date('2026-09-20T22:00:00+03:00').getTime();
+  const end=new Date('2026-09-21T12:00:00+03:00').getTime();
+  const n=Date.now(), active=n>=start && n<end;
+  $('maint').classList.toggle('hidden',!active);
+  if(active){
+    $('maintTime').textContent='⏳ חוזרים בעוד '+fmt(end-n);
+    $('maintBtn').disabled=!!S.maintenanceGift;
+    $('maintBtn').textContent=S.maintenanceGift?'✅ תיבת הפיצוי כבר התקבלה':'🎁 קבלו תיבת זמן בחינם';
+  }else{
+    const pt=$('playWindowTimer');
+    if(pt) pt.textContent=n<start?'🛠️ עבודות התחזוקה יתחילו בעוד '+fmt(start-n):'🎮 המשחק פתוח! זמן המשחק זמין';
+  }
 }
 setInterval(maintenance,1000);setInterval(()=>{if(game.active)renderGame()},200);
 ui();applyLanguage();maintenance();loading();
 </script>
 </body>
 </html>
+<style>
+@media(max-width:650px){
+  .maint-features{grid-template-columns:repeat(3,1fr)}
+  .maint-screen{padding:15px 12px 17px}
+  .maint-preview{margin-top:9px}
+  .maint-screen h1{font-size:42px}
+  .maint-sub{font-size:27px}
+  .maint-count{min-height:60px}
+}
+</style>
