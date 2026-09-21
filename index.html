@@ -418,6 +418,10 @@ function maintenance(){
     if(pt) pt.textContent=n<start?'🛠️ עבודות התחזוקה יתחילו בעוד '+fmt(start-n):'🎮 המשחק פתוח! זמן המשחק זמין';
   }
 }
+function loading(){
+ let start=Date.now(),dur=10000;
+ let iv=setInterval(()=>{let p=Math.min(100,Math.floor((Date.now()-start)/dur*100));$('loadnum').textContent=p+'%';$('loadbar').style.width=p+'%';if(p>=100){clearInterval(iv);setTimeout(()=>{$('loader').classList.add('hidden');maintenance()},250)}},100);
+} 
 setInterval(maintenance,1000);setInterval(()=>{if(game.active)renderGame()},200);
 ui();applyLanguage();maintenance();loading();
 </script>
