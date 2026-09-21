@@ -420,13 +420,13 @@ function maintenance(){
 }
 function loading(){
  const LOADER_KEY = 'catchSquareLoaderShown';
+ let dur=4500;
  if (localStorage.getItem(LOADER_KEY) === '1') {
     dur=700;
  } else{
   localStorage.setItem(LOADER_KEY, '1');
-  dur=4500;
  }
- let start=Date.now(),dur=3500;
+ let start=Date.now();
  let iv=setInterval(()=>{let p=Math.min(100,Math.floor((Date.now()-start)/dur*100));$('loadnum').textContent=p+'%';$('loadbar').style.width=p+'%';if(p>=100){clearInterval(iv);setTimeout(()=>{$('loader').classList.add('hidden');maintenance()},250)}},100);
 } 
 setInterval(maintenance,1000);setInterval(()=>{if(game.active)renderGame()},200);
