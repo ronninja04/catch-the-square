@@ -117,7 +117,7 @@ input[type=text]{width:100%;background:#091626;color:white;border:1px solid #345
 
 <section id="gamePanel" class="hidden">
 <div class="game-card">
-<div class="game-top"><div class="timer" id="timer">00:30</div><div class="live-score">🎯 <span id="score">0</span></div></div><div id="opponentBar" class="hidden" style="margin:8px 0 12px;text-align:center;padding:10px;border-radius:14px;background:#142b48;border:1px solid #345579;font-weight:900">👥 חבר: <span id="opponentScore">0</span> 🎯</div>
+<div class="game-top"><div class="timer" id="timer">00:30</div><div class="live-score">🎯 <span id="score">0</span></div></div>
 <div class="arena" id="arena"><div id="square" onclick="hitSquare(event)"></div></div>
 <div class="game-hint">לחץ על הריבוע כמה שיותר מהר!</div>
 </div>
@@ -167,68 +167,6 @@ input[type=text]{width:100%;background:#091626;color:white;border:1px solid #345
 <script>
 const KEY='catchSquareAccountV1';
 const OLD_KEYS=['catchSquareNew2026','catchSquareFinal','catchSquare','catchSquareAccount'];
-
-/* ===== ROBUST 10-SECOND LOADER ===== */
-let loaderStarted=false;
-function startLoading(){
-  if(loaderStarted)return;
-  loaderStarted=true;
-
-  const screen=document.getElementById('loadingScreen');
-  const num=document.getElementById('loadnum');
-  const bar=document.getElementById('loadbar');
-
-  if(!screen || !num || !bar){
-    console.error('Loading elements missing');
-    return;
-  }
-
-  screen.classList.remove('hidden');
-  let start=performance.now();
-  const duration=10000;
-
-  function frame(now){
-    const progress=Math.min(100, Math.floor(((now-start)/duration)*100));
-    num.textContent=progress+'%';
-    bar.style.width=progress+'%';
-
-    if(progress<100){
-      requestAnimationFrame(frame);
-    }else{
-      num.textContent='100%';
-      bar.style.width='100%';
-
-      setTimeout(()=>{
-        screen.classList.add('hidden');
-        const startBtn=document.getElementById('startBtn');
-        if(startBtn){
-          startBtn.classList.remove('hidden');
-          startBtn.disabled=false;
-        }
-        const intro=document.getElementById('intro');
-        if(intro) intro.classList.remove('hidden');
-      },350);
-    }
-  }
-
-  // Explicitly reset to 0% before starting.
-  num.textContent='0%';
-  bar.style.width='0%';
-  requestAnimationFrame(frame);
-}
-
-document.addEventListener('DOMContentLoaded',()=>{
-  try{
-    ui();
-    applyLanguage();
-    maintenance();
-  }catch(e){
-    console.error(e);
-  }
-  setTimeout(startLoading,50);
-});
-/* ===== END ROBUST LOADER ===== */
-
 function loadPersistentAccount(){
   const rawCurrent=localStorage.getItem(KEY);
   if(rawCurrent){try{return JSON.parse(rawCurrent)}catch(e){}}
@@ -238,12 +176,12 @@ function loadPersistentAccount(){
   }
   return null;
 }
-const defaultState={name:'רון',diamonds:100,stored:0,best:0,scores:[],daily:null,timeChest:null,maintenanceGift:false,savedFriends:[],lang:'he',chainStep:0};
-let S=loadPersistentAccount()||structuredClone(defaultState); if(S.lang!=='he'&&S.lang!=='en')S.lang='he'; S.secretClaimed=!!S.secretClaimed; S.room=S.room||''; S.maintenanceGift=!!S.maintenanceGift; S.chainStep=Math.max(0,Math.min(7,Number(S.chainStep)||0));
+const defaultState={name:'רון',diamonds:100,stored:0,best:0,scores:[],daily:null,timeChest:null,maintenanceGift:false,savedFriends:[],lang:'he'};
+let S=loadPersistentAccount()||structuredClone(defaultState); if(S.lang!=='he'&&S.lang!=='en')S.lang='he'; S.secretClaimed=!!S.secretClaimed; S.room=S.room||''; S.maintenanceGift=!!S.maintenanceGift;
 let game={active:false,time:0,score:0,interval:null,endAt:0,buys:0};
 const $=id=>document.getElementById(id);
 function save(){localStorage.setItem(KEY,JSON.stringify(S));ui()}
-function ui(){$('diamonds').textContent=S.diamonds;$('stored').textContent=S.stored||0;$('best').textContent=S.best;$('player').textContent=S.name||'רון';$('roomNumber').textContent='🏠 חדר: '+(S.room||'—');renderFriendBar()}
+function ui(){$('diamonds').textContent=S.diamonds;$('stored').textContent=S.stored||0;$('best').textContent=S.best;$('player').textContent=S.name||'רון';$('roomNumber').textContent='🏠 חדר: '+(S.room||'—')}
 function toast(t){let x=$('toast');x.textContent=t;x.classList.add('toastshow');clearTimeout(window.tt);window.tt=setTimeout(()=>x.classList.remove('toastshow'),2300)}
 function openModal(type){let b=$('modalBox');$('modal').classList.remove('hidden');let close='<button class="close" onclick="closeModal()">✕</button>';
 if(type==='shop') shopModal(b,close);
@@ -281,65 +219,51 @@ function shopModal(b,c){
  <p style="color:#ffd34d;font-weight:900">${priceText(price)}</p>
  <div class="row"><b>מחיר עכשיו: 💎 ${price}</b><button class="buy" onclick="buyTimeChest(${price})">קנה תיבה</button></div></div>
  <div class="item"><h3>⚡ עוד 5 שניות</h3><p>אחרי שהמשחק נגמר יש 20 שניות להחליט אם לקנות זמן נוסף. עד 5 רכישות בכל משחק.</p>
- <div class="row"><b>30 💎</b><button class="buy" onclick="buyFive()">+5 שניות</button></div></div> <div class="item"><h3>🔥 מבצע הזמן!</h3><p id="chainInfo"></p><div id="chainBox"></div></div>`;
- dailyUI();clearInterval(window.shopTimer);window.shopTimer=setInterval(()=>{if(!$('modal').classList.contains('hidden')){dailyUI();renderChain();}},1000);renderChain();
+ <div class="row"><b>30 💎</b><button class="buy" onclick="buyFive()">+5 שניות</button></div></div>
+ <div class="item" id="promoChainItem"><h3>🔥 מבצע הזמן!</h3><p id="promoChainText">טוען את המבצע...</p>
+ <div class="row"><b id="promoChainPrice"></b><button class="buy" id="promoChainBtn" onclick="promoChainBuy()">קנייה</button></div></div>`;
+ dailyUI();promoChainUI();clearInterval(window.shopTimer);window.shopTimer=setInterval(()=>{if(!$('modal').classList.contains('hidden')){dailyUI();promoChainUI();}},1000);
 }
-
-function israelNowDate(){
- const p=israelParts();
- return p;
+function promoChainState(){
+ const end=new Date('2026-09-26T00:00:00+03:00').getTime();
+ if(Date.now()>=end)return 8;
+ return Math.min(7,Math.max(1,Number(S.promoChainStage)||1));
 }
-function nextSaturdayMidnightIsrael(){
- const p=israelParts();
- const days=(6-p.day+7)%7;
- let d=new Date();
- d.setTime(Date.now()+(days*86400-(p.h*3600+p.m*60+p.s))*1000);
- return d.getTime();
+function promoChainUI(){
+ const t=$('promoChainText'),p=$('promoChainPrice'),btn=$('promoChainBtn');
+ if(!t||!p||!btn)return;
+ const stage=promoChainState();
+ const data={
+  1:['שלב 1: תיבת זמן אחת בחינם 🎁','חינם'],
+  2:['שלב 2: 2 תיבות זמן','75 💎'],
+  3:['שלב 3: 3 תיבות זמן','120 💎'],
+  4:['שלב 4: 20 שניות זמן שמור','חינם'],
+  5:['שלב 5: בונוס 30 שניות','100 💎'],
+  6:['שלב 6: 4 תיבות זמן','170 💎'],
+  7:['שלב 7: 5 תיבות זמן + 25 💎 בונוס','250 💎'],
+  8:['🎉 סיימת את שרשרת המבצעים!','']
+ }[stage];
+ t.textContent=data[0];p.textContent=data[1];
+ btn.disabled=stage===8;btn.textContent=stage===8?'הושלם':'קנייה';
 }
-function chainActive(){return Date.now()<nextSaturdayMidnightIsrael()}
-function chainStages(){
- return [
-  {title:'🎁 שלב 1 — תיבת זמן',desc:'תיבת זמן אחת',price:0,grant:()=>grantChainChests(1)},
-  {title:'💎 שלב 2 — 2 תיבות',desc:'2 תיבות זמן',price:75,grant:()=>grantChainChests(2)},
-  {title:'🔥 שלב 3 — 3 תיבות',desc:'3 תיבות זמן',price:120,grant:()=>grantChainChests(3)},
-  {title:'🎉 שלב 4 — בונוס זמן',desc:'20 שניות שמורות',price:0,grant:()=>{S.stored+=20}},
-  {title:'⚡ שלב 5 — 30 שניות',desc:'30 שניות שמורות',price:100,grant:()=>{S.stored+=30}},
-  {title:'🔥 שלב 6 — 4 תיבות',desc:'4 תיבות זמן',price:170,grant:()=>grantChainChests(4)},
-  {title:'👑 שלב 7 — החבילה הגדולה',desc:'5 תיבות זמן + 25 יהלומים',price:250,grant:()=>{grantChainChests(5);S.diamonds+=25}}
- ];
+function promoChainBuy(){
+ const stage=promoChainState();
+ if(stage===8)return toast('🎉 סיימת את שרשרת המבצעים!');
+ const prices={1:0,2:75,3:120,4:0,5:100,6:170,7:250};
+ const price=prices[stage];
+ if(S.diamonds<price)return toast('אין מספיק יהלומים 💎');
+ if(price)S.diamonds-=price;
+ if(stage===1)S.stored=(S.stored||0)+1;
+ if(stage===2)S.stored=(S.stored||0)+2;
+ if(stage===3)S.stored=(S.stored||0)+3;
+ if(stage===4)S.stored=(S.stored||0)+20;
+ if(stage===5)S.stored=(S.stored||0)+30;
+ if(stage===6)S.stored=(S.stored||0)+4;
+ if(stage===7){S.stored=(S.stored||0)+5;S.diamonds+=25;}
+ S.promoChainStage=stage+1;
+ save();promoChainUI();
+ toast(stage===7?'🎉 סיימת את שרשרת המבצעים!':'🔥 השלב הבא נפתח!');
 }
-function grantChainChests(n){
- let total=0;for(let i=0;i<n;i++)total+=weighted(3,30,8);S.stored+=total;return total;
-}
-function renderChain(){
- const info=$('chainInfo'),box=$('chainBox');if(!info||!box)return;
- const stages=chainStages();
- if(!chainActive()){info.textContent='⏰ המבצע הסתיים בשבת ב־00:00 (שעון ישראל).';box.innerHTML='';return}
- if(S.chainStep>=7){
-   info.textContent='🎉 סיימת את כל השלבים!';
-   box.innerHTML='<div class="item" style="text-align:center;font-size:20px;font-weight:1000;color:#7fffb5">🏆 סיימת את שרשרת המבצעים!<br>🔥 כל 7 השלבים הושלמו בהצלחה!</div>';
-   return;
- }
- const st=stages[S.chainStep];
- info.innerHTML='עכשיו: <b>'+st.title+'</b><br>'+st.desc+' — '+(st.price?'💎 '+st.price:'🆓 חינם')+'<br><small>אי אפשר לדלג על שלבים. המבצע מסתיים בשבת ב־00:00.</small>';
- box.innerHTML=stages.map((x,i)=>`<div style="display:flex;gap:8px;align-items:center;margin:7px 0;padding:10px;border-radius:12px;background:${i<S.chainStep?'#123b2b':i===S.chainStep?'#263d61':'#101c2e'};opacity:${i>S.chainStep?.45:1}"><b>${i+1}.</b><span>${x.title}</span><span style="margin-right:auto">${i<S.chainStep?'✅':i===S.chainStep?'👉':'🔒'}</span></div>`).join('')+
-   `<button class="buy" onclick="claimChainStep()">🚀 ${st.title} — ${st.price?'קנייה':'קבלה'}</button>`;
-}
-function claimChainStep(){
- if(!chainActive())return toast('⏰ המבצע כבר הסתיים');
- if(S.chainStep>=7)return toast('כבר סיימת את השרשרת!');
- const st=chainStages()[S.chainStep];
- if(st.price&&S.diamonds<st.price)return toast('אין מספיק יהלומים 💎');
- if(st.price)S.diamonds-=st.price;
- const before=S.stored;st.grant();const gained=S.stored-before;
- S.chainStep++;save();ui();renderChain();
- if(S.chainStep>=7){
-   toast('🎉 סיימת את שרשרת המבצעים!');
- }else{
-   toast('✅ שלב '+S.chainStep+' הושלם! השלב הבא נפתח.');
- }
-}
-
 function dailyUI(){let el=$('dailyTimer');if(!el)return;let n=new Date(),next=new Date(n);next.setHours(24,0,0,0);let ms=next-n;el.textContent='הטענה בעוד '+fmt(ms)}
 function fmt(ms){ms=Math.max(0,ms);let s=Math.floor(ms/1000),h=Math.floor(s/3600),m=Math.floor((s%3600)/60),x=s%60;return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(x).padStart(2,'0')}
 function weighted(min,max,pow=4){let r=Math.pow(Math.random(),pow);return Math.floor(min+r*(max-min+1))}
@@ -370,7 +294,7 @@ function creatorModal(b,c){
  <p><b>תפוס את הריבוע</b> הוא משחק תגובה ומהירות שבו המטרה היא ללחוץ על הריבוע כמה שיותר פעמים לפני שהזמן נגמר.</p>
  <p>🎯 בכל לחיצה מוצלחת הניקוד עולה והריבוע זז למקום חדש. ככל שמתקדמים, הריבוע קטן יותר.</p>
  <p>💎 בכל 10 לחיצות מוצלחות מתקבל יהלום. יהלומים משמשים לקניית זמן נוסף ותיבות.</p>
- <p>⏱️ בסיום משחק יש חלון של 20 שניות שבו אפשר לבחור בדיוק כמה שניות שמורות להפעיל. קנייה של +5 שניות ב־30 💎 מוסיפה אותן לזמן השמור, ולא מפעילה אותן מיד.</p>
+ <p>⏱️ בסיום משחק יש חלון של 20 שניות שבו אפשר להשתמש בזמן שמור או לקנות עד 5 פעמים +5 שניות במחיר של 30 יהלומים לכל רכישה.</p>
  <p>🎁 בחנות יש תיבה יומית, תיבת זמן ומבצעים משתנים. תיבה נפתחת רק אחרי שלוחצים עליה.</p>
  <p>🏆 „טופ” מציג את 50 התוצאות הטובות ביותר שנשמרו במכשיר הזה.</p>
  <p>👥 במערכת החברים אפשר ליצור חדר ולשתף קוד עם חבר כדי לשחק יחד.</p>
@@ -445,154 +369,78 @@ function topModal(b,c){
  let list=arr.length?arr.map((x,i)=>`<div class="rank"><strong>#${i+1}</strong><span>${esc(x.name)}</span><span>${x.score} 🎯</span></div>`).join(''):'<div class="item">עדיין אין תוצאות. שחקו כדי להיכנס לטופ!</div>';
  b.innerHTML=c+`<h2>🏆 טופ</h2><p style="color:#aac0db">מוצגות עד 50 התוצאות הטובות ביותר במכשיר הזה.</p><div class="toplist">${list}</div>`;
 }
-let peer=null, roomConn=null, isRoomHost=false, friendFinalScore=null, friendName='חבר';
-function closePeer(){
- try{if(roomConn){roomConn.close();roomConn=null}}catch(e){}
- try{if(peer){peer.destroy();peer=null}}catch(e){}
- isRoomHost=false;
-}
-function setupConnection(conn){
- roomConn=conn;
- conn.on('open',()=>{
-   conn.send({type:'hello',name:S.name||'רון'});
-   toast('🎮 החבר התחבר! אפשר להתחיל משחק.');
-   renderFriendBar();
- });
- conn.on('data',msg=>{
-   if(!msg||!msg.type)return;
-   if(msg.type==='hello'){
-     friendName=msg.name||'חבר';
-     conn.send({type:'helloAck',name:S.name||'רון'});
-     renderFriendBar();
-   }
-   if(msg.type==='start'){
-     if(!game.active) startGame(true);
-   }
-   if(msg.type==='score'){
-     const el=$('opponentScore'); if(el)el.textContent=msg.score||0;
-   }
-   if(msg.type==='end'){
-     friendFinalScore=Number(msg.score)||0;
-     renderFriendBar();
-   }
- });
- conn.on('close',()=>{roomConn=null;toast('החיבור עם החבר נותק');renderFriendBar()});
- conn.on('error',()=>toast('החיבור עם החבר נכשל'));
-}
-function renderFriendBar(){
- const bar=$('opponentBar');
- if(!bar)return;
- if(roomConn&&roomConn.open){
-   bar.classList.remove('hidden');
-   bar.innerHTML='👥 '+esc(friendName||'חבר')+' — <span id="opponentScore">'+(friendFinalScore||0)+'</span> 🎯';
- }else bar.classList.add('hidden');
-}
 function friendsModal(b,c){
  b.innerHTML=c+`<h2>👥 חברים</h2>
- <div class="item"><h3>🎮 משחק אמיתי עם חבר</h3><p>צור חדר ושלח לחבר את הקוד. החבר נכנס מהטלפון או מהמחשב שלו, ושניכם תשחקו באותו סיבוב של 30 שניות.</p>
- <button class="buy" onclick="createRoom()">➕ צור חדר חדש</button></div>
- <div class="item"><h3>🔗 הצטרפות לחדר</h3><input id="friendCode" maxlength="6" placeholder="קוד בן 6 תווים"><button class="buy" style="margin-top:10px" onclick="joinRoom()">הצטרף לחדר</button></div>
- <div class="item"><h3>📡 מצב חיבור</h3><p>${roomConn&&roomConn.open?'🟢 מחובר ל־'+esc(friendName):'⚪ עדיין אין חבר מחובר'}</p></div>
- <div class="item"><h3>⭐ קודים ששמרת</h3>${S.savedFriends.length?S.savedFriends.map(x=>`<p>👤 ${esc(x)}</p>`).join(''):'<p>עדיין אין קודים שמורים.</p>'}</div>`;
+ <div class="item"><h3>🎮 דרך כיפית לשחק</h3><p>פתחו חדר, שלחו לחבר את הקוד, ושניכם מנסים לנצח באותו אתגר. מי שמקבל יותר לחיצות ב־30 שניות מנצח!</p>
+ <button class="buy" onclick="createRoom()">➕ צור חדר</button></div>
+ <div class="item"><h3>🔗 הצטרפות לחבר</h3><input id="friendCode" placeholder="הדבק כאן קוד חדר"><button class="buy" style="margin-top:10px" onclick="joinRoom()">הצטרף</button></div>
+ <div class="item"><h3>⭐ החברים שלי</h3>${S.savedFriends.length?S.savedFriends.map(x=>`<p>👤 ${esc(x)}</p>`).join(''):'<p>עדיין אין חברים שמורים.</p>'}</div>`;
 }
 function createRoom(){
- if(typeof Peer==='undefined')return toast('צריך חיבור לאינטרנט כדי לשחק עם חבר');
- closePeer();
- const code=Math.random().toString(36).slice(2,8).toUpperCase();
- peer=new Peer('cs-'+code,{debug:0});
- peer.on('open',()=>{
-   isRoomHost=true; S.room=code; save(); ui();
-   if(!S.savedFriends.includes(code))S.savedFriends.push(code);
-   save();
-   const copied=prompt('שלח לחבר את קוד החדר הזה:',code);
-   toast('🏠 החדר '+code+' מוכן! מחכים לחבר...');
- });
- peer.on('connection',conn=>setupConnection(conn));
- peer.on('error',err=>toast('שגיאה בחדר: '+(err&&err.type?err.type:'נסו שוב')));
+ let code=Math.random().toString(36).slice(2,8).toUpperCase();
+ S.room=code;save();ui();
+ const copied=prompt('קוד החדר שלך — שלח אותו לחבר:',code);
+ toast('החדר '+code+' נוצר! 🎮');
 }
 function joinRoom(){
- const code=($('friendCode')?.value||'').trim().toUpperCase();
- if(code.length!==6)return toast('הכנס קוד בן 6 תווים');
- if(typeof Peer==='undefined')return toast('צריך חיבור לאינטרנט כדי לשחק עם חבר');
- closePeer();
- peer=new Peer({debug:0});
- peer.on('open',()=>{
-   const conn=peer.connect('cs-'+code,{reliable:true});
-   setupConnection(conn);
-   S.room=code;
-   if(!S.savedFriends.includes(code))S.savedFriends.push(code);
-   save();ui();
- });
- peer.on('error',err=>toast('לא הצלחנו להתחבר לחדר. בדקו שהקוד נכון.'));
+ let code=$('friendCode').value.trim().toUpperCase();
+ if(!code)return toast('הכנס קוד');
+ if(!S.savedFriends.includes(code))S.savedFriends.push(code);
+ save();toast('הצטרפת לחדר '+code+' 🎮');ui();
 }
-function sendFriend(msg){if(roomConn&&roomConn.open)try{roomConn.send(msg)}catch(e){}}
 
-function startGame(fromFriend=false){
+function startGame(){
  closeModal();$('gamePanel').classList.remove('hidden');$('gamePanel').scrollIntoView({behavior:'smooth',block:'center'});
- game.active=true;game.score=0;game.buys=0;game.time=30;friendFinalScore=null;
- save();placeSquare();renderGame();clearInterval(game.interval);game.endAt=Date.now()+game.time*1000;game.interval=setInterval(tick,100);beep(900);renderFriendBar();
- if(!fromFriend && roomConn&&roomConn.open)sendFriend({type:'start'});
+ game.active=true;game.score=0;game.buys=0;game.time=30+(S.stored||0);S.stored=0;save();placeSquare();renderGame();clearInterval(game.interval);game.endAt=Date.now()+game.time*1000;game.interval=setInterval(tick,100);beep(900);
 }
 function tick(){game.time=Math.max(0,(game.endAt-Date.now())/1000);renderGame();if(game.time<=0)endGame()}
-function renderGame(){$('timer').textContent='00:'+String(Math.ceil(game.time)).padStart(2,'0');$('score').textContent=game.score}
+function renderGame(){
+  const total=Math.max(0,Math.ceil(game.time));
+  const mm=Math.floor(total/60);
+  const ss=total%60;
+  $('timer').textContent=String(mm).padStart(2,'0')+':'+String(ss).padStart(2,'0');
+  $('score').textContent=game.score;
+}
 function placeSquare(){
  let a=$('arena'),s=$('square'),size=Math.max(34,74-Math.floor(game.score/8)*2);s.style.width=size+'px';s.style.height=size+'px';
  let maxX=Math.max(0,a.clientWidth-size),maxY=Math.max(0,a.clientHeight-size);
  s.style.left=Math.random()*maxX+'px';s.style.top=Math.random()*maxY+'px';
 }
 function hitSquare(e){
- if(!game.active)return;e.stopPropagation();game.score++;if(game.score%10===0)S.diamonds++;document.body.classList.remove('shake');void document.body.offsetWidth;document.body.classList.add('shake');beep(300);setTimeout(()=>beep(850),25);placeSquare();renderGame();save();sendFriend({type:'score',score:game.score});
+ if(!game.active)return;e.stopPropagation();game.score++;if(game.score%10===0)S.diamonds++;document.body.classList.remove('shake');void document.body.offsetWidth;document.body.classList.add('shake');beep(300);setTimeout(()=>beep(850),25);placeSquare();renderGame();save();
 }
 function endGame(){
- if(!game.active)return;
- game.active=false;clearInterval(game.interval);game.interval=null;
+ if(!game.active)return;game.active=false;clearInterval(game.interval);game.interval=null;
  let sc=game.score;if(sc>S.best)S.best=sc;S.scores.push({name:S.name||'רון',score:sc,date:Date.now()});S.scores=S.scores.sort((a,b)=>b.score-a.score).slice(0,200);save();
- sendFriend({type:'end',score:sc}); $('score').textContent=sc;
- showEndDecision();
+ $('score').textContent=sc;
+ let until=Date.now()+20000;
+ let b=$('modalBox');$('modal').classList.remove('hidden');
+ b.innerHTML=`<h2>🏁 המשחק נגמר!</h2><div class="item"><h3>התוצאה שלך: ${sc} 🎯</h3><p>יש לך <b>20 שניות</b> להחליט מה לעשות.</p><p>זמן שמור: ⏱️ ${S.stored} שניות</p></div>
+ <div class="row"><button class="bigbtn" onclick="useStored()">⏱️ השתמש בזמן שמור</button><button class="bigbtn alt" onclick="buyFive()">+5 שניות • 30 💎</button></div>
+ <p id="decision" style="text-align:center;color:#ffcf4d;font-weight:900;margin-top:15px"></p>
+ <button class="bigbtn alt" onclick="closeModal()">משחק חדש</button>`;
+ let timer=setInterval(()=>{let ms=until-Date.now();let d=$('decision');if(d)d.textContent='נשארו '+Math.ceil(ms/1000)+' שניות';if(ms<=0){clearInterval(timer);closeModal();toast('הזמן נגמר — צריך להתחיל משחק חדש')}} ,100);
 }
-function showEndDecision(){
- const b=$('modalBox');$('modal').classList.remove('hidden');
- const max=Math.max(0,Number(S.stored)||0);
- b.innerHTML=`<button class="close" onclick="closeModal()">✕</button>
- <h2>🏁 המשחק נגמר!</h2>
- <div class="item"><h3>התוצאה שלך: ${game.score} 🎯</h3>
- <p>יש לך <b>20 שניות</b> לבחור מה לעשות.</p>
- <p>⏱️ זמן שמור כרגע: <b>${max} שניות</b></p></div>
- <div class="item" style="${max?'':'opacity:.55'}">
- <h3>⏱️ להשתמש בזמן שמור</h3>
- <p>בחר בדיוק כמה שניות להוסיף — הן <b>לא</b> יופעלו עד שתלחץ על הכפתור.</p>
- <input id="storedChoice" type="range" min="1" max="${Math.max(1,max)}" value="${Math.max(1,max)}" ${max?'':'disabled'} oninput="updateStoredChoice(this.value)" style="width:100%">
- <div id="storedChoiceLabel" style="text-align:center;font-size:22px;font-weight:900;margin:10px">בחר: ${max||0} שניות</div>
- <button class="bigbtn" onclick="useSelectedStored()" ${max?'':'disabled'}>▶️ השתמש בכמות שבחרתי</button></div>
- <div class="row"><button class="bigbtn alt" onclick="buyFive()">💎 קנה +5 שניות ב־30 💎</button>
- <button class="bigbtn alt" onclick="newGameFromEnd()">🔄 משחק חדש</button></div>
- <p id="decision" style="text-align:center;color:#ffcf4d;font-weight:900;margin-top:15px"></p>`;
- window.endUntil=Date.now()+20000;
- clearInterval(window.endDecisionTimer);
- window.endDecisionTimer=setInterval(()=>{
-   const ms=window.endUntil-Date.now(),d=$('decision');
-   if(d)d.textContent='נשארו '+Math.max(0,Math.ceil(ms/1000))+' שניות';
-   if(ms<=0){clearInterval(window.endDecisionTimer);closeModal();toast('הזמן נגמר — צריך להתחיל משחק חדש')}
- },100);
-}
-function updateStoredChoice(v){const el=$('storedChoiceLabel');if(el)el.textContent='בחר: '+v+' שניות'}
-function useSelectedStored(){
- const n=Math.floor(Number($('storedChoice')?.value)||0);
- if(n<1||n>S.stored)return toast('בחר כמות שניות תקינה');
- S.stored-=n;save();closeModal();continueGame(n);toast('⏱️ הוספת '+n+' שניות — עכשיו משחקים!');
-}
+function useStored(){if(S.stored<=0)return toast('אין לך זמן שמור');let t=S.stored;S.stored=0;save();closeModal();continueGame(t)}
 function continueGame(t){
- $('gamePanel').classList.remove('hidden');$('gamePanel').scrollIntoView({behavior:'smooth',block:'center'});
- game.active=true;game.time=t;game.endAt=Date.now()+t*1000;clearInterval(game.interval);game.interval=setInterval(tick,100);placeSquare();renderGame();
+  clearInterval(game.interval);
+  game.interval=null;
+  $('gamePanel').classList.remove('hidden');
+  $('gamePanel').scrollIntoView({behavior:'smooth',block:'center'});
+  game.active=true;
+  game.time=Math.max(0,t);
+  game.endAt=Date.now()+game.time*1000;
+  requestAnimationFrame(()=>{
+    placeSquare();
+    renderGame();
+  });
+  game.interval=setInterval(tick,100);
 }
 function buyFive(){
  if(game.buys>=5)return toast('הגעת למקסימום של 5 רכישות במשחק');
  if(S.diamonds<30)return toast('אין מספיק יהלומים 💎');
- S.diamonds-=30;game.buys++;S.stored=(S.stored||0)+5;save();ui();
- toast('💎 נקנו 5 שניות! הן נשמרו ולא יופעלו עדיין.');
- showEndDecision();
+ S.diamonds-=30;game.buys++;save();closeModal();continueGame(5);toast('+5 שניות נוספו ⚡');
 }
-function newGameFromEnd(){clearInterval(window.endDecisionTimer);closeModal();startGame(false)}
 function deleteUser(){if(confirm('למחוק את המשתמש המקומי, השיא והטופ מהמכשיר?')){localStorage.removeItem(KEY);location.reload()}}
 
 let secretShown=false;
@@ -631,37 +479,37 @@ function maintenance(){
     if(pt) pt.textContent=n<start?'🛠️ עבודות התחזוקה יתחילו בעוד '+fmt(start-n):'🎮 המשחק פתוח! זמן המשחק זמין';
   }
 }
-setInterval(maintenance,1000);setInterval(()=>{if(game.active)renderGame()},200);
-ui();applyLanguage();maintenance();
-</script>
+function loading(){
+  const loader=$('loader');
+  const num=$('loadnum');
+  const bar=$('loadbar');
+  if(!loader||!num||!bar)return;
 
-<script>
-(function(){
-  let loadingStarted=false;
-  window.startLoadingFixed=function(){
-    if(loadingStarted)return;
-    loadingStarted=true;
-    const bar=document.getElementById('loadbar');
-    const num=document.getElementById('loadnum');
-    const screen=document.getElementById('loading');
-    if(!bar || !num || !screen)return;
-    const start=performance.now(), duration=10000;
-    function step(now){
-      const pct=Math.min(100,Math.floor((now-start)/duration*100));
-      bar.style.width=pct+'%';
-      num.textContent=pct+'%';
-      if(pct<100) requestAnimationFrame(step);
-      else setTimeout(function(){
-        screen.classList.add('hidden');
-        const home=document.getElementById('home');
-        if(home)home.classList.remove('hidden');
-        if(typeof ui==='function')ui();
-      },150);
+  // Always start from 0 and finish at 100%.
+  let start=performance.now();
+  const duration=3000;
+
+  function step(now){
+    const progress=Math.min(100, Math.floor(((now-start)/duration)*100));
+    num.textContent=progress+'%';
+    bar.style.width=progress+'%';
+
+    if(progress<100){
+      requestAnimationFrame(step);
+    }else{
+      num.textContent='100%';
+      bar.style.width='100%';
+      setTimeout(()=>{
+        loader.classList.add('hidden');
+      },250);
     }
-    requestAnimationFrame(step);
-  };
-  
-})();
+  }
+
+  requestAnimationFrame(step);
+}
+
+setInterval(maintenance,1000);setInterval(()=>{if(game.active)renderGame()},200);
+ui();applyLanguage();maintenance();loading();
 </script>
 </body>
 </html>
@@ -675,9 +523,3 @@ ui();applyLanguage();maintenance();
   .maint-count{min-height:60px}
 }
 </style>
-
-<script>
-window.addEventListener('load',function(){
-  if(typeof Peer==='undefined') console.warn('PeerJS לא נטען — משחק עם חבר דורש חיבור אינטרנט.');
-});
-</script>
