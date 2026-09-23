@@ -84,6 +84,38 @@ input[type=text]{width:100%;background:#091626;color:white;border:1px solid #345
 .creator-text{line-height:1.7;color:#d5e4f8}.secret-space{height:22000px}.secret{display:none;text-align:center;padding:30px;border:1px dashed #334b68;border-radius:20px}
 .shake{animation:shake .18s linear}@keyframes shake{25%{transform:translate(5px,-3px)}50%{transform:translate(-5px,3px)}75%{transform:translate(3px,2px)}}
 @media(max-width:650px){.actions{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.stat{padding:10px}.stat b{font-size:21px}.arena{min-height:330px}.langs{grid-template-columns:1fr}}
+
+
+/* Time chain shop preview + full-screen chain */
+.promo-preview-card{cursor:pointer;transition:.18s}.promo-preview-card:active{transform:scale(.98)}
+.promo-mini-title{text-align:center;font-size:23px;font-weight:1000}.promo-mini-sub{text-align:center;font-size:12px;opacity:.7;margin:3px 0 10px}.promo-mini-offer{display:flex;align-items:center;justify-content:center;gap:12px;padding:12px;border-radius:16px;background:linear-gradient(135deg,#282d54,#171a2c);border:2px solid #ffd43b}.promo-mini-icon{font-size:38px}.promo-mini-offer b{display:block;font-size:17px}.promo-mini-offer small{display:block;margin-top:3px;color:#ffd43b;font-weight:900}.promo-open-btn{width:100%;margin-top:10px;border:0;border-radius:12px;padding:10px;font-weight:900;cursor:pointer;background:#ffd43b;color:#171717}
+.promo-full{padding:4px 0 12px}.promo-full-title{text-align:center;font-size:29px;font-weight:1000}.promo-full-sub{text-align:center;opacity:.7;font-size:13px;margin:4px 0 14px}.promo-full-chain{display:flex;flex-direction:column;align-items:center;max-height:72vh;overflow:auto;padding:4px 6px}.promo-full-step{width:min(100%,330px);box-sizing:border-box;position:relative;text-align:center;padding:15px 12px;border-radius:20px;border:2px solid #444b69;background:linear-gradient(145deg,#1b2035,#111525);opacity:.5}.promo-full-step.current{opacity:1;border-color:#ffd43b;box-shadow:0 0 22px rgba(255,212,59,.25);transform:scale(1.02)}.promo-full-step.done{opacity:1;border-color:#43d17b}.promo-full-icon{font-size:42px}.promo-full-text{font-size:17px;font-weight:900;margin:4px}.promo-full-price{font-size:16px;font-weight:1000;color:#ffd43b;margin:5px}.promo-full-buy{border:0;border-radius:12px;background:#ffd43b;color:#171717;font-weight:1000;padding:9px 24px;font-size:16px;cursor:pointer}.promo-full-num{position:absolute;top:7px;left:9px;font-size:12px;font-weight:900;opacity:.7}.promo-full-check{position:absolute;top:7px;right:9px;color:#43d17b;font-weight:1000}.promo-full-lock{position:absolute;top:7px;right:9px}.promo-full-arrow{font-size:26px;line-height:24px;opacity:.55}
+
+/* Visual chain for the Time Promotion */
+.promo-chain{margin:16px 0;padding:16px;border-radius:22px;background:linear-gradient(145deg,#202746,#101528);border:2px solid #6d75ff;box-shadow:0 8px 24px rgba(0,0,0,.28);overflow:hidden}
+.promo-chain-title{font-size:24px;font-weight:900;text-align:center;margin-bottom:6px}.promo-chain-sub{text-align:center;opacity:.8;font-size:13px;margin-bottom:14px}.promo-track{display:flex;gap:9px;overflow-x:auto;padding:5px 2px 10px;scrollbar-width:thin}.promo-step{min-width:86px;height:108px;border-radius:17px;position:relative;padding:9px 7px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;border:2px solid #454b68;background:#171b2d;box-sizing:border-box}.promo-step.current{min-width:104px;height:124px;border-color:#ffd43b;background:linear-gradient(145deg,#463914,#1e1c18);box-shadow:0 0 18px rgba(255,212,59,.28);transform:translateY(-3px)}.promo-step.done{border-color:#43d17b;background:linear-gradient(145deg,#153b2a,#171b2d)}.promo-step.locked{opacity:.48}.promo-step-num{position:absolute;top:5px;left:6px;font-size:11px;font-weight:900}.promo-icon{font-size:28px;line-height:1;margin:7px 0}.promo-reward{font-size:11px;font-weight:800;line-height:1.15}.promo-check{position:absolute;right:5px;top:4px;color:#43d17b;font-weight:900}.promo-lock{position:absolute;right:5px;top:4px;font-size:13px}.promo-arrow{align-self:center;font-size:20px;opacity:.55}.promo-current-box{margin-top:6px;padding:13px;border-radius:16px;background:rgba(0,0,0,.2);text-align:center}.promo-current-box .promo-big{font-size:18px;font-weight:900;margin-bottom:5px}.promo-price{font-size:17px;font-weight:900;margin:5px 0 9px}.promo-buy{width:100%;border:0;border-radius:13px;padding:11px 14px;font-weight:900;font-size:16px;cursor:pointer;background:#ffd43b;color:#171717;box-shadow:0 4px 0 #b99517}.promo-buy:disabled{opacity:.5;cursor:not-allowed;box-shadow:none}.promo-finished{padding:15px;text-align:center;font-weight:900;color:#62e58e;font-size:18px}
+
+.promo-chain{cursor:pointer}
+.promo-chain:active{transform:scale(.99)}
+.promo-full-modal{position:relative;max-width:760px;width:calc(100% - 28px);padding:20px}
+.promo-full-track{padding-top:14px;padding-bottom:16px}
+.promo-close{position:absolute;top:8px;right:10px;border:0;background:transparent;color:inherit;font-size:30px;cursor:pointer}
+
+
+body.lang-en{direction:ltr}
+body.lang-he{direction:rtl}
+
+
+.saved-time-modal{text-align:center}
+.saved-time-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:18px 0}
+.saved-time-option{border:0;border-radius:14px;padding:13px 10px;font-size:17px;font-weight:900;cursor:pointer;background:#ffd43b;color:#171717;box-shadow:0 4px 0 #b99517}
+.modal-close-btn{border:0;border-radius:12px;padding:10px 18px;font-weight:800;cursor:pointer}
+
+
+.shop-carousel{display:flex;gap:12px;overflow-x:auto;overflow-y:hidden;padding:4px 2px 14px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+.shop-carousel>.item{flex:0 0 min(82vw,360px);margin:0;scroll-snap-align:start}
+.shop-carousel::-webkit-scrollbar{height:8px}.shop-carousel::-webkit-scrollbar-thumb{background:#36577d;border-radius:99px}
+.saved-time-option.all{grid-column:1/-1}
 </style>
 </head>
 <body>
@@ -91,14 +123,13 @@ input[type=text]{width:100%;background:#091626;color:white;border:1px solid #345
 <header><div class="header-row">
 <div class="brand">◼️ תפוס את הריבוע</div>
 <div style="display:flex;align-items:center;gap:8px">
-<div id="roomNumber" style="background:#142b48;border:1px solid #345579;border-radius:14px;padding:10px 12px;font-weight:900;color:#dcecff">🏠 חדר: —</div>
 <button class="gear" onclick="openModal('settings')">⚙️</button>
 </div></div></header>
 
 <main>
 <section class="hero">
 <h1>תפוס את הריבוע</h1>
-<p id="welcome">תפוס כמה שיותר פעמים לפני שהזמן נגמר! 🔊 המוזיקה מתחילה אחרי הלחיצה הראשונה.</p>
+<p id="welcome">תפוס כמה שיותר פעמים לפני שהזמן נגמר!</p>
 <div class="stats">
 <div class="stat">💎<span>יהלומים</span><b id="diamonds">0</b></div>
 <div class="stat">⏱️<span>שניות שמורות</span><b id="stored">0</b></div>
@@ -109,17 +140,14 @@ input[type=text]{width:100%;background:#091626;color:white;border:1px solid #345
 <button class="bigbtn" onclick="startGame()">▶️ התחל משחק</button>
 <button class="bigbtn alt" onclick="openModal('shop')">🛒 חנות</button>
 <button class="bigbtn alt" onclick="openModal('creator')">👑 יוצר המשחק: רון</button>
-<button class="bigbtn alt" onclick="openModal('friends')">👥 חברים</button>
 <button class="bigbtn gold" onclick="openModal('top')">🏆 טופ</button>
 </div>
-<div id="playWindowTimer" style="max-width:760px;margin:10px auto 0;text-align:center;padding:12px 16px;border-radius:16px;background:#0e2036;border:1px solid #2b4869;color:#dcecff;font-weight:900">🎮 זמן משחק זמין: מחשב...</div>
 </section>
 
 <section id="gamePanel" class="hidden">
 <div class="game-card">
 <div class="game-top"><div class="timer" id="timer">00:30</div><div class="live-score">🎯 <span id="score">0</span></div></div>
 <div class="arena" id="arena"><div id="square" onclick="hitSquare(event)"></div></div>
-<div class="game-hint">לחץ על הריבוע כמה שיותר מהר!</div>
 </div>
 </section>
 </main>
@@ -164,6 +192,16 @@ input[type=text]{width:100%;background:#091626;color:white;border:1px solid #345
 <div id="modal" class="modal hidden"><div class="modalbox" id="modalBox"></div></div>
 <div id="toast"></div>
 
+
+
+function updateLanguageDirection(){
+  document.documentElement.lang = S.lang === 'en' ? 'en' : 'he';
+  document.body.classList.toggle('lang-en', S.lang === 'en');
+  document.body.classList.toggle('lang-he', S.lang !== 'en');
+}
+
+
+
 <script>
 const KEY='catchSquareAccountV1';
 const OLD_KEYS=['catchSquareNew2026','catchSquareFinal','catchSquare','catchSquareAccount'];
@@ -181,14 +219,14 @@ let S=loadPersistentAccount()||structuredClone(defaultState); if(S.lang!=='he'&&
 let game={active:false,time:0,score:0,interval:null,endAt:0,buys:0};
 const $=id=>document.getElementById(id);
 function save(){localStorage.setItem(KEY,JSON.stringify(S));ui()}
-function ui(){$('diamonds').textContent=S.diamonds;$('stored').textContent=S.stored||0;$('best').textContent=S.best;$('player').textContent=S.name||'רון';$('roomNumber').textContent='🏠 חדר: '+(S.room||'—')}
+function ui(){$('diamonds').textContent=S.diamonds;$('stored').textContent=S.stored||0;$('best').textContent=S.best;$('player').textContent=S.name||'רון'}
 function toast(t){let x=$('toast');x.textContent=t;x.classList.add('toastshow');clearTimeout(window.tt);window.tt=setTimeout(()=>x.classList.remove('toastshow'),2300)}
 function openModal(type){let b=$('modalBox');$('modal').classList.remove('hidden');let close='<button class="close" onclick="closeModal()">✕</button>';
 if(type==='shop') shopModal(b,close);
 if(type==='creator') creatorModal(b,close);
 if(type==='settings') settingsModal(b,close);
-if(type==='friends') friendsModal(b,close);
 if(type==='top') topModal(b,close);
+if(type==='promoChain') promoChainModal(b,close);
 }
 function closeModal(){$('modal').classList.add('hidden')}
 $('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()});
@@ -206,50 +244,123 @@ function timeChestPrice(){
  return 100;
 }
 function priceText(price){
- if(price===25)return '🔥 75% הנחה — עד יום שלישי 00:00';
- if(price===50)return '⚡ 50% הנחה — משלישי 00:01 עד חמישי 00:00';
- return 'מחיר רגיל — מחמישי 00:01';
+ const en=S.lang==='en';
+ if(price===25)return en?'🔥 75% off — until Tuesday 00:00':'🔥 75% הנחה — עד יום שלישי 00:00';
+ if(price===50)return en?'⚡ 50% off — Tuesday 00:01 to Thursday 00:00':'⚡ 50% הנחה — משלישי 00:01 עד חמישי 00:00';
+ return en?'Regular price — from Thursday 00:01':'מחיר רגיל — מחמישי 00:01';
 }
 function shopModal(b,c){
- let price=timeChestPrice();
- b.innerHTML=c+`<h2>🛒 החנות</h2>
- <div class="item"><h3>🎁 תיבה יומית</h3><p>פעם ביום בלבד. פתח את התיבה וקבל יהלומים: 10–100. הסכומים הגדולים נדירים יותר.</p>
- <div class="row"><b id="dailyTimer">בודק...</b><button class="buy" onclick="dailyChest()">🎁 פתח תיבה</button></div></div>
- <div class="item"><h3>⏱️ תיבת שניות</h3><p>קונים תיבה, לוחצים עליה כדי לפתוח אותה, ואז מקבלים זמן שמור למשחק הבא. 3–30 שניות, כאשר זמן גבוה נדיר מאוד.</p>
- <p style="color:#ffd34d;font-weight:900">${priceText(price)}</p>
- <div class="row"><b>מחיר עכשיו: 💎 ${price}</b><button class="buy" onclick="buyTimeChest(${price})">קנה תיבה</button></div></div>
- <div class="item"><h3>⚡ עוד 5 שניות</h3><p>אחרי שהמשחק נגמר יש 20 שניות להחליט אם לקנות זמן נוסף. עד 5 רכישות בכל משחק.</p>
- <div class="row"><b>30 💎</b><button class="buy" onclick="buyFive()">+5 שניות</button></div></div>
- <div class="item" id="promoChainItem"><h3>🔥 מבצע הזמן!</h3><p id="promoChainText">טוען את המבצע...</p>
- <div class="row"><b id="promoChainPrice"></b><button class="buy" id="promoChainBtn" onclick="promoChainBuy()">קנייה</button></div></div>`;
- dailyUI();promoChainUI();clearInterval(window.shopTimer);window.shopTimer=setInterval(()=>{if(!$('modal').classList.contains('hidden')){dailyUI();promoChainUI();}},1000);
+ const en=S.lang==='en', h=(a,e)=>en?e:a, price=timeChestPrice();
+ b.innerHTML=c+`<h2>🛒 ${h('החנות','Shop')}</h2>
+ <div class="shop-carousel">
+  <div class="item promo-preview-card" id="promoChainItem" onclick="openModal('promoChain')"><div id="promoPreview"></div></div>
+  <div class="item"><h3>⏱️ ${h('תיבת שניות','Time Chest')}</h3>
+   <p>${h('קונים תיבה, לוחצים עליה כדי לפתוח אותה, ואז מקבלים זמן שמור למשחק הבא. 3–30 שניות, כאשר זמן גבוה נדיר מאוד.','Buy a chest, open it, and receive saved time for your next game. 3–30 seconds, with larger amounts being very rare.')}</p>
+   <p style="color:#ffd34d;font-weight:900">${priceText(price)}</p>
+   <div class="row"><b>${h('מחיר עכשיו','Current price')}: 💎 ${price}</b><button class="buy" onclick="buyTimeChest(${price})">${h('קנה תיבה','Buy Chest')}</button></div>
+  </div>
+  <div class="item"><h3>⚡ ${h('עוד 5 שניות','Another 5 Seconds')}</h3>
+   <p>${h('אחרי שהמשחק נגמר יש 20 שניות להחליט אם לקנות זמן נוסף. עד 5 רכישות בכל משחק.','After the game ends, you have 20 seconds to decide whether to buy extra time. Up to 5 purchases per game.')}</p>
+   <div class="row"><b>30 💎</b><button class="buy" onclick="buyFive()">+5 ${h('שניות','seconds')}</button></div>
+  </div>
+  <div class="item"><h3>🎁 ${h('תיבה יומית','Daily Chest')}</h3>
+   <p>${h('פעם ביום בלבד. פתח את התיבה וקבל יהלומים: 10–100. הסכומים הגדולים נדירים יותר.','Once per day. Open the chest to receive diamonds: 10–100. Larger amounts are rarer.')}</p>
+   <div class="row"><b id="dailyTimer">${h('בודק...','Checking...')}</b><button class="buy" onclick="dailyChest()">🎁 ${h('פתח תיבה','Open Chest')}</button></div>
+  </div>
+ </div>`;
+ dailyUI();promoChainPreview();clearInterval(window.shopTimer);window.shopTimer=setInterval(()=>{if(!$('modal').classList.contains('hidden')){dailyUI();promoChainPreview();}},1000);
 }
 function promoChainState(){
- const end=new Date('2026-09-26T00:00:00+03:00').getTime();
+ const end=new Date('2026-09-29T00:00:00+03:00').getTime();
  if(Date.now()>=end)return 8;
  return Math.min(7,Math.max(1,Number(S.promoChainStage)||1));
 }
-function promoChainUI(){
- const t=$('promoChainText'),p=$('promoChainPrice'),btn=$('promoChainBtn');
- if(!t||!p||!btn)return;
- const stage=promoChainState();
- const data={
-  1:['שלב 1: תיבת זמן אחת בחינם 🎁','חינם'],
-  2:['שלב 2: 2 תיבות זמן','75 💎'],
-  3:['שלב 3: 3 תיבות זמן','120 💎'],
-  4:['שלב 4: 20 שניות זמן שמור','חינם'],
-  5:['שלב 5: בונוס 30 שניות','100 💎'],
-  6:['שלב 6: 4 תיבות זמן','170 💎'],
-  7:['שלב 7: 5 תיבות זמן + 25 💎 בונוס','250 💎'],
-  8:['🎉 סיימת את שרשרת המבצעים!','']
- }[stage];
- t.textContent=data[0];p.textContent=data[1];
- btn.disabled=stage===8;btn.textContent=stage===8?'הושלם':'קנייה';
+function promoLabels(){
+ return [
+  {icon:'🎁',text:'חינם',en:'FREE',price:'FREE'},
+  {icon:'🎁',text:'2 תיבות זמן',en:'2 Time Chests',price:'75 💎'},
+  {icon:'🎁',text:'3 תיבות זמן',en:'3 Time Chests',price:'120 💎'},
+  {icon:'⏱️',text:'20 שניות זמן שמור',en:'20 Saved Seconds',price:'FREE'},
+  {icon:'⚡',text:'בונוס 30 שניות',en:'30-Second Bonus',price:'100 💎'},
+  {icon:'🎁',text:'4 תיבות זמן',en:'4 Time Chests',price:'170 💎'},
+  {icon:'🎁',text:'5 תיבות זמן',en:'5 Time Chests',price:'222 💎'}
+ ];
+}
+
+function applyLanguageUI(){
+ if(S.lang!=='en')return;
+ const map={
+  'תפוס את הריבוע':'Catch the Square','יוצר המשחק: רון':'Game creator: Ron',
+  'הגדרות':'Settings','הגדרות המשחק':'Game settings','חנות':'Shop',
+  'לוח תוצאות':'Leaderboard','טופ':'Top','התחל משחק':'Start Game',
+  'משחק חדש':'New Game','שם השחקן':'Player name','שם שחקן':'Player name',
+  'הזן את שמך':'Enter your name','שמור':'Save','מוזיקה':'Music',
+  'צלילים':'Sound','שפה':'Language','עברית':'Hebrew','אנגלית':'English',
+  'סגור':'Close','ביטול':'Cancel','אישור':'OK','חזרה':'Back',
+  'המתן':'Wait','טוען':'Loading','טוען את המשחק':'Loading the game',
+  'טעינה':'Loading','שניות':'seconds','שנייה':'second','זמן שמור':'Saved time',
+  'יהלומים':'Diamonds','שיא':'Best score','ניקוד':'Score','תוצאה':'Score',
+  'הפעל מוזיקה':'Music on','כבה מוזיקה':'Music off',
+  'המשחק הסתיים':'Game Over','נגמר הזמן':'Time is up',
+  'השתמש בזמן שמור':'Use saved time','קנה 5 שניות':'Buy 5 seconds',
+  'חינם':'FREE','שרשרת הזמן':'Time Chain','מבצע הזמן!':'Time Chain!',
+  'זמין עד יום שלישי':'Available until Tuesday',
+  'סיימת את שרשרת המבצעים!':'You completed the offer chain!',
+  'תיבת זמן':'Time Chest','תיבות זמן':'Time Chests','חזה יומי':'Daily Chest',
+  'המתנה היומית':'Daily Gift','פתיחה':'Open','קבל':'Claim',
+  'קבל את ההצעה':'Get the offer','שלב':'Step',
+  'תיבת זמן ×1':'FREE','תיבות זמן ×2':'Time Chests ×2',
+  'תיבות זמן ×3':'Time Chests ×3','תיבות זמן ×4':'Time Chests ×4',
+  '20 שניות':'20 seconds','30 שניות':'30 seconds','התחל':'Start',
+  'המשך':'Continue','המשך משחק':'Continue game','התחל מחדש':'Restart',
+  'סיום':'Finish','השיא שלך':'Your high score','טבלת שיאים':'High scores',
+  'מקום':'Rank','שחקן':'Player','ציון':'Score','אין עדיין שחקנים':'No players yet',
+  'פרטי המשחק':'Game info','מידע על המשחק':'Game information',
+  'המשחק נוצר על ידי רון':'The game was created by Ron',
+  'תודה ששיחקת!':'Thanks for playing!','כיף לשחק!':'Have fun playing!',
+  'ברוכים הבאים':'Welcome','לחץ על הריבוע כמה שיותר מהר!':'Click the square as fast as you can!',
+  'זמן משחק זמין':'Game time available','מחשב...':'Calculating...','מחשב זמן...':'Calculating time...'
+ };
+ const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT),nodes=[];
+ while(w.nextNode())nodes.push(w.currentNode);
+ nodes.forEach(n=>{let t=n.nodeValue;Object.keys(map).forEach(k=>t=t.split(k).join(map[k]));n.nodeValue=t;});
+ document.querySelectorAll('input,button,select,textarea,[title],[placeholder],[aria-label]').forEach(el=>{
+  ['placeholder','title','aria-label'].forEach(a=>{
+   if(el.hasAttribute(a)){let t=el.getAttribute(a);Object.keys(map).forEach(k=>t=t.split(k).join(map[k]));el.setAttribute(a,t);}
+  });
+ });
+}
+function updateLanguageDirection(){
+ document.documentElement.lang=S.lang==='en'?'en':'he';
+ document.body.dir=S.lang==='en'?'ltr':'rtl';
+}
+
+function promoChainPreview(){
+ const box=document.getElementById('promoPreview'); if(!box)return;
+ const labels=promoLabels(),st=promoChainState(),en=S.lang==='en';
+ const title=en?'🔥 Time Chain':'🔥 שרשרת הזמן';
+ if(st>=8){box.innerHTML=`<div class="promo-mini-title">${title}</div><div class="promo-mini-finished">🎉 ${en?'Chain completed!':'השרשרת הושלמה!'}</div>`;return;}
+ const item=labels[st-1];
+ box.innerHTML=`<div class="promo-mini-title">${title}</div><div class="promo-mini-offer"><span class="promo-mini-icon">${item.icon}</span><div><b>${en?item.en:item.text}</b><small>${item.price}</small></div></div><button class="promo-open-btn" onclick="event.stopPropagation();openModal('promoChain')">${en?'👀 Open Chain':'👀 פתח את השרשרת'}</button>`;
+}
+function promoChainModal(b,c){
+ const labels=promoLabels(),st=promoChainState();
+ let chain='';
+ labels.forEach((x,i)=>{
+  const n=i+1,done=st>n,current=st===n,locked=st<n;
+  chain+=`<div class="promo-full-step ${current?'current':''} ${done?'done':''} ${locked?'locked':''}">
+   <div class="promo-full-num">${n}</div>${done?'<div class="promo-full-check">✓</div>':''}${locked?'<div class="promo-full-lock">🔒</div>':''}
+   <div class="promo-full-icon">${x.icon}</div><div class="promo-full-text">${x.text}</div><div class="promo-full-price">${x.price}</div>
+  </div>`;
+  if(i<labels.length-1)chain+='<div class="promo-full-arrow">↓</div>';
+ });
+ if(st>=8)chain='<div class="promo-finished">🎉 סיימת את שרשרת המבצעים!</div>'+chain;
+ b.innerHTML=`${c}<div class="promo-full"><div class="promo-full-title">🔥 שרשרת הזמן</div><div class="promo-full-chain">${chain}</div></div>`;
 }
 function promoChainBuy(){
  const stage=promoChainState();
  if(stage===8)return toast('🎉 סיימת את שרשרת המבצעים!');
- const prices={1:0,2:75,3:120,4:0,5:100,6:170,7:250};
+ const prices={1:0,2:75,3:120,4:0,5:100,6:170,7:222};
  const price=prices[stage];
  if(S.diamonds<price)return toast('אין מספיק יהלומים 💎');
  if(price)S.diamonds-=price;
@@ -259,12 +370,12 @@ function promoChainBuy(){
  if(stage===4)S.stored=(S.stored||0)+20;
  if(stage===5)S.stored=(S.stored||0)+30;
  if(stage===6)S.stored=(S.stored||0)+4;
- if(stage===7){S.stored=(S.stored||0)+5;S.diamonds+=25;}
+ if(stage===7){S.stored=(S.stored||0)+5;}
  S.promoChainStage=stage+1;
  save();promoChainUI();
  toast(stage===7?'🎉 סיימת את שרשרת המבצעים!':'🔥 השלב הבא נפתח!');
 }
-function dailyUI(){let el=$('dailyTimer');if(!el)return;let n=new Date(),next=new Date(n);next.setHours(24,0,0,0);let ms=next-n;el.textContent='הטענה בעוד '+fmt(ms)}
+function dailyUI(){let el=$('dailyTimer');if(!el)return;let n=new Date(),next=new Date(n);next.setHours(24,0,0,0);let ms=next-n;el.textContent=(S.lang==='en'?'Refresh in ':'הטענה בעוד ')+fmt(ms)}
 function fmt(ms){ms=Math.max(0,ms);let s=Math.floor(ms/1000),h=Math.floor(s/3600),m=Math.floor((s%3600)/60),x=s%60;return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(x).padStart(2,'0')}
 function weighted(min,max,pow=4){let r=Math.pow(Math.random(),pow);return Math.floor(min+r*(max-min+1))}
 function todayKey(){return new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Jerusalem'}).format(new Date())}
@@ -281,40 +392,41 @@ function buyTimeChest(price){
 function showChest(title,reward,done){
  let b=$('modalBox');$('modal').classList.remove('hidden');
  let shown=reward.diamonds?`💎 ${reward.diamonds} יהלומים`:`⏱️ ${reward.time} שניות`;
- b.innerHTML=`<button class="close" onclick="closeModal()">✕</button><h2>${title}</h2><p style="text-align:center;color:#aac0db">לחץ על התיבה כדי לפתוח אותה!</p>
+ b.innerHTML=`<button class="close" onclick="closeModal()">✕</button><h2>${title}</h2><p style="text-align:center;color:#aac0db">${S.lang==='en'?'Click the chest to open it!':'לחץ על התיבה כדי לפתוח אותה!'}</p>
  <div class="chest" id="chestBox" onclick="openChest()">🎁</div><div id="reward" class="reward hidden">${shown}</div>
- <button class="bigbtn hidden" id="claim" onclick="claimReward()">✨ קבל</button>`;
+ <button class="bigbtn hidden" id="claim" onclick="claimReward()">✨ ${S.lang==='en'?'Claim':'קבל'}</button>`;
  window.pendingChest={reward,done};
 }
 function openChest(){let c=$('chestBox');if(!c)return;c.textContent='📦';c.classList.add('open');$('reward').classList.remove('hidden');$('claim').classList.remove('hidden');beep(700)}
 function claimReward(){let p=window.pendingChest;if(!p)return;p.done();window.pendingChest=null;closeModal()}
 
 function creatorModal(b,c){
- b.innerHTML=c+`<h2>👑 יוצר המשחק: רון</h2><div class="creator-text">
- <p><b>תפוס את הריבוע</b> הוא משחק תגובה ומהירות שבו המטרה היא ללחוץ על הריבוע כמה שיותר פעמים לפני שהזמן נגמר.</p>
- <p>🎯 בכל לחיצה מוצלחת הניקוד עולה והריבוע זז למקום חדש. ככל שמתקדמים, הריבוע קטן יותר.</p>
- <p>💎 בכל 10 לחיצות מוצלחות מתקבל יהלום. יהלומים משמשים לקניית זמן נוסף ותיבות.</p>
- <p>⏱️ בסיום משחק יש חלון של 20 שניות שבו אפשר להשתמש בזמן שמור או לקנות עד 5 פעמים +5 שניות במחיר של 30 יהלומים לכל רכישה.</p>
- <p>🎁 בחנות יש תיבה יומית, תיבת זמן ומבצעים משתנים. תיבה נפתחת רק אחרי שלוחצים עליה.</p>
- <p>🏆 „טופ” מציג את 50 התוצאות הטובות ביותר שנשמרו במכשיר הזה.</p>
- <p>👥 במערכת החברים אפשר ליצור חדר ולשתף קוד עם חבר כדי לשחק יחד.</p>
- <p>⚙️ בהגדרות אפשר לבחור שפה ולהדליק או לכבות צלילים ומוזיקה.</p>
- <p>💾 המשתמש נשמר גם בגרסאות חדשות של המשחק, כדי שההתקדמות לא תתחיל מחדש.</p><p>🌟 תודה שאתם משחקים! עוד שיפורים יכולים להגיע בהמשך.</p></div>
- <div class="secret-space" id="secretSpace"></div><div class="secret" id="secret">💎 +500 יהלומים <button class="buy" onclick="claimSecret()">קבלו</button></div>`;
+ const en=S.lang==='en', h=(a,e)=>en?e:a;
+ b.innerHTML=c+`<h2>👑 ${h('יוצר המשחק: רון','Game Creator: Ron')}</h2><div class="creator-text">
+ <p><b>${h('תפוס את הריבוע','Catch the Square')}</b> ${h('הוא משחק תגובה ומהירות שבו המטרה היא ללחוץ על הריבוע כמה שיותר פעמים לפני שהזמן נגמר.','is a reaction and speed game where the goal is to click the square as many times as possible before time runs out.')}</p>
+ <p>🎯 ${h('בכל לחיצה מוצלחת הניקוד עולה והריבוע זז למקום חדש. ככל שמתקדמים, הריבוע קטן יותר.','Each successful click increases your score and moves the square. The square gets smaller as you progress.')}</p>
+ <p>💎 ${h('בכל 10 לחיצות מוצלחות מתקבל יהלום. יהלומים משמשים לקניית זמן נוסף ותיבות.','Every 10 successful clicks gives you a diamond. Diamonds can be used for extra time and chests.')}</p>
+ <p>⏱️ ${h('בסיום משחק יש חלון של 20 שניות שבו אפשר להשתמש בזמן שמור או לקנות עד 5 פעמים +5 שניות במחיר של 30 יהלומים לכל רכישה.','After a game ends, there is a 20-second window to use saved time or buy +5 seconds up to 5 times for 30 diamonds each.')}</p>
+ <p>🎁 ${h('בחנות יש תיבה יומית, תיבת זמן ומבצעים משתנים. תיבה נפתחת רק אחרי שלוחצים עליה.','The shop has a daily chest, a time chest, and changing offers. A chest opens only after you click it.')}</p>
+ <p>🏆 ${h('„טופ” מציג את 50 התוצאות הטובות ביותר שנשמרו במכשיר הזה.','“Top” shows the 50 best results saved on this device.')}</p>
+ <p>⚙️ ${h('בהגדרות אפשר לבחור שפה ולהדליק או לכבות צלילים ומוזיקה.','In Settings you can choose the language and turn sound and music on or off.')}</p>
+ <p>💾 ${h('המשתמש נשמר גם בגרסאות חדשות של המשחק, כדי שההתקדמות לא תתחיל מחדש.','Your account is preserved across new versions so your progress does not reset.')}</p>
+ <p>🌟 ${h('תודה שאתם משחקים! עוד שיפורים יכולים להגיע בהמשך.','Thanks for playing! More improvements may come later.')}</p></div>
+ <div class="secret-space" id="secretSpace"></div><div class="secret" id="secret">💎 +500 ${h('יהלומים','Diamonds')} <button class="buy" onclick="claimSecret()">${h('קבלו','Claim')}</button></div>`;
 }
 
 const I18N={
 he:{
  brand:"◼️ תפוס את הריבוע", title:"תפוס את הריבוע", welcome:"תפוס כמה שיותר פעמים לפני שהזמן נגמר!",
  diamonds:"יהלומים", stored:"שניות שמורות", best:"שיא", player:"שחקן",
- start:"▶️ התחל משחק", shop:"🛒 חנות", creator:"👑 יוצר המשחק: רון", friends:"👥 חברים", top:"🏆 טופ",
- settings:"⚙️ הגדרות", room:"🏠 חדר", gameHint:"לחץ על הריבוע כמה שיותר מהר!"
+ start:"▶️ התחל משחק", shop:"🛒 חנות", creator:"👑 יוצר המשחק: רון", top:"🏆 טופ",
+ settings:"⚙️ הגדרות"
 },
 en:{
  brand:"◼️ Catch the Square", title:"Catch the Square", welcome:"Catch the square as many times as possible before time runs out!",
  diamonds:"Diamonds", stored:"Saved Seconds", best:"Best", player:"Player",
- start:"▶️ Start Game", shop:"🛒 Shop", creator:"👑 Game Creator: Ron", friends:"👥 Friends", top:"🏆 Top",
- settings:"⚙️ Settings", room:"🏠 Room", gameHint:"Click the square as fast as you can!"
+ start:"▶️ Start Game", shop:"🛒 Shop", creator:"👑 Game Creator: Ron", top:"🏆 Top",
+ settings:"⚙️ Settings", room:"🏠 Room"
 }
 };
 function applyLanguage(){
@@ -333,23 +445,19 @@ function applyLanguage(){
  if(bs[0])bs[0].textContent=l.start;
  if(bs[1])bs[1].textContent=l.shop;
  if(bs[2])bs[2].textContent=l.creator;
- if(bs[3])bs[3].textContent=l.friends;
- if(bs[4])bs[4].textContent=l.top;
+ if(bs[3])bs[3].textContent=l.top;
  const gear=document.querySelector('.gear'); if(gear)gear.setAttribute('aria-label',l.settings);
- const room=document.getElementById('roomNumber'); if(room)room.textContent=l.room+': '+(S.room||'—');
- const hint=document.querySelector('.game-hint'); if(hint)hint.textContent=l.gameHint;
 }
 function settingsModal(b,c){
- b.innerHTML=c+`<h2>⚙️ הגדרות</h2>
- <div class="item"><h3>👤 שם השחקן</h3><input id="nameInput" type="text" value="${esc(S.name)}" maxlength="20"><button class="buy" style="margin-top:10px" onclick="setName()">שמור שם</button></div>
- <div class="item"><h3>🌍 שפה</h3><div class="langs">
- <button class="langbtn" onclick="setLang('he')">🇮🇱 עברית</button><button class="langbtn" onclick="setLang('en')">🇺🇸 English</button></div></div>
- <div class="item"><h3>⏱️ זמן שמור</h3><p>כרגע שמורות לך <b id="settingsStored">${S.stored||0}</b> שניות למשחק הבא.</p></div>
- <div class="item"><h3>🔊 צלילים ומוזיקה</h3><p id="soundStatus">המוזיקה והצלילים פעילים</p><button class="buy" onclick="toggleSound()">החלף מצב צלילים</button><button class="buy" style="margin-right:8px" onclick="music()">▶️ הפעל מוזיקה</button></div>
- <div class="item"><h3>🗑️ משתמש</h3><button class="buy" onclick="deleteUser()">מחק את המשתמש שלי מהמכשיר</button></div>`;
+ const en=S.lang==='en', h=(a,e)=>en?e:a;
+ b.innerHTML=c+`<h2>⚙️ ${h('הגדרות','Settings')}</h2>
+ <div class="item"><h3>👤 ${h('שם השחקן','Player Name')}</h3><input id="nameInput" type="text" value="${esc(S.name)}" maxlength="20"><button class="buy" style="margin-top:10px" onclick="setName()">${h('שמור שם','Save Name')}</button></div>
+ <div class="item"><h3>🌍 ${h('שפה','Language')}</h3><div class="langs"><button class="langbtn" onclick="setLang('he')">🇮🇱 עברית</button><button class="langbtn" onclick="setLang('en')">🇺🇸 English</button></div></div>
+ <div class="item"><h3>🔊 ${h('צלילים ומוזיקה','Sound & Music')}</h3><p id="soundStatus">${soundOn?h('המוזיקה והצלילים פעילים','Sound and music are on'):h('המוזיקה והצלילים כבויים','Sound and music are off')}</p><button class="buy" onclick="toggleSound()">${h('החלף מצב צלילים','Toggle Sound')}</button></div>
+ <div class="item"><h3>🗑️ ${h('משתמש','Account')}</h3><button class="buy" onclick="deleteUser()">${h('מחק את המשתמש שלי מהמכשיר','Delete my local account')}</button></div>`;
 }
 function esc(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
-function setName(){let n=$('nameInput').value.trim();if(!n)return toast('צריך לכתוב שם');S.name=n;save();toast('השם נשמר ✔️');}
+function setName(){let n=$('nameInput').value.trim();if(!n)return toast(S.lang==='en'?'Enter a name':'צריך לכתוב שם');S.name=n;save();toast(S.lang==='en'?'Name saved ✔️':'השם נשמר ✔️');}
 function setLang(x){
  if(x!=='he'&&x!=='en')x='he';
  S.lang=x;save();applyLanguage();
@@ -358,56 +466,17 @@ function setLang(x){
  setTimeout(()=>{if(!$('modal').classList.contains('hidden'))settingsModal($('modalBox'),'<button class="close" onclick="closeModal()">✕</button>')},50);
 }
 let soundOn=true,musicOn=true;
-function toggleSound(){soundOn=!soundOn;musicOn=soundOn;toast(soundOn?'🔊 הצלילים והמוזיקה פועלים':'🔇 הצלילים והמוזיקה כבויים')}
+function toggleSound(){soundOn=!soundOn;musicOn=soundOn;toast(soundOn?(S.lang==='en'?'🔊 Sound and music are on':'🔊 הצלילים והמוזיקה פועלים'):(S.lang==='en'?'🔇 Sound and music are off':'🔇 הצלילים והמוזיקה כבויים'))}
 let audioCtx=null,musicTimer=null;
 function beep(f=600){if(!soundOn)return;try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();let o=audioCtx.createOscillator(),g=audioCtx.createGain();o.frequency.value=f;o.type='sine';g.gain.setValueAtTime(.0001,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.08,audioCtx.currentTime+.01);g.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+.12);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+.13)}catch(e){}}
 function music(){if(!musicOn||musicTimer)return;try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();let notes=[220,277,330,277,247,330,370,330],i=0;musicTimer=setInterval(()=>{if(!musicOn)return;let o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type='sine';o.frequency.value=notes[i++%notes.length];g.gain.value=.018;o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+.35)},480)}catch(e){}}
 document.addEventListener('pointerdown',()=>{beep(420);music()},{once:true});
 
 function topModal(b,c){
+ const en=S.lang==='en';
  let arr=[...S.scores].sort((a,b)=>b.score-a.score).slice(0,50);
- let list=arr.length?arr.map((x,i)=>`<div class="rank"><strong>#${i+1}</strong><span>${esc(x.name)}</span><span>${x.score} 🎯</span></div>`).join(''):'<div class="item">עדיין אין תוצאות. שחקו כדי להיכנס לטופ!</div>';
- b.innerHTML=c+`<h2>🏆 טופ</h2><p style="color:#aac0db">מוצגות עד 50 התוצאות הטובות ביותר במכשיר הזה.</p><div class="toplist">${list}</div>`;
-}
-function friendsModal(b,c){
- b.innerHTML=c+`<h2>👥 חברים</h2>
- <div class="item"><h3>🎮 דרך כיפית לשחק</h3><p>פתחו חדר, שלחו לחבר את הקוד, ושניכם מנסים לנצח באותו אתגר. מי שמקבל יותר לחיצות ב־30 שניות מנצח!</p>
- <button class="buy" onclick="createRoom()">➕ צור חדר</button></div>
- <div class="item"><h3>🔗 הצטרפות לחבר</h3><input id="friendCode" placeholder="הדבק כאן קוד חדר"><button class="buy" style="margin-top:10px" onclick="joinRoom()">הצטרף</button></div>
- <div class="item"><h3>⭐ החברים שלי</h3>${S.savedFriends.length?S.savedFriends.map(x=>`<p>👤 ${esc(x)}</p>`).join(''):'<p>עדיין אין חברים שמורים.</p>'}</div>`;
-}
-function createRoom(){
- let code=Math.random().toString(36).slice(2,8).toUpperCase();
- S.room=code;save();ui();
- const copied=prompt('קוד החדר שלך — שלח אותו לחבר:',code);
- toast('החדר '+code+' נוצר! 🎮');
-}
-function joinRoom(){
- let code=$('friendCode').value.trim().toUpperCase();
- if(!code)return toast('הכנס קוד');
- if(!S.savedFriends.includes(code))S.savedFriends.push(code);
- save();toast('הצטרפת לחדר '+code+' 🎮');ui();
-}
-
-function startGame(){
- closeModal();$('gamePanel').classList.remove('hidden');$('gamePanel').scrollIntoView({behavior:'smooth',block:'center'});
- game.active=true;game.score=0;game.buys=0;game.time=30+(S.stored||0);S.stored=0;save();placeSquare();renderGame();clearInterval(game.interval);game.endAt=Date.now()+game.time*1000;game.interval=setInterval(tick,100);beep(900);
-}
-function tick(){game.time=Math.max(0,(game.endAt-Date.now())/1000);renderGame();if(game.time<=0)endGame()}
-function renderGame(){
-  const total=Math.max(0,Math.ceil(game.time));
-  const mm=Math.floor(total/60);
-  const ss=total%60;
-  $('timer').textContent=String(mm).padStart(2,'0')+':'+String(ss).padStart(2,'0');
-  $('score').textContent=game.score;
-}
-function placeSquare(){
- let a=$('arena'),s=$('square'),size=Math.max(34,74-Math.floor(game.score/8)*2);s.style.width=size+'px';s.style.height=size+'px';
- let maxX=Math.max(0,a.clientWidth-size),maxY=Math.max(0,a.clientHeight-size);
- s.style.left=Math.random()*maxX+'px';s.style.top=Math.random()*maxY+'px';
-}
-function hitSquare(e){
- if(!game.active)return;e.stopPropagation();game.score++;if(game.score%10===0)S.diamonds++;document.body.classList.remove('shake');void document.body.offsetWidth;document.body.classList.add('shake');beep(300);setTimeout(()=>beep(850),25);placeSquare();renderGame();save();
+ let list=arr.length?arr.map((x,i)=>`<div class="rank"><strong>#${i+1}</strong><span>${esc(x.name)}</span><span>${x.score} 🎯</span></div>`).join(''):`<div class="item">${en?'No results yet. Play to enter the Top!':'עדיין אין תוצאות. שחקו כדי להיכנס לטופ!'}</div>`;
+ b.innerHTML=c+`<h2>🏆 ${en?'Top':'טופ'}</h2><div class="toplist">${list}</div>`;
 }
 function endGame(){
  if(!game.active)return;game.active=false;clearInterval(game.interval);game.interval=null;
@@ -421,21 +490,32 @@ function endGame(){
  <button class="bigbtn alt" onclick="closeModal()">משחק חדש</button>`;
  let timer=setInterval(()=>{let ms=until-Date.now();let d=$('decision');if(d)d.textContent='נשארו '+Math.ceil(ms/1000)+' שניות';if(ms<=0){clearInterval(timer);closeModal();toast('הזמן נגמר — צריך להתחיל משחק חדש')}} ,100);
 }
-function useStored(){if(S.stored<=0)return toast('אין לך זמן שמור');let t=S.stored;S.stored=0;save();closeModal();continueGame(t)}
-function continueGame(t){
-  clearInterval(game.interval);
-  game.interval=null;
-  $('gamePanel').classList.remove('hidden');
-  $('gamePanel').scrollIntoView({behavior:'smooth',block:'center'});
-  game.active=true;
-  game.time=Math.max(0,t);
-  game.endAt=Date.now()+game.time*1000;
-  requestAnimationFrame(()=>{
-    placeSquare();
-    renderGame();
-  });
-  game.interval=setInterval(tick,100);
+function useStored(){
+ const stored=Math.floor(S.stored||0);
+ if(stored<=0){toast(S.lang==='en'?'You have no saved time.':'אין לך זמן שמור.');return;}
+ const title=S.lang==='en'?'Choose saved time':'בחר זמן שמור';
+ const labels=[5,10,20,30];
+ let buttons=labels.map(n=>`<button class="saved-time-option" onclick="useStoredAmount(${n})">${n} ${S.lang==='en'?'seconds':'שניות'}</button>`).join('');
+ buttons+=`<button class="saved-time-option all" onclick="useStoredAmount(${stored})">${S.lang==='en'?'All saved time':'כל הזמן השמור'} (${stored} ${S.lang==='en'?'seconds':'שניות'})</button>`;
+ const modal=document.getElementById('modal');
+ if(!modal)return;
+ modal.innerHTML=`<div class="modal-card saved-time-modal" onclick="event.stopPropagation()">
+  <h2>${title}</h2><div class="saved-time-options">${buttons}</div>
+  <button class="modal-close-btn" onclick="closeModal()">${S.lang==='en'?'Cancel':'ביטול'}</button>
+ </div>`;
+ modal.classList.add('show');
 }
+function useStoredAmount(amount){
+ amount=Math.floor(Number(amount)||0);
+ const stored=Math.floor(S.stored||0);
+ if(amount<=0)return;
+ if(amount>stored){
+   toast(S.lang==='en'?'Not enough saved time.':'אין מספיק זמן שמור.');
+   return;
+ }
+ S.stored-=amount;save();closeModal();continueGame(amount);
+}
+
 function buyFive(){
  if(game.buys>=5)return toast('הגעת למקסימום של 5 רכישות במשחק');
  if(S.diamonds<30)return toast('אין מספיק יהלומים 💎');
@@ -475,8 +555,6 @@ function maintenance(){
     $('maintBtn').disabled=!!S.maintenanceGift;
     $('maintBtn').textContent=S.maintenanceGift?'✅ תיבת הפיצוי כבר התקבלה':'🎁 קבלו תיבת זמן בחינם';
   }else{
-    const pt=$('playWindowTimer');
-    if(pt) pt.textContent=n<start?'🛠️ עבודות התחזוקה יתחילו בעוד '+fmt(start-n):'🎮 המשחק פתוח! זמן המשחק זמין';
   }
 }
 function loading(){
@@ -510,7 +588,58 @@ function loading(){
 
 setInterval(maintenance,1000);setInterval(()=>{if(game.active)renderGame()},200);
 ui();applyLanguage();maintenance();loading();
+applyLanguageUI();updateLanguageDirection();
 </script>
+
+
+<script>
+function currentLang(){
+  return (typeof S !== 'undefined' && S.lang === 'en') ? 'en' : 'he';
+}
+function t(he, en){
+  return currentLang() === 'en' ? en : he;
+}
+function localizedTimeChestCount(n){
+  n = Number(n);
+  return currentLang() === 'en'
+    ? `${n} time ${n === 1 ? 'chest' : 'chests'}`
+    : `${n} ${n === 1 ? 'תיבת שניות' : 'תיבות שניות'}`;
+}
+function localizedDiamonds(n){
+  n = Number(n);
+  return currentLang() === 'en'
+    ? `${n} ${n === 1 ? 'diamond' : 'diamonds'}`
+    : `${n} ${n === 1 ? 'יהלום' : 'יהלומים'}`;
+}
+function localizedSeconds(n){
+  n = Number(n);
+  return currentLang() === 'en'
+    ? `${n} ${n === 1 ? 'second' : 'seconds'}`
+    : `${n} ${n === 1 ? 'שנייה' : 'שניות'}`;
+}
+function localizedSavedTime(n){
+  n = Number(n);
+  return currentLang() === 'en'
+    ? `${n} saved ${n === 1 ? 'second' : 'seconds'}`
+    : `${n} ${n === 1 ? 'שנייה שמורה' : 'שניות שמורות'}`;
+}
+</script>
+
+
+<script>
+function refreshLanguageDependentUI(){
+  try {
+    if(typeof renderSettings === 'function' && document.getElementById('settingsModal')?.style.display !== 'none') renderSettings();
+  } catch(e){}
+  try {
+    if(typeof renderShop === 'function' && document.getElementById('shopModal')?.style.display !== 'none') renderShop();
+  } catch(e){}
+  try {
+    if(typeof renderTop === 'function' && document.getElementById('topModal')?.style.display !== 'none') renderTop();
+  } catch(e){}
+}
+</script>
+
 </body>
 </html>
 <style>
