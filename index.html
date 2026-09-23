@@ -117,6 +117,20 @@ body.lang-he{direction:rtl}
 .shop-carousel::-webkit-scrollbar{height:8px}.shop-carousel::-webkit-scrollbar-thumb{background:#36577d;border-radius:99px}
 .saved-time-option.all{grid-column:1/-1}
 </style>
+
+<style id="gift50Styles">
+.gift50-overlay{position:fixed;inset:0;z-index:120;background:rgba(2,7,15,.94);display:flex;align-items:center;justify-content:center;padding:20px}
+.gift50-box{width:min(520px,100%);text-align:center;background:linear-gradient(145deg,#122943,#091727);border:1px solid #31577f;border-radius:28px;padding:30px 22px;box-shadow:0 30px 100px #000b}
+.gift50-box h2{font-size:32px;margin:0 0 10px}
+.gift50-diamonds{font-size:58px;font-weight:1000;margin:12px 0;color:#ffd34d}
+.gift50-box p{color:#c5d7eb;font-size:17px;line-height:1.5}
+.gift50-buttons{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:22px}
+.gift50-btn{border:0;border-radius:16px;padding:15px;font-size:18px;font-weight:1000;cursor:pointer;color:white}
+.gift50-accept{background:linear-gradient(135deg,#168cff,#315cff)}
+.gift50-later{background:linear-gradient(135deg,#e53935,#a91414)}
+@media(max-width:520px){.gift50-buttons{grid-template-columns:1fr}}
+</style>
+
 </head>
 <body>
 <div id="app">
@@ -385,9 +399,16 @@ function dailyChest(){
  let reward=weighted(10,100,4); showChest('🎁 תיבה יומית',{diamonds:reward},()=>{S.diamonds+=reward;save();closeModal()});
 }
 function buyTimeChest(price){
- if(S.diamonds<price)return toast('אין מספיק יהלומים 💎');
+ if(S.diamonds<price)return toast(S.lang==='en'?'Not enough diamonds 💎':'אין מספיק יהלומים 💎');
  S.diamonds-=price;save();
- let reward=weighted(3,30,8);showChest('⏱️ תיבת זמן',{time:reward},()=>{S.stored+=reward;save();closeModal()});
+ let reward=weighted(1,30,8);
+ showChest('⏱️ '+(S.lang==='en'?'Time Chest':'תיבת זמן'),{time:reward},()=>{
+   S.stored=Math.max(0,Math.floor(S.stored||0))+reward;
+   save();
+   ui();
+   closeModal();
+   toast(S.lang==='en'?'Saved time added: '+reward+' seconds ⏱️':'זמן שמור נוסף: '+reward+' שניות ⏱️');
+ });
 }
 function showChest(title,reward,done){
  let b=$('modalBox');$('modal').classList.remove('hidden');
@@ -398,7 +419,14 @@ function showChest(title,reward,done){
  window.pendingChest={reward,done};
 }
 function openChest(){let c=$('chestBox');if(!c)return;c.textContent='📦';c.classList.add('open');$('reward').classList.remove('hidden');$('claim').classList.remove('hidden');beep(700)}
-function claimReward(){let p=window.pendingChest;if(!p)return;p.done();window.pendingChest=null;closeModal()}
+function claimReward(){
+ let p=window.pendingChest;
+ if(!p)return;
+ window.pendingChest=null;
+ p.done();
+ ui();
+ closeModal();
+}
 
 function creatorModal(b,c){
  const en=S.lang==='en', h=(a,e)=>en?e:a;
@@ -478,6 +506,26 @@ function topModal(b,c){
  let list=arr.length?arr.map((x,i)=>`<div class="rank"><strong>#${i+1}</strong><span>${esc(x.name)}</span><span>${x.score} 🎯</span></div>`).join(''):`<div class="item">${en?'No results yet. Play to enter the Top!':'עדיין אין תוצאות. שחקו כדי להיכנס לטופ!'}</div>`;
  b.innerHTML=c+`<h2>🏆 ${en?'Top':'טופ'}</h2><div class="toplist">${list}</div>`;
 }
+function startGame(){
+ closeModal();$('gamePanel').classList.remove('hidden');$('gamePanel').scrollIntoView({behavior:'smooth',block:'center'});
+ game.active=true;game.score=0;game.buys=0;game.time=30;save();placeSquare();renderGame();clearInterval(game.interval);game.endAt=Date.now()+game.time*1000;game.interval=setInterval(tick,100);beep(900);
+}
+function tick(){game.time=Math.max(0,(game.endAt-Date.now())/1000);renderGame();if(game.time<=0)endGame()}
+function renderGame(){
+  const total=Math.max(0,Math.ceil(game.time));
+  const mm=Math.floor(total/60);
+  const ss=total%60;
+  $('timer').textContent=String(mm).padStart(2,'0')+':'+String(ss).padStart(2,'0');
+  $('score').textContent=game.score;
+}
+function placeSquare(){
+ let a=$('arena'),s=$('square'),size=Math.max(34,74-Math.floor(game.score/8)*2);s.style.width=size+'px';s.style.height=size+'px';
+ let maxX=Math.max(0,a.clientWidth-size),maxY=Math.max(0,a.clientHeight-size);
+ s.style.left=Math.random()*maxX+'px';s.style.top=Math.random()*maxY+'px';
+}
+function hitSquare(e){
+ if(!game.active)return;e.stopPropagation();game.score++;if(game.score%10===0)S.diamonds++;document.body.classList.remove('shake');void document.body.offsetWidth;document.body.classList.add('shake');beep(300);setTimeout(()=>beep(850),25);placeSquare();renderGame();save();
+}
 function endGame(){
  if(!game.active)return;game.active=false;clearInterval(game.interval);game.interval=null;
  let sc=game.score;if(sc>S.best)S.best=sc;S.scores.push({name:S.name||'רון',score:sc,date:Date.now()});S.scores=S.scores.sort((a,b)=>b.score-a.score).slice(0,200);save();
@@ -491,7 +539,7 @@ function endGame(){
  let timer=setInterval(()=>{let ms=until-Date.now();let d=$('decision');if(d)d.textContent='נשארו '+Math.ceil(ms/1000)+' שניות';if(ms<=0){clearInterval(timer);closeModal();toast('הזמן נגמר — צריך להתחיל משחק חדש')}} ,100);
 }
 function useStored(){
- const stored=Math.floor(S.stored||0);
+ const stored=Math.max(0,Math.floor(Number(S.stored)||0));
  if(stored<=0){toast(S.lang==='en'?'You have no saved time.':'אין לך זמן שמור.');return;}
  const title=S.lang==='en'?'Choose saved time':'בחר זמן שמור';
  const labels=[5,10,20,30];
@@ -507,7 +555,7 @@ function useStored(){
 }
 function useStoredAmount(amount){
  amount=Math.floor(Number(amount)||0);
- const stored=Math.floor(S.stored||0);
+ const stored=Math.max(0,Math.floor(Number(S.stored)||0));
  if(amount<=0)return;
  if(amount>stored){
    toast(S.lang==='en'?'Not enough saved time.':'אין מספיק זמן שמור.');
@@ -516,6 +564,17 @@ function useStoredAmount(amount){
  S.stored-=amount;save();closeModal();continueGame(amount);
 }
 
+function continueGame(t){
+  clearInterval(game.interval);
+  game.interval=null;
+  $('gamePanel').classList.remove('hidden');
+  $('gamePanel').scrollIntoView({behavior:'smooth',block:'center'});
+  game.active=true;
+  game.time=Math.max(0,t);
+  game.endAt=Date.now()+game.time*1000;
+  requestAnimationFrame(()=>{placeSquare();renderGame();});
+  game.interval=setInterval(tick,100);
+}
 function buyFive(){
  if(game.buys>=5)return toast('הגעת למקסימום של 5 רכישות במשחק');
  if(S.diamonds<30)return toast('אין מספיק יהלומים 💎');
@@ -638,6 +697,67 @@ function refreshLanguageDependentUI(){
     if(typeof renderTop === 'function' && document.getElementById('topModal')?.style.display !== 'none') renderTop();
   } catch(e){}
 }
+</script>
+
+
+<script id="gift50Logic">
+(function(){
+  const GIFT_KEY='catchSquare50DiamondGiftClaimedV2';
+
+  function giftLang(){ return (window.S && S.lang==='en'); }
+
+  function show50Gift(){
+    if(!window.S) return false;
+    if(localStorage.getItem(GIFT_KEY)==='1') return true;
+    if(document.getElementById('gift50Overlay')) return true;
+
+    const en=giftLang();
+    const overlay=document.createElement('div');
+    overlay.id='gift50Overlay';
+    overlay.className='gift50-overlay';
+    overlay.innerHTML=`
+      <div class="gift50-box" dir="${en?'ltr':'rtl'}">
+        <h2>${en?'🎁 Special Gift':'🎁 מתנה מיוחדת'}</h2>
+        <div class="gift50-diamonds">💎 50</div>
+        <p>${en?'You have a special gift waiting for you! Do you want to receive 50 diamonds?':'מחכה לך מתנה מיוחדת! רוצה לקבל 50 יהלומים?'}</p>
+        <div class="gift50-buttons">
+          <button class="gift50-btn gift50-accept" id="gift50Accept">${en?'Claim Reward':'קבלת הפרס'}</button>
+          <button class="gift50-btn gift50-later" id="gift50Later">${en?'Not Now':'לא עכשיו'}</button>
+        </div>
+      </div>`;
+    document.body.appendChild(overlay);
+
+    document.getElementById('gift50Accept').onclick=function(){
+      if(localStorage.getItem(GIFT_KEY)==='1') return;
+      S.diamonds=(Number(S.diamonds)||0)+50;
+      localStorage.setItem(GIFT_KEY,'1');
+      if(typeof save==='function') save(); else localStorage.setItem('catchSquareState',JSON.stringify(S));
+      if(typeof ui==='function') ui();
+      overlay.remove();
+      if(typeof toast==='function') toast(en?'🎉 You received 50 diamonds!':'🎉 קיבלת 50 יהלומים!');
+    };
+    document.getElementById('gift50Later').onclick=function(){ overlay.remove(); };
+    return true;
+  }
+
+  function hasGiftLink(){
+    const q=new URLSearchParams(window.location.search);
+    const h=new URLSearchParams((window.location.hash||'').replace(/^#/,'').replace(/^\?/,'') );
+    return q.get('gift')==='50' || h.get('gift')==='50' || window.location.href.includes('gift=50');
+  }
+
+  function check50GiftLink(){
+    if(!hasGiftLink()) return;
+    let tries=0;
+    const timer=setInterval(function(){
+      tries++;
+      if(show50Gift() || tries>100) clearInterval(timer);
+    },100);
+  }
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',check50GiftLink);
+  else check50GiftLink();
+})();
 </script>
 
 </body>
