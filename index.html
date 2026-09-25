@@ -116,21 +116,25 @@ body.lang-he{direction:rtl}
 .shop-carousel>.item{flex:0 0 min(82vw,360px);margin:0;scroll-snap-align:start}
 .shop-carousel::-webkit-scrollbar{height:8px}.shop-carousel::-webkit-scrollbar-thumb{background:#36577d;border-radius:99px}
 .saved-time-option.all{grid-column:1/-1}
-</style>
 
-<style id="gift50Styles">
-.gift50-overlay{position:fixed;inset:0;z-index:120;background:rgba(2,7,15,.94);display:flex;align-items:center;justify-content:center;padding:20px}
-.gift50-box{width:min(520px,100%);text-align:center;background:linear-gradient(145deg,#122943,#091727);border:1px solid #31577f;border-radius:28px;padding:30px 22px;box-shadow:0 30px 100px #000b}
-.gift50-box h2{font-size:32px;margin:0 0 10px}
-.gift50-diamonds{font-size:58px;font-weight:1000;margin:12px 0;color:#ffd34d}
-.gift50-box p{color:#c5d7eb;font-size:17px;line-height:1.5}
-.gift50-buttons{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:22px}
-.gift50-btn{border:0;border-radius:16px;padding:15px;font-size:18px;font-weight:1000;cursor:pointer;color:white}
-.gift50-accept{background:linear-gradient(135deg,#168cff,#315cff)}
-.gift50-later{background:linear-gradient(135deg,#e53935,#a91414)}
-@media(max-width:520px){.gift50-buttons{grid-template-columns:1fr}}
-</style>
+/* Requested full-screen pages */
+.modal{padding:0;align-items:stretch;justify-content:stretch}
+.modalbox{width:100vw;max-width:none;height:100vh;max-height:none;min-height:100vh;border:0;border-radius:0;padding:22px clamp(14px,4vw,42px);overflow:auto}
+.modalbox h2{font-size:clamp(30px,6vw,46px);text-align:center;margin-bottom:18px}
+.chest{font-size:clamp(120px,22vw,220px);padding:clamp(28px,7vh,80px) 10px}
+.shop-carousel{display:flex;gap:16px;overflow-y:hidden;overflow-x:auto;scroll-snap-type:x mandatory;padding:8px 4px 24px;align-items:stretch}
+.shop-carousel>.item{flex:0 0 min(78vw,390px);min-height:260px;scroll-snap-align:start;margin:0}
+.duel-wrap{max-width:850px;margin:0 auto}.duel-card{background:#0d1b2e;border:1px solid #27415f;border-radius:22px;padding:20px;margin:14px 0}.duel-score{font-size:48px;font-weight:1000;text-align:center;margin:18px}.duel-status{text-align:center;color:#ffd34d;font-weight:900;min-height:28px}.duel-name-row{display:flex;gap:10px}.duel-name-row input{flex:1}.duel-btn{background:linear-gradient(135deg,#2d91ff,#6b5cff);color:#fff;border-radius:14px;padding:13px 18px;font-weight:900}.duel-btn.danger{background:#b82f4d}.duel-btn.good{background:#269a67}
+@media(max-width:650px){.shop-carousel{display:flex;flex-direction:column;overflow-x:hidden;overflow-y:visible}.shop-carousel>.item{flex:0 0 auto;width:100%;min-height:auto}.duel-name-row{flex-direction:column}}
 
+/* Final requested responsive/full-screen behavior */
+.modalbox > .chest{min-height:38vh;display:grid;place-items:center;}
+.modalbox > .reward{margin:10px auto 20px;}
+.modalbox > #claim{display:block;margin:18px auto;min-width:min(360px,90vw);}
+@media(min-width:651px){.shop-carousel{flex-direction:row;overflow-x:auto;overflow-y:hidden}.shop-carousel>.item{flex:0 0 min(390px,38vw);}}
+@media(max-width:650px){.modalbox{padding:18px 12px 34px}.shop-carousel{flex-direction:column;overflow-x:hidden;overflow-y:visible}.shop-carousel>.item{width:100%;flex:0 0 auto}.promo-full-chain{max-height:none}.saved-time-options{grid-template-columns:1fr}.saved-time-option.all{grid-column:auto}}
+</style>
+<script async src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 </head>
 <body>
 <div id="app">
@@ -155,6 +159,7 @@ body.lang-he{direction:rtl}
 <button class="bigbtn alt" onclick="openModal('shop')">🛒 חנות</button>
 <button class="bigbtn alt" onclick="openModal('creator')">👑 יוצר המשחק: רון</button>
 <button class="bigbtn gold" onclick="openModal('top')">🏆 טופ</button>
+<button class="bigbtn alt" onclick="openModal('duel')">⚔️ דו־קרב</button>
 </div>
 </section>
 
@@ -228,19 +233,20 @@ function loadPersistentAccount(){
   }
   return null;
 }
-const defaultState={name:'רון',diamonds:100,stored:0,best:0,scores:[],daily:null,timeChest:null,maintenanceGift:false,savedFriends:[],lang:'he'};
-let S=loadPersistentAccount()||structuredClone(defaultState); if(S.lang!=='he'&&S.lang!=='en')S.lang='he'; S.secretClaimed=!!S.secretClaimed; S.room=S.room||''; S.maintenanceGift=!!S.maintenanceGift;
+const defaultState={name:'רון',diamonds:100,stored:0,best:0,scores:[],daily:null,timeChest:null,maintenanceGift:false,savedFriends:[],lang:'he',duelRewardCount:0};
+let S=loadPersistentAccount()||structuredClone(defaultState); if(S.lang!=='he'&&S.lang!=='en')S.lang='he'; S.secretClaimed=!!S.secretClaimed; S.room=S.room||''; S.maintenanceGift=!!S.maintenanceGift; S.duelRewardCount=Math.max(0,Number(S.duelRewardCount)||0);
 let game={active:false,time:0,score:0,interval:null,endAt:0,buys:0};
 const $=id=>document.getElementById(id);
 function save(){localStorage.setItem(KEY,JSON.stringify(S));ui()}
 function ui(){$('diamonds').textContent=S.diamonds;$('stored').textContent=S.stored||0;$('best').textContent=S.best;$('player').textContent=S.name||'רון'}
 function toast(t){let x=$('toast');x.textContent=t;x.classList.add('toastshow');clearTimeout(window.tt);window.tt=setTimeout(()=>x.classList.remove('toastshow'),2300)}
-function openModal(type){let b=$('modalBox');$('modal').classList.remove('hidden');let close='<button class="close" onclick="closeModal()">✕</button>';
+function openModal(type){window.pendingChest=null;window.savedTimeChoosing=false; let b=$('modalBox');$('modal').classList.remove('hidden');let close='<button class="close" onclick="closeModal()">✕</button>';
 if(type==='shop') shopModal(b,close);
 if(type==='creator') creatorModal(b,close);
 if(type==='settings') settingsModal(b,close);
 if(type==='top') topModal(b,close);
 if(type==='promoChain') promoChainModal(b,close);
+if(type==='duel') duelModal(b,close);
 }
 function closeModal(){$('modal').classList.add('hidden')}
 $('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()});
@@ -250,39 +256,34 @@ function israelParts(){
  const get=k=>parts.find(x=>x.type===k)?.value;
  return {day:{Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6}[get('weekday')],h:+get('hour'),m:+get('minute'),s:+get('second')};
 }
-function timeChestPrice(){
- const x=israelParts(), mins=x.day*1440+x.h*60+x.m+x.s/60;
- const tue=2*1440, thu=4*1440;
- if(mins<tue)return 25;
- if(mins<thu)return 50;
- return 100;
-}
-function priceText(price){
- const en=S.lang==='en';
- if(price===25)return en?'🔥 75% off — until Tuesday 00:00':'🔥 75% הנחה — עד יום שלישי 00:00';
- if(price===50)return en?'⚡ 50% off — Tuesday 00:01 to Thursday 00:00':'⚡ 50% הנחה — משלישי 00:01 עד חמישי 00:00';
- return en?'Regular price — from Thursday 00:01':'מחיר רגיל — מחמישי 00:01';
-}
+function timeChestPrice(){ return 75; }
+function priceText(price){ return S.lang==='en' ? 'Fixed price — no discount' : 'מחיר קבוע — בלי הנחה'; }
 function shopModal(b,c){
- const en=S.lang==='en', h=(a,e)=>en?e:a, price=timeChestPrice();
+ const en=S.lang==='en', h=(a,e)=>en?e:a;
+ const price=75;
  b.innerHTML=c+`<h2>🛒 ${h('החנות','Shop')}</h2>
  <div class="shop-carousel">
-  <div class="item promo-preview-card" id="promoChainItem" onclick="openModal('promoChain')"><div id="promoPreview"></div></div>
-  <div class="item"><h3>⏱️ ${h('תיבת שניות','Time Chest')}</h3>
-   <p>${h('קונים תיבה, לוחצים עליה כדי לפתוח אותה, ואז מקבלים זמן שמור למשחק הבא. 3–30 שניות, כאשר זמן גבוה נדיר מאוד.','Buy a chest, open it, and receive saved time for your next game. 3–30 seconds, with larger amounts being very rare.')}</p>
-   <p style="color:#ffd34d;font-weight:900">${priceText(price)}</p>
-   <div class="row"><b>${h('מחיר עכשיו','Current price')}: 💎 ${price}</b><button class="buy" onclick="buyTimeChest(${price})">${h('קנה תיבה','Buy Chest')}</button></div>
+  <div class="item promo-preview-card" onclick="openModal('promoChain')"><div id="promoPreview"></div></div>
+  <div class="item"><h3>⏱️ ${h('תיבת זמן','Time Chest')}</h3>
+   <p>${h('קונים תיבה, פותחים אותה ומקבלים זמן שמור.','Buy a chest, open it, and receive saved time.')}</p>
+   <p style="color:#ffd34d;font-weight:900">${h('מחיר קבוע: 75 יהלומים','Fixed price: 75 diamonds')}</p>
+   <div class="row"><b>💎 75</b><button class="buy" onclick="confirmTimeChest()">${h('קנה תיבה','Buy Chest')}</button></div>
   </div>
-  <div class="item"><h3>⚡ ${h('עוד 5 שניות','Another 5 Seconds')}</h3>
-   <p>${h('אחרי שהמשחק נגמר יש 20 שניות להחליט אם לקנות זמן נוסף. עד 5 רכישות בכל משחק.','After the game ends, you have 20 seconds to decide whether to buy extra time. Up to 5 purchases per game.')}</p>
+  <div class="item"><h3>⚡ ${h('5 שניות','5 Seconds')}</h3>
+   <p>${h('אחרי שהמשחק נגמר אפשר לקנות +5 שניות. עד 5 רכישות בכל משחק.','After the game ends you can buy +5 seconds. Up to 5 purchases per game.')}</p>
    <div class="row"><b>30 💎</b><button class="buy" onclick="buyFive()">+5 ${h('שניות','seconds')}</button></div>
   </div>
   <div class="item"><h3>🎁 ${h('תיבה יומית','Daily Chest')}</h3>
-   <p>${h('פעם ביום בלבד. פתח את התיבה וקבל יהלומים: 10–100. הסכומים הגדולים נדירים יותר.','Once per day. Open the chest to receive diamonds: 10–100. Larger amounts are rarer.')}</p>
+   <p>${h('פעם ביום. קבלו יהלומים, כשהסכומים הגדולים נדירים יותר.','Once per day. Receive diamonds; larger amounts are rarer.')}</p>
    <div class="row"><b id="dailyTimer">${h('בודק...','Checking...')}</b><button class="buy" onclick="dailyChest()">🎁 ${h('פתח תיבה','Open Chest')}</button></div>
   </div>
  </div>`;
  dailyUI();promoChainPreview();clearInterval(window.shopTimer);window.shopTimer=setInterval(()=>{if(!$('modal').classList.contains('hidden')){dailyUI();promoChainPreview();}},1000);
+}
+function confirmTimeChest(){
+ const en=S.lang==='en';
+ const b=$('modalBox');
+ b.innerHTML=`<button class="close" onclick="openModal('shop')">✕</button><div class="item" style="max-width:620px;margin:12vh auto;text-align:center"><h2>${en?'Buy Time Chest?':'לקנות תיבת זמן?'}</h2><p>${en?'It costs 75 diamonds. Press again to confirm.':'המחיר הוא 75 יהלומים. לחץ שוב כדי לאשר.'}</p><button class="buy" onclick="buyTimeChest(75)">${en?'רוצה לקנות?':'רוצה לקנות?'}</button></div>`;
 }
 function promoChainState(){
  const end=new Date('2026-09-29T00:00:00+03:00').getTime();
@@ -364,30 +365,27 @@ function promoChainModal(b,c){
   const n=i+1,done=st>n,current=st===n,locked=st<n;
   chain+=`<div class="promo-full-step ${current?'current':''} ${done?'done':''} ${locked?'locked':''}">
    <div class="promo-full-num">${n}</div>${done?'<div class="promo-full-check">✓</div>':''}${locked?'<div class="promo-full-lock">🔒</div>':''}
-   <div class="promo-full-icon">${x.icon}</div><div class="promo-full-text">${x.text}</div><div class="promo-full-price">${x.price}</div>
+   <div class="promo-full-icon">${x.icon}</div><div class="promo-full-text">${S.lang==='en'?x.en:x.text}</div><div class="promo-full-price">${x.price}</div>
+   ${current?`<button class="promo-full-buy" onclick="promoChainConfirm()">${S.lang==='en'?'Buy / Claim':'קנייה / קבלה'}</button>`:''}
   </div>`;
   if(i<labels.length-1)chain+='<div class="promo-full-arrow">↓</div>';
  });
- if(st>=8)chain='<div class="promo-finished">🎉 סיימת את שרשרת המבצעים!</div>'+chain;
- b.innerHTML=`${c}<div class="promo-full"><div class="promo-full-title">🔥 שרשרת הזמן</div><div class="promo-full-chain">${chain}</div></div>`;
+ b.innerHTML=`${c}<div class="promo-full"><div class="promo-full-title">🔥 ${S.lang==='en'?'Time Chain':'שרשרת הזמן'}</div><div class="promo-full-sub">${S.lang==='en'?'Available until Tuesday':'זמין עד יום שלישי'}</div><div class="promo-full-chain">${chain}</div></div>`;
+}
+function promoChainConfirm(){
+ const b=$('modalBox'),stage=promoChainState(),en=S.lang==='en';
+ if(stage===8)return;
+ b.querySelectorAll('.promo-full-buy').forEach(btn=>{btn.textContent=en?'רוצה לקנות?':'רוצה לקנות?';btn.onclick=()=>promoChainBuy();});
 }
 function promoChainBuy(){
  const stage=promoChainState();
- if(stage===8)return toast('🎉 סיימת את שרשרת המבצעים!');
- const prices={1:0,2:75,3:120,4:0,5:100,6:170,7:222};
- const price=prices[stage];
- if(S.diamonds<price)return toast('אין מספיק יהלומים 💎');
+ if(stage===8)return toast(S.lang==='en'?'Chain completed!':'סיימת את שרשרת המבצעים!');
+ const prices={1:0,2:75,3:120,4:0,5:100,6:170,7:222}; const price=prices[stage];
+ if(S.diamonds<price)return toast(S.lang==='en'?'Not enough diamonds 💎':'אין מספיק יהלומים 💎');
  if(price)S.diamonds-=price;
- if(stage===1)S.stored=(S.stored||0)+1;
- if(stage===2)S.stored=(S.stored||0)+2;
- if(stage===3)S.stored=(S.stored||0)+3;
- if(stage===4)S.stored=(S.stored||0)+20;
- if(stage===5)S.stored=(S.stored||0)+30;
- if(stage===6)S.stored=(S.stored||0)+4;
- if(stage===7){S.stored=(S.stored||0)+5;}
- S.promoChainStage=stage+1;
- save();promoChainUI();
- toast(stage===7?'🎉 סיימת את שרשרת המבצעים!':'🔥 השלב הבא נפתח!');
+ const rewards={1:1,2:2,3:3,4:20,5:30,6:4,7:5}; S.stored=(S.stored||0)+rewards[stage];
+ S.promoChainStage=stage+1;save();promoChainModal($('modalBox'),"<button class='close' onclick=\"openModal('shop')\">✕</button>");
+ toast(stage===7?(S.lang==='en'?'🎉 Chain completed!':'🎉 סיימת את השרשרת!'):(S.lang==='en'?'Next stage unlocked!':'השלב הבא נפתח!'));
 }
 function dailyUI(){let el=$('dailyTimer');if(!el)return;let n=new Date(),next=new Date(n);next.setHours(24,0,0,0);let ms=next-n;el.textContent=(S.lang==='en'?'Refresh in ':'הטענה בעוד ')+fmt(ms)}
 function fmt(ms){ms=Math.max(0,ms);let s=Math.floor(ms/1000),h=Math.floor(s/3600),m=Math.floor((s%3600)/60),x=s%60;return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(x).padStart(2,'0')}
@@ -539,21 +537,14 @@ function endGame(){
  let timer=setInterval(()=>{let ms=until-Date.now();let d=$('decision');if(d)d.textContent='נשארו '+Math.ceil(ms/1000)+' שניות';if(ms<=0){clearInterval(timer);closeModal();toast('הזמן נגמר — צריך להתחיל משחק חדש')}} ,100);
 }
 function useStored(){
+ window.savedTimeChoosing=true;
  const stored=Math.max(0,Math.floor(Number(S.stored)||0));
  if(stored<=0){toast(S.lang==='en'?'You have no saved time.':'אין לך זמן שמור.');return;}
- const title=S.lang==='en'?'Choose saved time':'בחר זמן שמור';
- const labels=[5,10,20,30];
- let buttons=labels.map(n=>`<button class="saved-time-option" onclick="useStoredAmount(${n})">${n} ${S.lang==='en'?'seconds':'שניות'}</button>`).join('');
- buttons+=`<button class="saved-time-option all" onclick="useStoredAmount(${stored})">${S.lang==='en'?'All saved time':'כל הזמן השמור'} (${stored} ${S.lang==='en'?'seconds':'שניות'})</button>`;
- const modal=document.getElementById('modal');
- if(!modal)return;
- modal.innerHTML=`<div class="modal-card saved-time-modal" onclick="event.stopPropagation()">
-  <h2>${title}</h2><div class="saved-time-options">${buttons}</div>
-  <button class="modal-close-btn" onclick="closeModal()">${S.lang==='en'?'Cancel':'ביטול'}</button>
- </div>`;
- modal.classList.add('show');
+ const en=S.lang==='en';
+ $('modalBox').innerHTML=`<button class="close" onclick="closeModal()">✕</button><div class="item" style="max-width:700px;margin:10vh auto;text-align:center"><h2>⏱️ ${en?'Personal choice':'בחירה אישית'}</h2><p>${en?'Choose how many saved seconds to use.':'בחר כמה שניות מהזמן השמור אתה רוצה להשתמש.'}</p><input id="storedRange" type="range" min="1" max="${stored}" value="${stored}" style="width:100%" oninput="storedRangeValue.textContent=this.value+' ${en?'seconds':'שניות'}'"><div id="storedRangeValue" style="font-size:34px;font-weight:1000;color:#ffd34d;margin:20px">${stored} ${en?'seconds':'שניות'}</div><button class="bigbtn" onclick="useStoredAmount(Number($('storedRange').value))">${en?'Use selected time':'השתמש בזמן שבחרתי'}</button></div>`;
 }
 function useStoredAmount(amount){
+ window.savedTimeChoosing=false;
  amount=Math.floor(Number(amount)||0);
  const stored=Math.max(0,Math.floor(Number(S.stored)||0));
  if(amount<=0)return;
@@ -596,6 +587,80 @@ function secretWatcher(){
 }
 window.addEventListener('scroll',secretWatcher);
 
+/* Internet duel: PeerJS signaling + direct peer-to-peer connection. */
+let duelPeer=null,duelConn=null,duelState=null;
+function duelId(name){return 'catch-square-duel-'+String(name||'').trim().toLowerCase().replace(/[^a-z0-9א-ת]+/g,'-').slice(0,30);}
+function ensurePeer(){
+ if(typeof Peer==='undefined'){toast(S.lang==='en'?'Internet duel service is still loading. Check your internet connection.':'שירות הדו־קרב באינטרנט עדיין נטען. בדוק את החיבור לאינטרנט.');return false;}
+ if(duelPeer && !duelPeer.destroyed) return true;
+ const id=duelId(S.name||'רון');
+ duelPeer=new Peer(id);
+ duelPeer.on('open',()=>{duelStatus(S.lang==='en'?'Online as '+(S.name||'Player'):'מחובר לאינטרנט בשם '+(S.name||'שחקן'));});
+ duelPeer.on('connection',conn=>{duelConn=conn;setupDuelConnection(conn,true);});
+ duelPeer.on('error',e=>{
+   const msg=e?.type==='unavailable-id' ? (S.lang==='en'?'This player name is already in use for a duel.':'השם הזה כבר מחובר לדו־קרב.') : (S.lang==='en'?'Duel error: ':'שגיאה בדו־קרב: ')+(e?.type||'connection');
+   toast(msg);
+ });
+ return true;
+}
+function setupDuelConnection(conn,incoming){
+ conn.on('open',()=>{if(incoming){conn.send({type:'invite',from:S.name||'רון'});}});
+ conn.on('data',msg=>handleDuelMessage(msg));
+ conn.on('close',()=>{if(duelState?.active){duelState.active=false;toast(S.lang==='en'?'The other player disconnected.':'השחקן השני התנתק.');}});
+}
+function duelModal(b,c){
+ const en=S.lang==='en';
+ b.innerHTML=c+`<div class="duel-wrap"><h2>⚔️ ${en?'Duel':'דו־קרב'}</h2><div class="duel-card"><p>${en?'Enter the other player’s name. They will be asked whether to duel.':'רשום את שם השחקן השני. הוא יקבל שאלה אם הוא רוצה לעשות דו־קרב.'}</p><div class="duel-name-row"><input id="duelTarget" type="text" maxlength="20" placeholder="${en?'Player name':'שם שחקן'}"><button class="duel-btn" onclick="sendDuelInvite()">${en?'Invite':'הזמן'}</button></div><div id="duelStatus" class="duel-status"></div></div><div class="duel-card"><p>⏱️ ${en?'30 seconds. More clicks wins. Winner gets 25 diamonds. No extra time or saved time. Only the first 5 completed duels can award diamonds.':'⏱️ 30 שניות. מי שלוחץ יותר מנצח. המנצח מקבל 25 יהלומים. אין זמן נוסף או זמן שמור. רק 5 הדו־קרבים הראשונים יכולים לתת יהלומים.'}</p><div id="duelScore" class="duel-score">0 — 0</div><div id="duelTimer" class="duel-status">30</div><button class="bigbtn" style="width:100%;margin-top:18px" onclick="hitDuel()">${en?'CLICK!':'לחץ!'}</button></div></div>`;
+ ensurePeer();
+ if(typeof Peer==='undefined')setTimeout(()=>ensurePeer(),800);
+}
+function duelStatus(t){const e=$('duelStatus');if(e)e.textContent=t;}
+function sendDuelInvite(){
+ const name=($('duelTarget')?.value||'').trim(); if(!name)return duelStatus(S.lang==='en'?'Enter a player name.':'רשום שם שחקן.');
+ if(!ensurePeer())return;
+ const target=duelId(name); if(!target)return;
+ duelStatus(S.lang==='en'?'Sending invite...':'שולח הזמנה...');
+ try{const c=duelPeer.connect(target,{reliable:true});duelConn=c;setupDuelConnection(c,false);c.on('open',()=>{c.send({type:'invite',from:S.name||'רון'});duelStatus(S.lang==='en'?'Invitation sent.':'ההזמנה נשלחה.');});}catch(e){duelStatus(S.lang==='en'?'Could not connect to that player.':'לא הצלחתי להתחבר לשחקן הזה.');}
+}
+function handleDuelMessage(msg){
+ if(!msg)return;
+ if(msg.type==='invite'){
+  const from=msg.from||'שחקן';
+  const ok=confirm((S.lang==='en'?'Player '+from+' wants to duel. Accept?':'השחקן '+from+' רוצה לעשות דו־קרב. לקבל?'));
+  if(ok){duelConn?.send({type:'accepted',from:S.name||'רון'});startDuelRound(true);}else duelConn?.send({type:'rejected'});
+ }else if(msg.type==='accepted'){startDuelRound(true);}else if(msg.type==='rejected'){duelStatus(S.lang==='en'?'Invitation declined.':'ההזמנה נדחתה.');}
+ else if(msg.type==='start'){startDuelRound(msg.startAt||Date.now()+500);}
+ else if(msg.type==='score'){if(duelState)duelState.other=Number(msg.score)||0;renderDuel();}
+ else if(msg.type==='finish'){if(duelState){duelState.other=Number(msg.score)||0;duelState.otherFinished=true;finishDuelIfReady();}}
+}
+function startDuelRound(announceOrAt){
+ if(duelState?.active)return;
+ const isHost=announceOrAt===true;
+ const at=(typeof announceOrAt==='number')?announceOrAt:Date.now()+1000;
+ duelState={active:true,score:0,other:0,startAt:at,otherFinished:false,finished:false};
+ if(isHost)duelConn?.send({type:'start',startAt:at});
+ renderDuel();
+ setTimeout(()=>{if(duelState?.active)duelCountdown();},Math.max(0,at-Date.now()));
+}
+function duelCountdown(){
+ if(!duelState?.active)return; const left=Math.max(0,duelState.startAt+30000-Date.now());
+ const t=$('duelTimer'); if(t)t.textContent=Math.ceil(left/1000);
+ if(left<=0){finishDuel();return;} setTimeout(duelCountdown,100);
+}
+function hitDuel(){
+ if(!duelState?.active||Date.now()<duelState.startAt)return; duelState.score++; duelConn?.send({type:'score',score:duelState.score}); renderDuel(); beep(360);
+}
+function renderDuel(){const s=$('duelScore');if(s&&duelState)s.textContent=duelState.score+' — '+duelState.other;}
+function finishDuel(){
+ if(!duelState?.active||duelState.finished)return; duelState.active=false;duelState.finished=true;duelConn?.send({type:'finish',score:duelState.score});finishDuelIfReady();
+}
+function finishDuelIfReady(){
+ if(!duelState||!duelState.finished||!duelState.otherFinished)return;
+ const a=duelState.score,b=duelState.other; let result=a===b?'🤝 '+(S.lang==='en'?'Draw':'תיקו'):(a>b?'🏆 '+(S.lang==='en'?'You won!':'ניצחת!'):'😔 '+(S.lang==='en'?'You lost.':'הפסדת.'));
+ if(a>b && S.duelRewardCount<5){S.diamonds+=25;S.duelRewardCount++;save();result+=' +25 💎';}
+ const e=$('duelStatus');if(e)e.textContent=result+' '+(S.lang==='en'?'You can start another duel.':'אפשר להתחיל דו־קרב נוסף.');
+ duelState=null;
+}
 function maintenanceGift(){
  if(S.maintenanceGift)return toast('כבר קיבלת את תיבת הפיצוי 🎁');
  let t=weighted(3,15,8);
@@ -617,32 +682,17 @@ function maintenance(){
   }
 }
 function loading(){
-  const loader=$('loader');
-  const num=$('loadnum');
-  const bar=$('loadbar');
-  if(!loader||!num||!bar)return;
-
-  // Always start from 0 and finish at 100%.
-  let start=performance.now();
-  const duration=3000;
-
-  function step(now){
-    const progress=Math.min(100, Math.floor(((now-start)/duration)*100));
-    num.textContent=progress+'%';
-    bar.style.width=progress+'%';
-
-    if(progress<100){
-      requestAnimationFrame(step);
-    }else{
-      num.textContent='100%';
-      bar.style.width='100%';
-      setTimeout(()=>{
-        loader.classList.add('hidden');
-      },250);
-    }
-  }
-
-  requestAnimationFrame(step);
+ const loader=$('loader'),num=$('loadnum'),bar=$('loadbar'); if(!loader||!num||!bar)return;
+ clearInterval(window.loadingTimer); clearTimeout(window.loadingFailsafe);
+ let start=Date.now(),duration=10000;
+ num.textContent='0%';bar.style.width='0%';
+ const finish=()=>{num.textContent='100%';bar.style.width='100%';clearInterval(window.loadingTimer);setTimeout(()=>{loader.classList.add('hidden');maintenance();ui();applyLanguage();updateLanguageDirection();},250)};
+ window.loadingTimer=setInterval(()=>{
+   const p=Math.min(100,Math.floor((Date.now()-start)/duration*100));
+   num.textContent=p+'%';bar.style.width=p+'%';
+   if(p>=100)finish();
+ },50);
+ window.loadingFailsafe=setTimeout(finish,11500);
 }
 
 setInterval(maintenance,1000);setInterval(()=>{if(game.active)renderGame()},200);
@@ -699,68 +749,32 @@ function refreshLanguageDependentUI(){
 }
 </script>
 
-
-<script id="gift50Logic">
-(function(){
-  const GIFT_KEY='catchSquare50DiamondGiftClaimedV2';
-
-  function giftLang(){ return (window.S && S.lang==='en'); }
-
-  function show50Gift(){
-    if(!window.S) return false;
-    if(localStorage.getItem(GIFT_KEY)==='1') return true;
-    if(document.getElementById('gift50Overlay')) return true;
-
-    const en=giftLang();
-    const overlay=document.createElement('div');
-    overlay.id='gift50Overlay';
-    overlay.className='gift50-overlay';
-    overlay.innerHTML=`
-      <div class="gift50-box" dir="${en?'ltr':'rtl'}">
-        <h2>${en?'🎁 Special Gift':'🎁 מתנה מיוחדת'}</h2>
-        <div class="gift50-diamonds">💎 50</div>
-        <p>${en?'You have a special gift waiting for you! Do you want to receive 50 diamonds?':'מחכה לך מתנה מיוחדת! רוצה לקבל 50 יהלומים?'}</p>
-        <div class="gift50-buttons">
-          <button class="gift50-btn gift50-accept" id="gift50Accept">${en?'Claim Reward':'קבלת הפרס'}</button>
-          <button class="gift50-btn gift50-later" id="gift50Later">${en?'Not Now':'לא עכשיו'}</button>
-        </div>
-      </div>`;
-    document.body.appendChild(overlay);
-
-    document.getElementById('gift50Accept').onclick=function(){
-      if(localStorage.getItem(GIFT_KEY)==='1') return;
-      S.diamonds=(Number(S.diamonds)||0)+50;
-      localStorage.setItem(GIFT_KEY,'1');
-      if(typeof save==='function') save(); else localStorage.setItem('catchSquareState',JSON.stringify(S));
-      if(typeof ui==='function') ui();
-      overlay.remove();
-      if(typeof toast==='function') toast(en?'🎉 You received 50 diamonds!':'🎉 קיבלת 50 יהלומים!');
-    };
-    document.getElementById('gift50Later').onclick=function(){ overlay.remove(); };
-    return true;
-  }
-
-  function hasGiftLink(){
-    const q=new URLSearchParams(window.location.search);
-    const h=new URLSearchParams((window.location.hash||'').replace(/^#/,'').replace(/^\?/,'') );
-    return q.get('gift')==='50' || h.get('gift')==='50' || window.location.href.includes('gift=50');
-  }
-
-  function check50GiftLink(){
-    if(!hasGiftLink()) return;
-    let tries=0;
-    const timer=setInterval(function(){
-      tries++;
-      if(show50Gift() || tries>100) clearInterval(timer);
-    },100);
-  }
-
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',check50GiftLink);
-  else check50GiftLink();
-})();
-</script>
-
 </body>
+
+<style>
+/* Desktop full-screen modal content fix */
+.modalbox{box-sizing:border-box;padding:24px 34px 34px;display:flex;flex-direction:column;align-items:stretch;}
+.modalbox > h2{flex:0 0 auto;}
+.modalbox > .shop-carousel{flex:1 1 auto;min-height:calc(100vh - 125px);width:100%;box-sizing:border-box;align-items:stretch;}
+.modalbox > .shop-carousel > .item{min-height:calc(100vh - 180px);height:auto;display:flex;flex-direction:column;justify-content:center;box-sizing:border-box;padding:34px 30px;}
+.modalbox > .shop-carousel > .item .row{margin-top:auto;}
+.modalbox > .creator-text{width:min(1100px,100%);margin:0 auto;font-size:clamp(18px,1.7vw,24px);line-height:1.7;flex:1;}
+.modalbox > .creator-text p{margin:0 auto 20px;max-width:1000px;padding:18px 22px;border-radius:18px;background:rgba(255,255,255,.035);}
+.modalbox > .toplist{width:min(1100px,100%);margin:0 auto;flex:1;overflow:auto;}
+.modalbox > .toplist .rank{min-height:62px;font-size:clamp(17px,1.6vw,23px);}
+.modalbox > .item:not(.promo-preview-card){width:min(1050px,100%);box-sizing:border-box;margin:14px auto;padding:28px;flex:0 0 auto;}
+.modalbox > .item h3{font-size:clamp(23px,2vw,32px);}
+@media(min-width:651px){
+  .modalbox > .shop-carousel{display:flex;flex-direction:row;overflow-x:auto;overflow-y:hidden;gap:18px;}
+  .modalbox > .shop-carousel > .item{flex:1 0 min(390px,31vw);width:auto;}
+}
+@media(max-width:650px){
+  .modalbox{padding:18px 12px 30px;}
+  .modalbox > .shop-carousel{min-height:0;}
+  .modalbox > .shop-carousel > .item{min-height:300px;}
+  .modalbox > .creator-text p{font-size:17px;padding:15px;}
+}
+</style>
 </html>
 <style>
 @media(max-width:650px){
