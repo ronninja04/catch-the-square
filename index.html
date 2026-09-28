@@ -1006,6 +1006,66 @@ function pickSpyAnimal(){
 <style id="spy-release-schedule">
 .spy-feature[style*="display: none"]{display:none!important}
 </style>
+
+<style id="gift100-link-style">
+.gift100-overlay{position:fixed;inset:0;z-index:1000001;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(circle at 50% 35%,rgba(66,120,255,.25),rgba(4,8,18,.96) 62%);backdrop-filter:blur(8px)}
+.gift100-box{width:min(520px,94vw);padding:34px 28px 30px;border:1px solid rgba(255,255,255,.16);border-radius:30px;text-align:center;background:linear-gradient(145deg,#172542,#0b1222);box-shadow:0 25px 90px rgba(0,0,0,.6),0 0 55px rgba(60,130,255,.18);color:#fff;animation:gift100In .28s ease-out}
+.gift100-icon{font-size:64px;line-height:1;margin-bottom:12px}
+.gift100-box h2{font-size:clamp(28px,6vw,44px);margin:0 0 10px;font-weight:1000}
+.gift100-reward{font-size:clamp(30px,7vw,50px);font-weight:1000;margin:12px 0;color:#61a7ff;text-shadow:0 0 22px rgba(97,167,255,.35)}
+.gift100-box p{font-size:18px;line-height:1.55;color:#c8d6ec;margin:8px 0 24px}
+.gift100-buttons{display:flex;gap:14px;justify-content:center}
+.gift100-btn{border:0;border-radius:16px;padding:15px 28px;min-width:150px;font-size:19px;font-weight:900;color:#fff;cursor:pointer;box-shadow:0 10px 24px rgba(0,0,0,.25);transition:transform .15s,filter .15s}
+.gift100-btn:hover{transform:translateY(-2px);filter:brightness(1.08)}
+.gift100-yes{background:linear-gradient(135deg,#1976ff,#45a2ff)}
+.gift100-no{background:linear-gradient(135deg,#e53935,#ff6262)}
+.gift100-note{font-size:12px!important;color:#7f91ad!important;margin-top:18px!important}
+@keyframes gift100In{from{opacity:0;transform:scale(.92) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}
+@media(max-width:520px){.gift100-buttons{flex-direction:column}.gift100-btn{width:100%}}
+</style>
+
+<script id="gift100LinkLogic">
+(function(){
+  const KEY='catchSquare100DiamondLinkClaimedV1';
+  function showGift100(){
+    if(!window.S || localStorage.getItem(KEY)==='1') return;
+    if(document.getElementById('gift100Overlay')) return;
+    const en=S.lang==='en';
+    const overlay=document.createElement('div');
+    overlay.id='gift100Overlay';
+    overlay.className='gift100-overlay';
+    overlay.innerHTML=`
+      <div class="gift100-box" dir="${en?'ltr':'rtl'}">
+        <div class="gift100-icon">🎁</div>
+        <h2>${en?'Get your reward?':'לקבל את הפרס?'}</h2>
+        <div class="gift100-reward">💎 100 ${en?'diamonds':'יהלומים'}</div>
+        <p>${en?'You came through a special reward link. Do you want to receive 100 diamonds?':'נכנסת דרך קישור מיוחד לפרס. רוצה לקבל 100 יהלומים?'}</p>
+        <div class="gift100-buttons">
+          <button class="gift100-btn gift100-yes" id="gift100Yes">${en?'Yes':'כן'}</button>
+          <button class="gift100-btn gift100-no" id="gift100No">${en?'No':'לא'}</button>
+        </div>
+        <p class="gift100-note">${en?'One-time reward per device':'פרס חד־פעמי לכל מכשיר'}</p>
+      </div>`;
+    document.body.appendChild(overlay);
+    document.getElementById('gift100Yes').onclick=()=>{
+      S.diamonds=(Number(S.diamonds)||0)+100;
+      localStorage.setItem(KEY,'1');
+      save();
+      overlay.remove();
+      toast(en?'🎉 You received 100 diamonds!':'🎉 קיבלת 100 יהלומים!');
+    };
+    document.getElementById('gift100No').onclick=()=>overlay.remove();
+  }
+  function maybeGift100(){
+    try{
+      const params=new URLSearchParams(location.search);
+      if(params.get('gift')==='100' && typeof maintenance==='function' && !maintenance()) showGift100();
+    }catch(e){}
+  }
+  setTimeout(maybeGift100,900);
+})();
+</script>
+
 </body>
 
 <style>
