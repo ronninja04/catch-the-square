@@ -1059,10 +1059,72 @@ function pickSpyAnimal(){
   function maybeGift100(){
     try{
       const params=new URLSearchParams(location.search);
-      if(params.get('gift')==='100' && typeof maintenance==='function' && !maintenance()) showGift100();
-    }catch(e){}
+      if(params.get('gift')!=='100') return;
+      // Show the reward as soon as the game state exists. The reward link itself
+      // is not blocked by the maintenance screen; the player can claim it when
+      // the game is available.
+      if(!window.S){ setTimeout(maybeGift100,500); return; }
+      if(localStorage.getItem(KEY)==='1') return;
+      showGift100();
+    }catch(e){ setTimeout(maybeGift100,700); }
   }
-  setTimeout(maybeGift100,900);
+  setTimeout(maybeGift100,1200);
+  window.addEventListener('load',()=>setTimeout(maybeGift100,300));
+})();
+</script>
+
+
+<script id="giftRewardLinkSystem">
+(function(){
+  const params=new URLSearchParams(location.search);
+  const reward=params.get('reward');
+  if(!reward || !window.S) return;
+  const valid = reward==='100gams' || reward==='dog';
+  if(!valid) return;
+  const key='catchSquareRewardClaimed_'+reward;
+  if(localStorage.getItem(key)==='1'){
+    try{history.replaceState({},'',location.pathname+location.hash)}catch(e){}
+    return;
+  }
+  const en=S.lang==='en';
+  const isDog=reward==='dog';
+  const title=en?'🎁 Special Reward':'🎁 פרס מיוחד';
+  const text=isDog ? (en?'Do you want to receive the Dog from the Spy Rush wheel?':'רוצה לקבל את הכלב מגלגל החיות של Spy Rush?') : (en?'Do you want to receive 100 diamonds?':'רוצה לקבל 100 יהלומים?');
+  const amount=isDog?'🐶':'💎 100';
+  const oldModal=document.getElementById('giftRewardModal');
+  if(oldModal)oldModal.remove();
+  const wrap=document.createElement('div');
+  wrap.id='giftRewardModal';
+  wrap.style.cssText='position:fixed;inset:0;z-index:1000001;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(3,8,20,.78);backdrop-filter:blur(10px);font-family:inherit;direction:rtl';
+  wrap.innerHTML=`<div style="width:min(520px,94vw);padding:30px 24px;border-radius:28px;background:linear-gradient(145deg,#17213b,#0b1020);border:1px solid rgba(255,255,255,.15);box-shadow:0 25px 80px rgba(0,0,0,.5);text-align:center;color:#fff">
+    <div style="font-size:64px;margin-bottom:8px">${amount}</div>
+    <h2 style="font-size:32px;margin:0 0 12px;font-weight:900">${title}</h2>
+    <p style="font-size:20px;color:#dbe5ff;margin:0 auto 24px;line-height:1.5">${text}</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <button id="giftRewardYes" style="border:0;border-radius:16px;padding:16px;font-size:20px;font-weight:900;cursor:pointer;background:#1683ff;color:white;box-shadow:0 8px 24px rgba(22,131,255,.28)">${en?'Yes':'כן'}</button>
+      <button id="giftRewardNo" style="border:0;border-radius:16px;padding:16px;font-size:20px;font-weight:900;cursor:pointer;background:#e53935;color:white;box-shadow:0 8px 24px rgba(229,57,53,.25)">${en?'No':'לא'}</button>
+    </div>
+  </div>`;
+  document.body.appendChild(wrap);
+  function finish(accepted){
+    if(accepted){
+      if(isDog){
+        S.spyRushCollected=Array.isArray(S.spyRushCollected)?S.spyRushCollected:[];
+        if(!S.spyRushCollected.includes('🐶'))S.spyRushCollected.push('🐶');
+        S.spyRushLastAnimal='🐶';
+      }else{
+        S.diamonds=(Number(S.diamonds)||0)+100;
+      }
+      localStorage.setItem(key,'1');
+      if(typeof save==='function')save();
+      if(typeof ui==='function')ui();
+      if(typeof toast==='function')toast(isDog?(en?'🐶 Dog added to your collection!':'🐶 הכלב נוסף לאוסף שלך!'):(en?'💎 You received 100 diamonds!':'💎 קיבלת 100 יהלומים!'));
+    }
+    try{history.replaceState({},'',location.pathname+location.hash)}catch(e){}
+    wrap.remove();
+  }
+  document.getElementById('giftRewardYes').onclick=()=>finish(true);
+  document.getElementById('giftRewardNo').onclick=()=>finish(false);
 })();
 </script>
 
