@@ -741,7 +741,7 @@ function loading(){
    return;
  }
  clearInterval(window.loadingTimer); clearTimeout(window.loadingFailsafe);
- const start=Date.now(),duration=10000;
+ const start=Date.now(),duration=700;
  let finished=false;
  num.textContent='0%'; bar.style.width='0%';
  const finish=()=>{
@@ -1028,7 +1028,7 @@ function pickSpyAnimal(){
 (function(){
   const KEY='catchSquare100DiamondLinkClaimedV1';
   function showGift100(){
-    if(!window.S || localStorage.getItem(KEY)==='1') return;
+    if(localStorage.getItem(KEY)==='1') return;
     if(document.getElementById('gift100Overlay')) return;
     const en=S.lang==='en';
     const overlay=document.createElement('div');
@@ -1078,7 +1078,7 @@ function pickSpyAnimal(){
 (function(){
   const params=new URLSearchParams(location.search);
   const reward=params.get('reward');
-  if(!reward || !window.S) return;
+  if(!reward) return;
   const valid = reward==='100gams' || reward==='dog';
   if(!valid) return;
   const key='catchSquareRewardClaimed_'+reward;
