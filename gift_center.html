@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>מרכז הפרסים | תפוס את הריבוע</title>
+<style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:Arial,sans-serif;color:#fff;background:radial-gradient(circle at 20% 10%,#294c8f 0,#111a36 35%,#070b18 75%);display:flex;align-items:center;justify-content:center;padding:24px;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:-20%;background:radial-gradient(circle at 80% 20%,rgba(76,145,255,.22),transparent 25%),radial-gradient(circle at 20% 80%,rgba(145,74,255,.18),transparent 25%);filter:blur(30px);pointer-events:none}
+.card{position:relative;width:min(560px,100%);padding:34px 26px 28px;border:1px solid rgba(255,255,255,.14);border-radius:30px;background:rgba(12,18,38,.88);box-shadow:0 25px 80px rgba(0,0,0,.45);text-align:center}
+.logo{font-size:58px;filter:drop-shadow(0 8px 15px rgba(0,0,0,.35));margin-bottom:4px}.title{font-size:clamp(30px,7vw,46px);font-weight:1000;margin:0;background:linear-gradient(90deg,#fff,#7fc5ff);-webkit-background-clip:text;background-clip:text;color:transparent}.sub{color:#aebbd8;font-size:17px;margin:9px 0 25px}
+.input-wrap{display:flex;gap:10px;direction:ltr}.input{flex:1;min-width:0;padding:17px 18px;border-radius:16px;border:2px solid #33456f;background:#0b1228;color:#fff;font-size:19px;text-align:center;outline:none}.input:focus{border-color:#2994ff;box-shadow:0 0 0 4px rgba(41,148,255,.12)}
+.check{border:0;border-radius:16px;padding:0 20px;background:#2389ff;color:#fff;font-size:18px;font-weight:900;cursor:pointer}.check:hover{filter:brightness(1.08)}
+.message{min-height:28px;margin:12px 0 0;font-size:15px;font-weight:800}.error{color:#ff6262}.success{color:#62e59b}
+.reward{margin-top:22px;padding:20px;border-radius:22px;background:linear-gradient(145deg,rgba(35,137,255,.14),rgba(115,77,255,.12));border:1px solid rgba(104,168,255,.25)}.reward-icon{font-size:48px}.reward h2{margin:7px 0 4px;font-size:25px}.reward p{margin:0 0 15px;color:#b9c7e4}.claim{width:100%;border:0;border-radius:16px;padding:16px;background:linear-gradient(135deg,#258fff,#5b61ff);color:#fff;font-size:20px;font-weight:1000;cursor:pointer;box-shadow:0 10px 25px rgba(38,128,255,.25)}
+.hint{margin-top:20px;color:#7787aa;font-size:13px}.hidden{display:none}@media(max-width:500px){.input-wrap{flex-direction:column}.check{padding:16px}.card{padding:28px 18px}}
+</style>
+</head>
+<body>
+<main class="card">
+  <div class="logo">🎁</div>
+  <h1 class="title">מרכז הפרסים</h1>
+  <div class="sub">הזן קוד פרס כדי לפתוח את המתנה שלך</div>
+  <div class="input-wrap">
+    <input id="code" class="input" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="הקלד קוד פרס">
+    <button id="check" class="check" type="button">בדוק קוד</button>
+  </div>
+  <div id="message" class="message" aria-live="polite"></div>
+  <section id="reward" class="reward hidden">
+    <div id="rewardIcon" class="reward-icon">🎁</div>
+    <h2 id="rewardTitle"></h2>
+    <p id="rewardText"></p>
+    <button id="claim" class="claim" type="button">קבל את הפרס</button>
+  </section>
+  <div class="hint">אפשר לקבל כל אחד מהפרסים פעם אחת בלבד.</div>
+</main>
+<script>
+(function(){
+  const GAME_URL='https://ronninja04.github.io/catch-the-square/';
+  const rewards={
+    '100gams':{icon:'💎',title:'100 יהלומים',text:'הקוד תקין! לחץ על הכפתור כדי לעבור למשחק ולקבל את הפרס.'},
+    'dog':{icon:'🐶',title:'כלב מ־Spy Rush',text:'הקוד תקין! לחץ על הכפתור כדי לעבור למשחק ולקבל את הכלב.'}
+  };
+  const code=document.getElementById('code'),check=document.getElementById('check'),msg=document.getElementById('message'),reward=document.getElementById('reward'),icon=document.getElementById('rewardIcon'),title=document.getElementById('rewardTitle'),text=document.getElementById('rewardText'),claim=document.getElementById('claim');
+  let selected='';
+  function checkCode(){
+    const value=code.value.trim(); selected=''; reward.classList.add('hidden'); msg.textContent=''; msg.className='message';
+    if(!rewards[value]){msg.textContent='קוד שגוי! נסו עוד פעם!';msg.className='message error';return;}
+    selected=value; const r=rewards[value]; icon.textContent=r.icon; title.textContent=r.title; text.textContent=r.text; reward.classList.remove('hidden'); msg.textContent='✓ קוד תקין!'; msg.className='message success';
+  }
+  check.addEventListener('click',checkCode); code.addEventListener('keydown',e=>{if(e.key==='Enter')checkCode()});
+  claim.addEventListener('click',()=>{if(!selected)return; location.href=GAME_URL+'?reward='+encodeURIComponent(selected)});
+})();
+</script>
+</body>
+</html>
