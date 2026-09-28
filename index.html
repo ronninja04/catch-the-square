@@ -239,9 +239,9 @@ body.lang-he{direction:rtl}
 <button class="bigbtn alt" onclick="openModal('creator')">👑 יוצר המשחק: רון</button>
 <button class="bigbtn alt spy-feature" id="memoryMainBtn" onclick="openModal('memory')">🧠 זיכרון</button>
 <button class="bigbtn alt spy-feature spy-collab-btn" id="spyCollabMainBtn" onclick="openSpyRushMode()">🕵️ Spy Rush × Catch the Square</button>
-<button class="bigbtn spy-feature spy-main-link" id="spyMainLinkBtn" onclick="goToSpyRush()">🌐 עבור ל־Spy Rush</button>
-</div>
-<div class="maintenance-countdown-card"><div class="m-title">🛠️ התחזוקה הבאה בעוד:</div><div class="m-time" id="nextMaintTime">13:00:00</div></div>
+
+
+<button class="bigbtn spy-main-link" onclick="goToSpyRush()">🕵️ Spy Rush</button></div>
 </section>
 
 <section id="gamePanel" class="hidden">
@@ -265,19 +265,18 @@ body.lang-he{direction:rtl}
 </div>
 
 <div id="maint" class="overlay hidden">
-  <div class="maint-screen">
-    <div class="maint-glow"></div>
-    <div class="maint-icon">🛠️</div>
-    <div class="maint-badge">RON STUDIOS • UPDATE</div>
-    <h1>עבודות תחזוקה</h1>
-    <div class="maint-sub">נחזור בשלוש</div>
-    <div class="maint-count-label">אפשר יהיה לשחק שוב בעוד</div>
-    <div class="maint-count" id="maintTime">00:00:00</div>
-    <div class="maint-preview">
-      <h3>✨ מה יהיה בעדכון:</h3>
-      <p>שיתוף פעולה עם משחק מסתורי<br>מורידים באגים • משפרים עיצוב<br>ועושים את המשחק יותר כיף!</p>
-    </div>
-  </div>
+<div class="maint-screen">
+<div class="maint-icon">🛠️</div>
+<div class="maint-badge">RON STUDIOS • MAINTENANCE</div>
+<h1>עבודות תחזוקה</h1>
+<div class="maint-sub">נחזור בשלוש</div>
+<div class="maint-preview">
+<h3>✨ מה יהיה בעדכון:</h3>
+<p>שיתוף פעולה עם משחק מסתורי • מורידים באגים • משפרים עיצוב • ועושים את המשחק יותר כיף!</p>
+</div>
+<div class="maint-count" id="maintTime">⏳ מחשב זמן...</div>
+<div class="maint-note">לא יהיה אפשר לשחק בזמן עבודות התחזוקה.</div>
+</div>
 </div>
 
 <div id="modal" class="modal hidden"><div class="modalbox" id="modalBox"></div></div>
@@ -577,12 +576,14 @@ function applyLanguage(){
  if(bs[0])bs[0].textContent=l.start;
  if(bs[1])bs[1].textContent=l.shop;
  if(bs[2])bs[2].textContent=l.creator;
+ const mb=document.getElementById('memoryMainBtn'); if(mb)mb.textContent=S.lang==='en'?'🧠 Memory':'🧠 זיכרון';
+ const cb=document.getElementById('spyCollabMainBtn'); if(cb)cb.textContent=S.lang==='en'?'🕵️ Spy Rush × Catch the Square':'🕵️ Spy Rush × Catch the Square';
+ const sb=document.getElementById('spyMainLinkBtn'); if(sb)sb.textContent=S.lang==='en'?'🌐 Go to Spy Rush':'🌐 עבור ל־Spy Rush';
  const gear=document.querySelector('.gear'); if(gear)gear.setAttribute('aria-label',l.settings);
 }
 function settingsModal(b,c){
  const en=S.lang==='en', h=(a,e)=>en?e:a;
- b.innerHTML=c+`<h2>⚙️ ${h('הגדרות','Settings')}</h2>
- <div class="item settings-top-card"><h3>🏆 ${h('טופ','Top')}</h3><button class="buy" onclick="openModal('top')">🏆 ${h('פתח טופ','Open Top')}</button></div>
+ b.innerHTML=c+`<div class="settings-close-space"></div><div class="item settings-top-card"><button class="buy settings-top-button" onclick="openModal('top')">🏆 ${h('טופ','Top')}</button></div><h2>⚙️ ${h('הגדרות','Settings')}</h2>
  <div class="item"><h3>👤 ${h('שם השחקן','Player Name')}</h3><input id="nameInput" type="text" value="${esc(S.name)}" maxlength="20"><button class="buy" style="margin-top:10px" onclick="setName()">${h('שמור שם','Save Name')}</button></div>
  <div class="item"><h3>🌍 ${h('שפה','Language')}</h3><div class="langs"><button class="langbtn" onclick="setLang('he')">🇮🇱 עברית</button><button class="langbtn" onclick="setLang('en')">🇺🇸 English</button></div></div>
  <div class="item"><h3>🔊 ${h('צלילים ומוזיקה','Sound & Music')}</h3><p id="soundStatus">${soundOn?h('המוזיקה והצלילים פעילים','Sound and music are on'):h('המוזיקה והצלילים כבויים','Sound and music are off')}</p><button class="buy" onclick="toggleSound()">${h('החלף מצב צלילים','Toggle Sound')}</button></div>
@@ -699,7 +700,7 @@ function maintenanceGift(){
   toast(S.lang==='en'?'No maintenance gift is available.':'אין מתנת תחזוקה הפעם.');
 }
 function spyUnlocked(){
-  const unlock=new Date('2026-09-28T13:00:00+03:00').getTime();
+  const unlock=new Date('2026-09-28T15:00:00+03:00').getTime();
   return Date.now()>=unlock;
 }
 function updateSpyFeatureVisibility(){
@@ -709,39 +710,25 @@ function updateSpyFeatureVisibility(){
   });
 }
 function maintenance(){
-  // Maintenance is active immediately and ends today at 15:00 (Israel time).
+  const start=new Date('2026-09-28T13:30:00+03:00').getTime();
   const end=new Date('2026-09-28T15:00:00+03:00').getTime();
-  const n=Date.now();
-  const active=n<end;
+  const n=Date.now(), active=n>=start && n<end;
   document.body.classList.toggle('maintenance-active',active);
-  const mm=$('maint');
-  if(mm){
-    mm.classList.toggle('hidden',!active);
-    mm.style.display=active?'flex':'none';
-  }
+  $('maint').classList.toggle('hidden',!active);
   updateSpyFeatureVisibility();
   if(active && game.active){
     game.active=false;clearInterval(game.interval);game.interval=null;
     closeModal();
     $('gamePanel').classList.add('hidden');
   }
-  const next=$('nextMaintTime');
-  if(next) next.textContent=active?fmt(end-n):'00:00:00';
-  const mt=$('maintTime');
-  if(mt) mt.textContent=active?fmt(end-n):'00:00:00';
+  if(active) $('maintTime').textContent=(S.lang==='en'?'⏳ Playable again in ':'⏳ אפשר לשחק שוב בעוד ')+fmt(end-n);
   return active;
 }
-
 function loading(){
  const loader=document.getElementById('loader'),num=document.getElementById('loadnum'),bar=document.getElementById('loadbar');
  if(!loader||!num||!bar)return;
- if(typeof maintenance==='function' && maintenance()){
-   loader.classList.add('hidden');
-   loader.style.display='none';
-   return;
- }
  clearInterval(window.loadingTimer); clearTimeout(window.loadingFailsafe);
- const start=Date.now(),duration=700;
+ const start=Date.now(),duration=10000;
  let finished=false;
  num.textContent='0%'; bar.style.width='0%';
  const finish=()=>{
@@ -839,8 +826,12 @@ const spyRushNames={'🦁':['אריה','Lion'],'🐵':['קוף','Monkey'],'🐳'
 function spyName(a){const n=spyRushNames[a]||['חיה','Animal'];return S.lang==='en'?n[1]:n[0];}
 function spyRushAnimalsList(){return spyRushAnimals.filter(a=>!S.spyRushCollected.includes(a));}
 function spyWheelModal(b,c){const remaining=spyRushAnimalsList(),en=S.lang==='en';const items=remaining.map((a,i)=>`<span class="wheel-animal" style="--i:${i};--n:${Math.max(1,remaining.length)}">${a}</span>`).join('');b.innerHTML=`${c}<div class="spy-wheel-page"><h2>🎡 ${en?'Spy Rush Wheel':'גלגל Spy Rush'}</h2><p>${en?'Collect all 15 animals. Each spin costs 250 diamonds. Collected animals disappear from the wheel.':'אסוף את כל 15 החיות. כל סיבוב עולה 250 יהלומים. חיות שאספת נעלמות מהגלגל.'}</p><div class="spy-wheel-stage"><div class="wheel-pointer">▼</div><div id="spyWheel" class="spy-wheel">${items||'<span class="wheel-empty">🏆</span>'}<div class="wheel-center">SPY<br>RUSH</div></div></div><div id="wheelResult" class="wheel-result">${remaining.length?(en?'Ready to spin':'מוכן לסיבוב'):'🎉 '+(en?'All animals collected!':'אספת את כל החיות!')}</div><button class="bigbtn" id="spinWheelBtn" onclick="spinSpyRushWheel()" ${remaining.length?'':'disabled'}>🎡 ${en?'Spin — 250 💎':'סובב — 250 💎'}</button><div class="wheel-count">${en?`${S.spyRushCollected.length}/15 collected`:`${S.spyRushCollected.length}/15 נאספו`}</div></div>`;}
-function spinSpyRushWheel(){const remaining=spyRushAnimalsList(),en=S.lang==='en';if(!remaining.length)return toast(en?'You collected them all!':'אספת את כולן!');if(S.diamonds<250)return toast(en?'Not enough diamonds 💎':'אין מספיק יהלומים 💎');const btn=$('spinWheelBtn');if(btn)btn.disabled=true;S.diamonds-=250;S.spyRushSpins++;save();const winner=remaining[Math.floor(Math.random()*remaining.length)],wheel=$('spyWheel');if(wheel){wheel.classList.remove('spinning');void wheel.offsetWidth;wheel.classList.add('spinning');}setTimeout(()=>{S.spyRushCollected.push(winner);S.spyRushLastAnimal=winner;save();const r=$('wheelResult');if(r)r.innerHTML=`🎉 ${en?'You got':'קיבלת'} <b>${winner} ${spyName(winner)}</b>!`;if(wheel){wheel.classList.remove('spinning');wheel.style.transform='rotate(0deg)';}setTimeout(()=>spyWheelModal($('modalBox'),'<button class="close" onclick="closeModal()">✕</button>'),650);},1800);}
-function memoryModal(b,c){const en=S.lang==='en';const collected=spyRushAnimals.filter(a=>S.spyRushCollected.includes(a)).map(a=>`<div class="memory-animal collected"><span>${a}</span><b>${spyName(a)}</b></div>`).join('');const all=S.spyRushCollected.length>=spyRushAnimals.length;b.innerHTML=`${c}<div class="memory-page"><h2>🧠 ${en?'Memory':'זיכרון'}</h2>${all?`<p class="memory-complete">${en?'No more animals':'אין עוד חיות'}</p>`:''}<div class="memory-grid">${collected}</div><div class="memory-count">${S.spyRushCollected.length}/15</div></div>`;}
+function spinSpyRushWheel(){const remaining=spyRushAnimalsList(),en=S.lang==='en';if(!remaining.length)return toast(en?'You collected them all!':'אספת את כולן!');if(S.diamonds<250)return toast(en?'Not enough diamonds 💎':'אין מספיק יהלומים 💎');const btn=$('spinWheelBtn');if(btn)btn.disabled=true;S.diamonds-=250;S.spyRushSpins++;save();const winner=remaining[Math.floor(Math.random()*remaining.length)],wheel=$('spyWheel');if(wheel){wheel.classList.remove('spinning');void wheel.offsetWidth;wheel.classList.add('spinning');}setTimeout(()=>{S.spyRushCollected.push(winner);S.spyRushLastAnimal=winner;save();if(wheel){wheel.classList.remove('spinning');wheel.style.transform='rotate(0deg)';}showAnimalWon(winner);},1800);}
+function showAnimalWon(animal){
+ const en=S.lang==='en';
+ const m=document.createElement('div');m.className='animal-won-overlay';m.innerHTML=`<div class="animal-won-card"><div class="animal-won-glow">✨</div><div class="animal-won-title">${en?'You got a new animal!':'קיבלת חיה חדשה!'}</div><div class="animal-won-animal">${animal}</div><div class="animal-won-name">${spyName(animal)}</div><button class="bigbtn" onclick="this.closest('.animal-won-overlay').remove();spyWheelModal($('modalBox'),'<button class=\"close\" onclick=\"closeModal()\">✕</button>')">${en?'Awesome!':'מדהים!'}</button></div>`;document.body.appendChild(m);
+}
+function memoryModal(b,c){const en=S.lang==='en';const cells=spyRushAnimals.map(a=>{const got=S.spyRushCollected.includes(a);return `<div class="memory-cell ${got?'got':''}"><span>${got?a:'?'}</span>${got?`<b>${spyName(a)}</b>`:''}</div>`}).join('');const all=S.spyRushCollected.length>=spyRushAnimals.length;b.innerHTML=`${c}<div class="memory-page"><div class="memory-frame"><div class="memory-frame-title">🕵️ ${en?'Spy Rush':'Spy Rush'}</div>${all?`<div class="memory-complete">${en?'No more animals':'אין עוד חיות'}</div>`:''}<div class="memory-grid">${cells}</div></div></div>`;}
 
 function dailyUI(){let el=$('dailyTimer');if(!el)return;let n=new Date(),next=new Date(n);next.setHours(24,0,0,0);let ms=next-n;el.textContent=(S.lang==='en'?'Refresh in ':'הטענה בעוד ')+fmt(ms)}
 function fmt(ms){ms=Math.max(0,ms);let s=Math.floor(ms/1000),h=Math.floor(s/3600),m=Math.floor((s%3600)/60),x=s%60;return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(x).padStart(2,'0')}
@@ -900,6 +891,10 @@ const SPY_QUIZ_BANK_HARD = [
  ["מהו 3/5 מתוך 20?",["12","10","15","8"],0]
 ];
 
+const SPY_QUIZ_BANK_HARD_EN=[
+["Which fraction is larger?",["3/4","2/3","1/2","3/5"],0],["If a train travels 60 km/h for two hours, how many km does it travel?",["120","90","180","60"],0],["Which number is missing: 2, 4, 8, 16, ?",["32","24","30","20"],0],["How many degrees are in a right angle?",["90","45","180","60"],0],["Which continent is in both the Northern and Southern Hemispheres?",["Africa","Europe","North America","Asia"],0],["What happens to water when it freezes?",["It becomes a solid","It becomes a gas","It disappears","It gets hotter"],0],["Which organ mainly pumps blood through the body?",["The heart","The lungs","The stomach","The brain"],0],["If 24 candies are shared equally among 6 children, how many does each get?",["4","6","3","5"],0],["What is 7 × 8?",["56","54","64","48"],0],["Which planet is closest to the Sun?",["Mercury","Venus","Mars","Earth"],0],["What is the opposite of 'rare'?",["Common","Small","Far","Quiet"],0],["If today is Tuesday, what day will it be in 10 days?",["Friday","Thursday","Saturday","Sunday"],0],["Which number is even and between 20 and 30?",["24","21","27","29"],0],["What is 25% of 80?",["20","15","25","30"],0],["Which gas do humans need to breathe?",["Oxygen","Helium","Carbon dioxide","Hydrogen"],0],["How many sides does a hexagon have?",["6","5","7","8"],0],["A square has a 5 cm side. What is its perimeter?",["20 cm","10 cm","25 cm","15 cm"],0],["What is the order from smallest to largest?",["0.2, 0.5, 0.8","0.8, 0.5, 0.2","0.5, 0.2, 0.8","0.2, 0.8, 0.5"],0],["Which force pulls objects toward Earth?",["Gravity","Friction","Magnetism","Pressure"],0],["What is the next prime number after 7?",["11","9","10","13"],0],["Which animal is a mammal?",["Dolphin","Shark","Octopus","Turtle"],0],["How many minutes are in two and a half hours?",["150","120","180","130"],0],["Which tool measures temperature?",["Thermometer","Compass","Ruler","Clock"],0],["What can happen to a shadow when a light source moves closer to an object?",["The shadow can grow","It always disappears","It turns blue","It never changes"],0],["Which shape has 3 sides?",["Triangle","Quadrilateral","Pentagon","Circle"],0],["If 3 notebooks cost 18 shekels, how much does one cost?",["6 shekels","5 shekels","9 shekels","3 shekels"],0],["What is 100 minus 37?",["63","67","73","57"],0],["Which part of a plant usually absorbs water from the soil?",["Roots","Flowers","Fruits","Leaves"],0],["How many seconds are in one and a half minutes?",["90","60","120","150"],0],["If you face north and turn right, which direction are you facing?",["East","West","South","North"],0],["Which metal is usually attracted to a magnet?",["Iron","Copper","Aluminum","Gold"],0],["What is 9²?",["81","18","72","99"],0],["Which statement is true?",["All squares are rectangles","All rectangles are squares","All triangles are circles","All circles are squares"],0],["How many minutes are three-quarters of an hour?",["45","40","50","35"],0],["Which planet is known for its prominent rings?",["Saturn","Mars","Venus","Mercury"],0],["What is the missing number: 5, 10, 20, 40, ?",["80","60","70","100"],0],["Which material is a relatively good conductor of electricity?",["Copper","Wood","Rubber","Glass"],0],["If 5 boxes each contain 7 balls, how many balls are there?",["35","30","42","28"],0],["Which organ is mainly used for breathing?",["Lungs","Kidneys","Liver","Stomach"],0],["What is 3/5 of 20?",["12","10","15","8"],0]
+];
+
 function shuffleArray(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function openSpyRushMode(){
   let m=document.getElementById('spyRushModeModal');
@@ -912,20 +907,20 @@ function openSpyRushMode(){
 }
 function closeSpyRushMode(){clearInterval(spyQuizTimer);const m=document.getElementById('spyRushModeModal');if(m){m.classList.remove('show');m.style.display='none';}}
 function startSpyQuiz(){
-  clearInterval(spyQuizTimer);spyQuizQuestions=shuffleArray([...SPY_QUIZ_BANK_HARD]).slice(0,10);spyQuizPos=0;spyQuizTime=0;spyQuizLocked=false;renderSpyQuestion();
+  clearInterval(spyQuizTimer);spyQuizQuestions=shuffleArray([...(S.lang==='en'?SPY_QUIZ_BANK_HARD_EN:SPY_QUIZ_BANK_HARD)]).slice(0,10);spyQuizPos=0;spyQuizTime=0;spyQuizLocked=false;renderSpyQuestion();
 }
 function renderSpyQuestion(){
   const el=document.getElementById('spyQuizContent');if(!el)return;
   clearInterval(spyQuizTimer);spyQuizLocked=false;
   if(spyQuizPos>=10){
-    el.innerHTML=`<div class="spy-progress">10 / 10</div><h2>🎉 סיימת את כל החידות!</h2><div class="spy-earned">⏱️ צברת ${spyQuizTime} שניות</div><button class="bigbtn spy-next-game-btn" onclick="finishSpyQuizAndStart()">▶️ המשך לתפוס את הריבוע</button>`;
+    el.innerHTML=`<div class="spy-progress">10 / 10</div><h2>🎉 ${S.lang==='en'?'You finished all the questions!':'סיימת את כל החידות!'}</h2><div class="spy-earned">⏱️ ${S.lang==='en'?'You earned':'צברת'} ${spyQuizTime} ${S.lang==='en'?'seconds':'שניות'}</div><button class="bigbtn spy-next-game-btn" onclick="finishSpyQuizAndStart()">▶️ ${S.lang==='en'?'Continue to Catch the Square':'המשך לתפוס את הריבוע'}</button>`;
     return;
   }
   const q=spyQuizQuestions[spyQuizPos];
   const answers=q[1].map((a,i)=>({a,i}));shuffleArray(answers);
   const correct=answers.findIndex(x=>x.i===q[2]);
-  el.innerHTML=`<div class="spy-progress">חידה ${spyQuizPos+1} / 10</div>
-    <div class="spy-time-line">⏱️ זמן לשאלה: <b id="spyQTimer">10</b> שניות &nbsp; | &nbsp; צברת: <b>${spyQuizTime}</b> שניות</div>
+  el.innerHTML=`<div class="spy-progress">${S.lang==='en'?'Question':'חידה'} ${spyQuizPos+1} / 10</div>
+    <div class="spy-time-line">⏱️ ${S.lang==='en'?'Time for question':'זמן לשאלה'}: <b id="spyQTimer">10</b> ${S.lang==='en'?'seconds':'שניות'} &nbsp; | &nbsp; ${S.lang==='en'?'Earned':'צברת'}: <b>${spyQuizTime}</b> ${S.lang==='en'?'seconds':'שניות'}</div>
     <div class="spy-question">${q[0]}</div>
     <div class="spy-answers">${answers.map((x,displayIndex)=>`<button class="btn spy-answer" data-index="${x.i}" onclick="answerSpyQuestion(${x.i},this)">${x.a}</button>`).join('')}</div>`;
   let left=10;const timerEl=document.getElementById('spyQTimer');
@@ -956,7 +951,7 @@ function finishSpyQuizAndStart(){
   renderGame();
   placeSquare();
 }
-function goToSpyRush(){window.location.href='https://lake-currant-7bjc5.shipped.run/';}
+function goToSpyRush(){window.location.href='https://tricky-apology-6xj41.shipped.run/';}
 </script>
 
 
@@ -993,13 +988,18 @@ function pickSpyAnimal(){
 .promo-preview-card{cursor:pointer;}
 .spy-main-link{background:linear-gradient(135deg,#6b4cff,#9b6cff)!important;box-shadow:0 12px 30px rgba(107,76,255,.28)!important;}
 .memory-complete{font-size:clamp(28px,4vw,52px);font-weight:1000;text-align:center;margin:30px 0;color:#ffd34d;}
-.settings-top-card{order:-1;}
+.settings-top-card{order:0;}
 @media(min-width:651px){
  .toplist{font-size:inherit!important;gap:7px!important;max-width:720px!important;margin:0 auto!important;}
  .toplist .rank{min-height:46px!important;padding:9px 12px!important;border-radius:14px!important;}
  .toplist .rank strong{font-size:17px!important;}
  .settings-top-card{padding:18px!important;}
 }
+.settings-top-card{order:0!important;width:100%!important;max-width:none!important;margin:0!important;padding:14px!important;box-sizing:border-box!important;}
+.settings-top-card h3{margin:0 0 10px!important;font-size:20px!important;}
+.settings-top-card .buy{display:block!important;width:100%!important;box-sizing:border-box!important;min-height:46px!important;font-size:16px!important;padding:11px 15px!important;border-radius:14px!important;}
+@media(min-width:651px){.settings-top-card{width:100%!important;max-width:none!important;padding:14px!important;}.settings-top-card .buy{min-height:46px!important;font-size:16px!important;}}
+@media(max-width:650px){.settings-top-card{width:100%!important;max-width:none!important;padding:14px!important;}.settings-top-card .buy{min-height:46px!important;font-size:16px!important;}}
 @media(max-width:650px){.shop-carousel>.item{min-height:260px!important;}}
 </style>
 
@@ -1007,127 +1007,20 @@ function pickSpyAnimal(){
 .spy-feature[style*="display: none"]{display:none!important}
 </style>
 
-<style id="gift100-link-style">
-.gift100-overlay{position:fixed;inset:0;z-index:1000001;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(circle at 50% 35%,rgba(66,120,255,.25),rgba(4,8,18,.96) 62%);backdrop-filter:blur(8px)}
-.gift100-box{width:min(520px,94vw);padding:34px 28px 30px;border:1px solid rgba(255,255,255,.16);border-radius:30px;text-align:center;background:linear-gradient(145deg,#172542,#0b1222);box-shadow:0 25px 90px rgba(0,0,0,.6),0 0 55px rgba(60,130,255,.18);color:#fff;animation:gift100In .28s ease-out}
-.gift100-icon{font-size:64px;line-height:1;margin-bottom:12px}
-.gift100-box h2{font-size:clamp(28px,6vw,44px);margin:0 0 10px;font-weight:1000}
-.gift100-reward{font-size:clamp(30px,7vw,50px);font-weight:1000;margin:12px 0;color:#61a7ff;text-shadow:0 0 22px rgba(97,167,255,.35)}
-.gift100-box p{font-size:18px;line-height:1.55;color:#c8d6ec;margin:8px 0 24px}
-.gift100-buttons{display:flex;gap:14px;justify-content:center}
-.gift100-btn{border:0;border-radius:16px;padding:15px 28px;min-width:150px;font-size:19px;font-weight:900;color:#fff;cursor:pointer;box-shadow:0 10px 24px rgba(0,0,0,.25);transition:transform .15s,filter .15s}
-.gift100-btn:hover{transform:translateY(-2px);filter:brightness(1.08)}
-.gift100-yes{background:linear-gradient(135deg,#1976ff,#45a2ff)}
-.gift100-no{background:linear-gradient(135deg,#e53935,#ff6262)}
-.gift100-note{font-size:12px!important;color:#7f91ad!important;margin-top:18px!important}
-@keyframes gift100In{from{opacity:0;transform:scale(.92) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}
-@media(max-width:520px){.gift100-buttons{flex-direction:column}.gift100-btn{width:100%}}
+<style id="animal-memory-polish">
+.memory-page{width:min(980px,100%);margin:0 auto;padding:8px 0 20px}
+.memory-frame{border:3px solid rgba(105,186,255,.5);border-radius:30px;padding:22px;background:linear-gradient(145deg,rgba(20,39,68,.98),rgba(9,17,33,.98));box-shadow:0 20px 70px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.08)}
+.memory-frame-title{text-align:center;font-size:clamp(30px,4vw,46px);font-weight:1000;margin-bottom:20px;color:#fff}
+.memory-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.memory-cell{aspect-ratio:1;border-radius:20px;border:2px solid rgba(255,255,255,.14);background:linear-gradient(145deg,#152944,#0c182b);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;box-shadow:0 10px 25px rgba(0,0,0,.22)}
+.memory-cell span{font-size:clamp(32px,6vw,58px);font-weight:1000}.memory-cell:not(.got) span{font-size:clamp(38px,6vw,68px);color:#9ab0c9}.memory-cell b{font-size:clamp(12px,1.5vw,18px)}
+.memory-complete{text-align:center;font-weight:1000;font-size:20px;margin:-4px 0 18px;color:#8ff0ad}
+.animal-won-overlay{position:fixed;inset:0;z-index:100000;background:rgba(3,8,18,.82);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;padding:20px}
+.animal-won-card{width:min(620px,94vw);text-align:center;padding:34px;border-radius:36px;border:2px solid rgba(120,200,255,.4);background:linear-gradient(145deg,#172d4d,#0b1628);box-shadow:0 30px 100px rgba(0,0,0,.5)}
+.animal-won-title{font-size:clamp(26px,4vw,42px);font-weight:1000}.animal-won-animal{font-size:clamp(110px,22vw,220px);line-height:1.05;margin:18px 0;filter:drop-shadow(0 12px 28px rgba(80,180,255,.3))}.animal-won-name{font-size:clamp(22px,3vw,32px);font-weight:900;margin-bottom:20px}.animal-won-glow{font-size:28px}
+@media(min-width:651px){.memory-grid{gap:18px}.memory-cell{border-radius:24px}.animal-won-card{padding:48px}.animal-won-animal{font-size:220px}}
+@media(max-width:650px){.memory-grid{grid-template-columns:repeat(3,1fr);gap:10px}.memory-frame{padding:14px;border-radius:24px}}
 </style>
-
-<script id="gift100LinkLogic">
-(function(){
-  const KEY='catchSquare100DiamondLinkClaimedV1';
-  function showGift100(){
-    if(localStorage.getItem(KEY)==='1') return;
-    if(document.getElementById('gift100Overlay')) return;
-    const en=S.lang==='en';
-    const overlay=document.createElement('div');
-    overlay.id='gift100Overlay';
-    overlay.className='gift100-overlay';
-    overlay.innerHTML=`
-      <div class="gift100-box" dir="${en?'ltr':'rtl'}">
-        <div class="gift100-icon">🎁</div>
-        <h2>${en?'Get your reward?':'לקבל את הפרס?'}</h2>
-        <div class="gift100-reward">💎 100 ${en?'diamonds':'יהלומים'}</div>
-        <p>${en?'You came through a special reward link. Do you want to receive 100 diamonds?':'נכנסת דרך קישור מיוחד לפרס. רוצה לקבל 100 יהלומים?'}</p>
-        <div class="gift100-buttons">
-          <button class="gift100-btn gift100-yes" id="gift100Yes">${en?'Yes':'כן'}</button>
-          <button class="gift100-btn gift100-no" id="gift100No">${en?'No':'לא'}</button>
-        </div>
-        <p class="gift100-note">${en?'One-time reward per device':'פרס חד־פעמי לכל מכשיר'}</p>
-      </div>`;
-    document.body.appendChild(overlay);
-    document.getElementById('gift100Yes').onclick=()=>{
-      S.diamonds=(Number(S.diamonds)||0)+100;
-      localStorage.setItem(KEY,'1');
-      save();
-      overlay.remove();
-      toast(en?'🎉 You received 100 diamonds!':'🎉 קיבלת 100 יהלומים!');
-    };
-    document.getElementById('gift100No').onclick=()=>overlay.remove();
-  }
-  function maybeGift100(){
-    try{
-      const params=new URLSearchParams(location.search);
-      if(params.get('gift')!=='100') return;
-      // Show the reward as soon as the game state exists. The reward link itself
-      // is not blocked by the maintenance screen; the player can claim it when
-      // the game is available.
-      if(!window.S){ setTimeout(maybeGift100,500); return; }
-      if(localStorage.getItem(KEY)==='1') return;
-      showGift100();
-    }catch(e){ setTimeout(maybeGift100,700); }
-  }
-  setTimeout(maybeGift100,1200);
-  window.addEventListener('load',()=>setTimeout(maybeGift100,300));
-})();
-</script>
-
-
-<script id="giftRewardLinkSystem">
-(function(){
-  const params=new URLSearchParams(location.search);
-  const reward=params.get('reward');
-  if(!reward) return;
-  const valid = reward==='100gams' || reward==='dog';
-  if(!valid) return;
-  const key='catchSquareRewardClaimed_'+reward;
-  if(localStorage.getItem(key)==='1'){
-    try{history.replaceState({},'',location.pathname+location.hash)}catch(e){}
-    return;
-  }
-  const en=S.lang==='en';
-  const isDog=reward==='dog';
-  const title=en?'🎁 Special Reward':'🎁 פרס מיוחד';
-  const text=isDog ? (en?'Do you want to receive the Dog from the Spy Rush wheel?':'רוצה לקבל את הכלב מגלגל החיות של Spy Rush?') : (en?'Do you want to receive 100 diamonds?':'רוצה לקבל 100 יהלומים?');
-  const amount=isDog?'🐶':'💎 100';
-  const oldModal=document.getElementById('giftRewardModal');
-  if(oldModal)oldModal.remove();
-  const wrap=document.createElement('div');
-  wrap.id='giftRewardModal';
-  wrap.style.cssText='position:fixed;inset:0;z-index:1000001;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(3,8,20,.78);backdrop-filter:blur(10px);font-family:inherit;direction:rtl';
-  wrap.innerHTML=`<div style="width:min(520px,94vw);padding:30px 24px;border-radius:28px;background:linear-gradient(145deg,#17213b,#0b1020);border:1px solid rgba(255,255,255,.15);box-shadow:0 25px 80px rgba(0,0,0,.5);text-align:center;color:#fff">
-    <div style="font-size:64px;margin-bottom:8px">${amount}</div>
-    <h2 style="font-size:32px;margin:0 0 12px;font-weight:900">${title}</h2>
-    <p style="font-size:20px;color:#dbe5ff;margin:0 auto 24px;line-height:1.5">${text}</p>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-      <button id="giftRewardYes" style="border:0;border-radius:16px;padding:16px;font-size:20px;font-weight:900;cursor:pointer;background:#1683ff;color:white;box-shadow:0 8px 24px rgba(22,131,255,.28)">${en?'Yes':'כן'}</button>
-      <button id="giftRewardNo" style="border:0;border-radius:16px;padding:16px;font-size:20px;font-weight:900;cursor:pointer;background:#e53935;color:white;box-shadow:0 8px 24px rgba(229,57,53,.25)">${en?'No':'לא'}</button>
-    </div>
-  </div>`;
-  document.body.appendChild(wrap);
-  function finish(accepted){
-    if(accepted){
-      if(isDog){
-        S.spyRushCollected=Array.isArray(S.spyRushCollected)?S.spyRushCollected:[];
-        if(!S.spyRushCollected.includes('🐶'))S.spyRushCollected.push('🐶');
-        S.spyRushLastAnimal='🐶';
-      }else{
-        S.diamonds=(Number(S.diamonds)||0)+100;
-      }
-      localStorage.setItem(key,'1');
-      if(typeof save==='function')save();
-      if(typeof ui==='function')ui();
-      if(typeof toast==='function')toast(isDog?(en?'🐶 Dog added to your collection!':'🐶 הכלב נוסף לאוסף שלך!'):(en?'💎 You received 100 diamonds!':'💎 קיבלת 100 יהלומים!'));
-    }
-    try{history.replaceState({},'',location.pathname+location.hash)}catch(e){}
-    wrap.remove();
-  }
-  document.getElementById('giftRewardYes').onclick=()=>finish(true);
-  document.getElementById('giftRewardNo').onclick=()=>finish(false);
-})();
-</script>
-
 </body>
 
 <style>
@@ -1158,24 +1051,26 @@ function pickSpyAnimal(){
 <style id="final-user-patch">
 .spy-collab-btn + *, .spy-main-link + *{display:none!important}
 .spy-wheel-shop-card{background:linear-gradient(145deg,#17143b,#102b45)!important;border-color:rgba(137,108,255,.42)!important}
+.maintenance-countdown-card{margin:18px auto 0;width:min(720px,92vw);padding:14px 18px;border-radius:20px;border:1px solid rgba(90,180,255,.25);background:linear-gradient(135deg,rgba(15,34,58,.95),rgba(18,25,55,.95));box-shadow:0 14px 40px rgba(0,0,0,.2);text-align:center}
+.maintenance-countdown-card .m-title{font-weight:1000;font-size:clamp(16px,2.2vw,24px);color:#b9dfff}
+.maintenance-countdown-card .m-time{font-weight:1000;font-size:clamp(28px,5vw,48px);color:#ffd34d;letter-spacing:2px;margin-top:5px}
 body.maintenance-active{overflow:hidden!important}
-#maint{position:fixed!important;inset:0!important;width:100vw!important;height:100vh!important;z-index:999999!important;padding:0!important;margin:0!important;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 15%,#244d80 0%,#101b35 42%,#050914 100%)!important;backdrop-filter:blur(8px);}
-#maint.hidden{display:none!important}
-#maint .maint-screen{position:relative;width:min(1100px,92vw);min-height:min(780px,88vh);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:55px 40px;border:1px solid rgba(137,207,255,.28);border-radius:38px;background:linear-gradient(145deg,rgba(12,28,51,.97),rgba(8,13,28,.97));box-shadow:0 35px 120px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.08);overflow:hidden;}
-#maint .maint-glow{position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(71,177,255,.22),transparent 65%);top:-330px;left:50%;transform:translateX(-50%);pointer-events:none;}
-#maint .maint-icon{font-size:clamp(58px,9vw,105px);filter:drop-shadow(0 12px 25px rgba(64,169,255,.3));animation:maintFloat 2.2s ease-in-out infinite;z-index:1;}
-#maint .maint-badge{margin-top:10px;font-size:clamp(11px,1.4vw,15px);font-weight:1000;letter-spacing:4px;color:#7fcaff;z-index:1;}
-#maint h1{margin:15px 0 0;font-size:clamp(44px,7vw,92px);line-height:1.02;font-weight:1000;letter-spacing:-2px;background:linear-gradient(90deg,#fff,#75c9ff,#b49aff,#fff);background-size:250% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:maintShine 4s linear infinite;z-index:1;}
-#maint .maint-sub{margin-top:10px;font-size:clamp(25px,4vw,48px);font-weight:1000;color:#ffd75e;text-shadow:0 0 28px rgba(255,204,66,.22);z-index:1;}
-#maint .maint-count-label{margin-top:34px;color:#a9bed8;font-size:clamp(14px,1.7vw,20px);font-weight:800;z-index:1;}
-#maint .maint-count{margin-top:5px;font-size:clamp(42px,7vw,82px);font-weight:1000;letter-spacing:5px;direction:ltr;color:#fff;text-shadow:0 0 30px rgba(91,190,255,.45);font-variant-numeric:tabular-nums;z-index:1;}
-#maint .maint-preview{width:min(760px,100%);margin-top:30px;padding:22px 28px;border-radius:24px;background:linear-gradient(135deg,rgba(35,76,119,.45),rgba(72,52,122,.28));border:1px solid rgba(128,196,255,.25);box-shadow:inset 0 1px 0 rgba(255,255,255,.07);z-index:1;}
-#maint .maint-preview h3{margin:0 0 9px;font-size:clamp(18px,2.2vw,27px);color:#dff3ff;}
-#maint .maint-preview p{margin:0;color:#b8cbe0;font-size:clamp(14px,1.65vw,19px);line-height:1.75;font-weight:700;}
-@keyframes maintFloat{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-10px) rotate(2deg)}}
-@keyframes maintShine{0%{background-position:0% center}100%{background-position:250% center}}
-@media(max-width:700px){#maint .maint-screen{min-height:100vh;width:100vw;border-radius:0;border:0;padding:35px 20px;}#maint .maint-preview{padding:18px 15px;margin-top:24px;}#maint .maint-count{letter-spacing:2px;}}
+#maint{z-index:99999!important;pointer-events:auto!important}
+#maint *{pointer-events:none!important}
 </style>
 
 <script>clearInterval(window.maintenanceTimer);window.maintenanceTimer=setInterval(maintenance,250);maintenance();</script>
 <style>#nextMaintTime{direction:ltr}.modalbox > .toplist .rank{min-height:42px!important;padding:8px 10px!important;font-size:14px!important;border-radius:14px!important}.modalbox > .toplist .rank strong{font-size:16px!important}.modalbox > .item.settings-top-card{padding:18px!important;width:min(720px,100%)!important}</style>
+
+<style id="top-same-size-desktop">
+@media(min-width:651px){.modalbox > .toplist .rank{min-height:42px!important;padding:8px 10px!important;font-size:14px!important}.modalbox > .toplist .rank strong{font-size:16px!important}.modalbox > .item.settings-top-card{width:min(620px,100%)!important;padding:18px!important}.modalbox > .toplist{width:min(720px,100%)!important}}
+</style>
+
+<style id="fix-top-center-and-spy-link">
+.settings-close-space{height:0!important;margin:0!important;padding:0!important}
+.settings-top-card{width:min(760px,100%)!important;max-width:760px!important;margin:0 auto 18px!important;padding:0!important;box-sizing:border-box!important;background:transparent!important;border:0!important;box-shadow:none!important;text-align:center!important;order:0!important}
+.settings-top-button{display:block!important;width:100%!important;min-height:46px!important;box-sizing:border-box!important;margin:0 auto!important;font-size:16px!important;padding:11px 15px!important;border-radius:14px!important}
+@media(min-width:651px){.settings-top-card{width:min(760px,100%)!important;max-width:760px!important;margin-left:auto!important;margin-right:auto!important;padding:0!important}.settings-top-button{min-height:46px!important;font-size:16px!important}}
+@media(max-width:650px){.settings-top-card{width:100%!important;max-width:760px!important;margin-left:auto!important;margin-right:auto!important;padding:0!important}.settings-top-button{min-height:46px!important;font-size:16px!important}}
+.spy-main-link{display:block!important;visibility:visible!important;opacity:1!important;position:relative!important}
+</style>
