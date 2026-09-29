@@ -213,6 +213,30 @@ body.lang-he{direction:rtl}
   font-weight:900;
 }
 </style>
+
+<style id="wheel-and-top-final">
+.settings-top-card{display:block!important;width:min(520px,100%)!important;max-width:520px!important;margin:18px auto 22px!important;padding:0!important;text-align:center!important}
+.settings-top-button{display:block!important;width:100%!important;min-height:54px!important;font-size:18px!important;padding:14px 20px!important;border-radius:16px!important;margin:0 auto!important}
+.spy-wheel-page{text-align:center;max-width:900px;margin:0 auto;padding:8px 0 30px}
+.spy-wheel-page h2{margin-top:0}
+.spy-wheel-stage{position:relative;width:min(82vw,520px);aspect-ratio:1;margin:24px auto 18px;display:grid;place-items:center}
+.spy-wheel{position:relative;width:100%;height:100%;border-radius:50%;border:14px solid #f4c542;background:conic-gradient(from -90deg,#243b72 0 12.5%,#6b3fa0 12.5% 25%,#b04b72 25% 37.5%,#2d7f78 37.5% 50%,#a66a2d 50% 62.5%,#3c5fa8 62.5% 75%,#7d4d9d 75% 87.5%,#356d55 87.5% 100%);box-shadow:0 18px 55px rgba(0,0,0,.45),inset 0 0 0 5px rgba(255,255,255,.12);transition:transform 2.4s cubic-bezier(.12,.78,.15,1);overflow:visible}
+.spy-wheel.spinning{transform:rotate(var(--wheel-target,2160deg))}
+.wheel-animal{position:absolute;left:50%;top:50%;width:58px;height:58px;margin:-29px;display:grid;place-items:center;font-size:34px;transform:rotate(calc((var(--i) / var(--n))*360deg)) translateY(calc(-1 * min(34vw,205px))) rotate(calc((var(--i) / var(--n))*-360deg));filter:drop-shadow(0 3px 4px rgba(0,0,0,.35));user-select:none}
+.wheel-center{position:absolute;inset:50% auto auto 50%;transform:translate(-50%,-50%);width:105px;height:105px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle,#ffd95b,#b98319);color:#171717;font-weight:1000;font-size:19px;line-height:.95;border:7px solid #fff;box-shadow:0 8px 25px rgba(0,0,0,.35);z-index:4}
+.wheel-pointer{position:absolute;z-index:8;top:-10px;left:50%;transform:translateX(-50%);font-size:58px;color:#ff4757;text-shadow:0 4px 10px rgba(0,0,0,.35)}
+.wheel-result{font-size:20px;font-weight:900;margin:12px auto;min-height:30px}
+.wheel-count{font-weight:900;opacity:.8;margin-top:12px}
+.animal-win-panel{position:absolute;z-index:50;inset:0;min-height:100vh;background:radial-gradient(circle at 50% 35%,rgba(84,135,255,.28),rgba(7,13,27,.98) 62%);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;box-sizing:border-box}
+.animal-won-glow{font-size:58px;animation:animalGlow 1s ease-in-out infinite alternate}
+.animal-won-title{font-size:clamp(28px,5vw,48px);font-weight:1000;margin:8px 0}
+.animal-won-animal{font-size:clamp(130px,24vw,250px);line-height:1;margin:18px 0;filter:drop-shadow(0 12px 25px rgba(0,0,0,.45));animation:animalPop .55s cubic-bezier(.2,1.4,.3,1)}
+.animal-won-name{font-size:clamp(24px,4vw,38px);font-weight:1000;margin-bottom:28px}
+.animal-accept-btn{min-width:min(420px,90vw)!important;font-size:22px!important;min-height:64px!important}
+@keyframes animalPop{from{transform:scale(.3) rotate(-12deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
+@keyframes animalGlow{from{transform:scale(1);filter:brightness(1)}to{transform:scale(1.15);filter:brightness(1.35)}}
+@media(min-width:651px){.spy-wheel-stage{width:560px}.wheel-animal{font-size:38px}.settings-top-card{width:520px!important}}
+</style>
 </head>
 <body>
 <div id="app">
@@ -825,12 +849,10 @@ const spyRushAnimals=['🦁','🐵','🐳','🐬','🐶','🐹','🦦','🐯','�
 const spyRushNames={'🦁':['אריה','Lion'],'🐵':['קוף','Monkey'],'🐳':['לוויתן','Whale'],'🐬':['דולפין','Dolphin'],'🐶':['כלב','Dog'],'🐹':['אוגר','Hamster'],'🦦':['לוטרה','Otter'],'🐯':['טיגריס','Tiger'],'🐧':['פינגווין','Penguin'],'🦓':['זברה','Zebra'],'🐻':['דוב','Bear'],'🦒':['ג׳ירפה','Giraffe'],'🐰':['ארנב','Rabbit'],'🦏':['קרנף','Rhino'],'🐼':['פנדה','Panda']};
 function spyName(a){const n=spyRushNames[a]||['חיה','Animal'];return S.lang==='en'?n[1]:n[0];}
 function spyRushAnimalsList(){return spyRushAnimals.filter(a=>!S.spyRushCollected.includes(a));}
-function spyWheelModal(b,c){const remaining=spyRushAnimalsList(),en=S.lang==='en';const items=remaining.map((a,i)=>`<span class="wheel-animal" style="--i:${i};--n:${Math.max(1,remaining.length)}">${a}</span>`).join('');b.innerHTML=`${c}<div class="spy-wheel-page"><h2>🎡 ${en?'Spy Rush Wheel':'גלגל Spy Rush'}</h2><p>${en?'Collect all 15 animals. Each spin costs 250 diamonds. Collected animals disappear from the wheel.':'אסוף את כל 15 החיות. כל סיבוב עולה 250 יהלומים. חיות שאספת נעלמות מהגלגל.'}</p><div class="spy-wheel-stage"><div class="wheel-pointer">▼</div><div id="spyWheel" class="spy-wheel">${items||'<span class="wheel-empty">🏆</span>'}<div class="wheel-center">SPY<br>RUSH</div></div></div><div id="wheelResult" class="wheel-result">${remaining.length?(en?'Ready to spin':'מוכן לסיבוב'):'🎉 '+(en?'All animals collected!':'אספת את כל החיות!')}</div><button class="bigbtn" id="spinWheelBtn" onclick="spinSpyRushWheel()" ${remaining.length?'':'disabled'}>🎡 ${en?'Spin — 250 💎':'סובב — 250 💎'}</button><div class="wheel-count">${en?`${S.spyRushCollected.length}/15 collected`:`${S.spyRushCollected.length}/15 נאספו`}</div></div>`;}
-function spinSpyRushWheel(){const remaining=spyRushAnimalsList(),en=S.lang==='en';if(!remaining.length)return toast(en?'You collected them all!':'אספת את כולן!');if(S.diamonds<250)return toast(en?'Not enough diamonds 💎':'אין מספיק יהלומים 💎');const btn=$('spinWheelBtn');if(btn)btn.disabled=true;S.diamonds-=250;S.spyRushSpins++;save();const winner=remaining[Math.floor(Math.random()*remaining.length)],wheel=$('spyWheel');if(wheel){wheel.classList.remove('spinning');void wheel.offsetWidth;wheel.classList.add('spinning');}setTimeout(()=>{S.spyRushCollected.push(winner);S.spyRushLastAnimal=winner;save();if(wheel){wheel.classList.remove('spinning');wheel.style.transform='rotate(0deg)';}showAnimalWon(winner);},1800);}
-function showAnimalWon(animal){
- const en=S.lang==='en';
- const m=document.createElement('div');m.className='animal-won-overlay';m.innerHTML=`<div class="animal-won-card"><div class="animal-won-glow">✨</div><div class="animal-won-title">${en?'You got a new animal!':'קיבלת חיה חדשה!'}</div><div class="animal-won-animal">${animal}</div><div class="animal-won-name">${spyName(animal)}</div><button class="bigbtn" onclick="this.closest('.animal-won-overlay').remove();spyWheelModal($('modalBox'),'<button class=\"close\" onclick=\"closeModal()\">✕</button>')">${en?'Awesome!':'מדהים!'}</button></div>`;document.body.appendChild(m);
-}
+function spyWheelModal(b,c){const remaining=spyRushAnimalsList(),en=S.lang==='en';const items=remaining.map((a,i)=>`<span class="wheel-animal" style="--i:${i};--n:${Math.max(1,remaining.length)}">${a}</span>`).join('');b.innerHTML=`${c}<div class="spy-wheel-page"><h2>🎡 ${en?'Spy Rush Wheel':'גלגל Spy Rush'}</h2><p>${en?'Collect all 15 animals. Each spin costs 250 diamonds.':'אסוף את כל 15 החיות. כל סיבוב עולה 250 יהלומים.'}</p><div class="spy-wheel-stage"><div class="wheel-pointer">▼</div><div id="spyWheel" class="spy-wheel">${items||'<span class="wheel-empty">🏆</span>'}<div class="wheel-center">SPY<br>RUSH</div></div></div><div id="wheelResult" class="wheel-result">${remaining.length?(en?'Ready to spin':'מוכן לסיבוב'):'🎉 '+(en?'All animals collected!':'אספת את כל החיות!')}</div><button class="bigbtn" id="spinWheelBtn" onclick="spinSpyRushWheel()" ${remaining.length?'':'disabled'}>🎡 ${en?'Spin — 250 💎':'סובב — 250 💎'}</button><div class="wheel-count">${en?`${S.spyRushCollected.length}/15 collected`:`${S.spyRushCollected.length}/15 נאספו`}</div></div>`;}
+function spinSpyRushWheel(){const remaining=spyRushAnimalsList(),en=S.lang==='en';if(!remaining.length)return toast(en?'You collected them all!':'אספת את כולן!');if(S.diamonds<250)return toast(en?'Not enough diamonds 💎':'אין מספיק יהלומים 💎');const btn=$('spinWheelBtn');if(btn)btn.disabled=true;S.diamonds-=250;S.spyRushSpins++;save();const winner=remaining[Math.floor(Math.random()*remaining.length)],wheel=$('spyWheel');const index=remaining.indexOf(winner),count=remaining.length;const slice=360/count;const target=360*6+(360-(index*slice+slice/2)-270);if(wheel){wheel.classList.remove('spinning');wheel.style.transform='rotate(0deg)';void wheel.offsetWidth;wheel.style.setProperty('--wheel-target',target+'deg');wheel.classList.add('spinning');}setTimeout(()=>{S.spyRushCollected.push(winner);S.spyRushLastAnimal=winner;save();showAnimalWon(winner);},2400);}
+function showAnimalWon(animal){const en=S.lang==='en';const modal=$('modalBox');const close=modal.querySelector('.close');if(close){close.disabled=true;close.style.display='none';}const old=modal.querySelector('.animal-win-panel');if(old)old.remove();const panel=document.createElement('div');panel.className='animal-win-panel';panel.innerHTML=`<div class="animal-won-glow">✨</div><div class="animal-won-title">${en?'You got a new animal!':'קיבלת חיה חדשה!'}</div><div class="animal-won-animal">${animal}</div><div class="animal-won-name">${spyName(animal)}</div><button class="bigbtn animal-accept-btn" onclick="acceptAnimalWon()">${en?'Accept':'קבלה'}</button>`;modal.appendChild(panel);const wheel=$('spyWheel');if(wheel)wheel.style.animationPlayState='paused';}
+function acceptAnimalWon(){const modal=$('modalBox');const panel=modal.querySelector('.animal-win-panel');if(panel)panel.remove();closeModal();}
 function memoryModal(b,c){const en=S.lang==='en';const cells=spyRushAnimals.map(a=>{const got=S.spyRushCollected.includes(a);return `<div class="memory-cell ${got?'got':''}"><span>${got?a:'?'}</span>${got?`<b>${spyName(a)}</b>`:''}</div>`}).join('');const all=S.spyRushCollected.length>=spyRushAnimals.length;b.innerHTML=`${c}<div class="memory-page"><div class="memory-frame"><div class="memory-frame-title">🕵️ ${en?'Spy Rush':'Spy Rush'}</div>${all?`<div class="memory-complete">${en?'No more animals':'אין עוד חיות'}</div>`:''}<div class="memory-grid">${cells}</div></div></div>`;}
 
 function dailyUI(){let el=$('dailyTimer');if(!el)return;let n=new Date(),next=new Date(n);next.setHours(24,0,0,0);let ms=next-n;el.textContent=(S.lang==='en'?'Refresh in ':'הטענה בעוד ')+fmt(ms)}
@@ -951,7 +973,7 @@ function finishSpyQuizAndStart(){
   renderGame();
   placeSquare();
 }
-function goToSpyRush(){window.location.href='https://tricky-apology-6xj41.shipped.run/';}
+function goToSpyRush(){window.location.href='https://common-witness-it9gs.shipped.run/';}
 </script>
 
 
@@ -1021,6 +1043,62 @@ function pickSpyAnimal(){
 @media(min-width:651px){.memory-grid{gap:18px}.memory-cell{border-radius:24px}.animal-won-card{padding:48px}.animal-won-animal{font-size:220px}}
 @media(max-width:650px){.memory-grid{grid-template-columns:repeat(3,1fr);gap:10px}.memory-frame{padding:14px;border-radius:24px}}
 </style>
+
+<!-- Reward Center integration: works with the current game state and waits for S to load -->
+<script id="rewardCenterIntegration">
+(function(){
+  const VALID=['100gams','dog','7-11'];
+  const GAME_PARAM='reward';
+  function text(he,en){return (window.S&&S.lang==='en')?en:he;}
+  function removeParam(){
+    try{const u=new URL(location.href);u.searchParams.delete(GAME_PARAM);history.replaceState({},'',u.pathname+(u.search?'?'+u.searchParams.toString():'')+u.hash);}catch(e){}
+  }
+  function showRewardModal(reward,already){
+    if(document.getElementById('rewardCenterGameModal'))return;
+    const en=window.S&&S.lang==='en';
+    const info={
+      '100gams':{icon:'💎',title:en?'100 Diamonds':'100 יהלומים',desc:en?'You entered through a reward code. Do you want to receive 100 diamonds?':'נכנסת דרך קוד פרס. רוצה לקבל 100 יהלומים?'},
+      'dog':{icon:'🐶',title:en?'Dog from Spy Rush':'כלב מ־Spy Rush',desc:en?'Do you want to receive the Dog from the Spy Rush wheel?':'רוצה לקבל את הכלב מגלגל החיות של Spy Rush?'},
+      '7-11':{icon:'💎',title:en?'711 Diamonds':'711 יהלומים',desc:en?'You entered through a reward code. Do you want to receive 711 diamonds?':'נכנסת דרך קוד פרס. רוצה לקבל 711 יהלומים?'}
+    }[reward];
+    const wrap=document.createElement('div');wrap.id='rewardCenterGameModal';
+    wrap.style.cssText='position:fixed;inset:0;z-index:1000002;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(3,8,20,.84);backdrop-filter:blur(12px);font-family:inherit;direction:'+((en)?'ltr':'rtl');
+    wrap.innerHTML='<div style="width:min(600px,94vw);padding:34px 24px;border-radius:32px;background:linear-gradient(145deg,#17213b,#0b1020);border:1px solid rgba(255,255,255,.16);box-shadow:0 30px 100px rgba(0,0,0,.55);text-align:center;color:#fff">'
+      +'<div style="font-size:76px;margin-bottom:8px">'+info.icon+'</div>'
+      +'<h2 style="font-size:'+(already?'40px':'32px')+';margin:0 0 14px;font-weight:1000">'+(already?text('כבר קיבלת את הפרס הזה','You already received this reward'):text('לקבל את הפרס?','Do you want to receive the reward?'))+'</h2>'
+      +(already?'':'<p style="font-size:20px;color:#dbe5ff;margin:0 auto 24px;line-height:1.5">'+info.desc+'</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><button id="rewardYes" style="border:0;border-radius:16px;padding:17px;font-size:21px;font-weight:1000;cursor:pointer;background:#1683ff;color:white">'+text('כן','Yes')+'</button><button id="rewardNo" style="border:0;border-radius:16px;padding:17px;font-size:21px;font-weight:1000;cursor:pointer;background:#e53935;color:white">'+text('לא','No')+'</button></div>')
+      +'</div>';
+    document.body.appendChild(wrap);
+    if(already){setTimeout(()=>{wrap.remove();removeParam()},2200);return;}
+    document.getElementById('rewardNo').onclick=()=>{wrap.remove();removeParam()};
+    document.getElementById('rewardYes').onclick=()=>{
+      if(reward==='100gams') S.diamonds=(Number(S.diamonds)||0)+100;
+      if(reward==='7-11') S.diamonds=(Number(S.diamonds)||0)+711;
+      if(reward==='dog'){
+        S.spyRushCollected=Array.isArray(S.spyRushCollected)?S.spyRushCollected:[];
+        if(!S.spyRushCollected.includes('🐶'))S.spyRushCollected.push('🐶');
+        S.spyRushLastAnimal='🐶';
+      }
+      localStorage.setItem('catchSquareRewardClaimed_'+reward,'1');
+      try{save()}catch(e){localStorage.setItem('catchSquareAccountV1',JSON.stringify(S))}
+      wrap.remove();removeParam();
+      toast(reward==='dog'?text('🎉 קיבלת את הכלב!','🎉 You received the Dog!'):text('🎉 הפרס נוסף לחשבון!','🎉 Reward added to your account!'));
+      try{updateSpyFeatureVisibility()}catch(e){}
+    };
+  }
+  function process(){
+    let reward=null;try{reward=new URLSearchParams(location.search).get(GAME_PARAM)}catch(e){}
+    if(!VALID.includes(reward))return true;
+    if(!window.S||typeof save!=='function')return false;
+    const already=localStorage.getItem('catchSquareRewardClaimed_'+reward)==='1';
+    showRewardModal(reward,already);return true;
+  }
+  let tries=0;
+  const timer=setInterval(()=>{tries++;if(process()||tries>80)clearInterval(timer)},250);
+  window.addEventListener('load',()=>setTimeout(process,300));
+})();
+</script>
+
 </body>
 
 <style>
