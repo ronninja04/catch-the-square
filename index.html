@@ -1048,54 +1048,52 @@ function pickSpyAnimal(){
 <script id="rewardCenterIntegration">
 (function(){
   const VALID=['100gams','dog','7-11'];
-  const GAME_PARAM='reward';
-  function text(he,en){return (window.S&&S.lang==='en')?en:he;}
-  function removeParam(){
-    try{const u=new URL(location.href);u.searchParams.delete(GAME_PARAM);history.replaceState({},'',u.pathname+(u.search?'?'+u.searchParams.toString():'')+u.hash);}catch(e){}
-  }
-  function showRewardModal(reward,already){
+  const PARAM='reward';
+  function ready(){return typeof S !== 'undefined' && typeof save === 'function';}
+  function tr(he,en){return (typeof S !== 'undefined' && S.lang==='en')?en:he;}
+  function clean(){try{const u=new URL(location.href);u.searchParams.delete(PARAM);history.replaceState({},document.title,u.pathname+(u.search?'?'+u.searchParams:'')+u.hash)}catch(e){}}
+  function modal(reward,already){
     if(document.getElementById('rewardCenterGameModal'))return;
-    const en=window.S&&S.lang==='en';
+    const en=(typeof S!=='undefined'&&S.lang==='en');
     const info={
-      '100gams':{icon:'💎',title:en?'100 Diamonds':'100 יהלומים',desc:en?'You entered through a reward code. Do you want to receive 100 diamonds?':'נכנסת דרך קוד פרס. רוצה לקבל 100 יהלומים?'},
+      '100gams':{icon:'💎',title:en?'100 Diamonds':'100 יהלומים',desc:en?'Do you want to receive 100 diamonds?':'רוצה לקבל 100 יהלומים?'},
       'dog':{icon:'🐶',title:en?'Dog from Spy Rush':'כלב מ־Spy Rush',desc:en?'Do you want to receive the Dog from the Spy Rush wheel?':'רוצה לקבל את הכלב מגלגל החיות של Spy Rush?'},
-      '7-11':{icon:'💎',title:en?'711 Diamonds':'711 יהלומים',desc:en?'You entered through a reward code. Do you want to receive 711 diamonds?':'נכנסת דרך קוד פרס. רוצה לקבל 711 יהלומים?'}
+      '7-11':{icon:'💎',title:en?'711 Diamonds':'711 יהלומים',desc:en?'Do you want to receive 711 diamonds?':'רוצה לקבל 711 יהלומים?'}
     }[reward];
-    const wrap=document.createElement('div');wrap.id='rewardCenterGameModal';
-    wrap.style.cssText='position:fixed;inset:0;z-index:1000002;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(3,8,20,.84);backdrop-filter:blur(12px);font-family:inherit;direction:'+((en)?'ltr':'rtl');
-    wrap.innerHTML='<div style="width:min(600px,94vw);padding:34px 24px;border-radius:32px;background:linear-gradient(145deg,#17213b,#0b1020);border:1px solid rgba(255,255,255,.16);box-shadow:0 30px 100px rgba(0,0,0,.55);text-align:center;color:#fff">'
-      +'<div style="font-size:76px;margin-bottom:8px">'+info.icon+'</div>'
-      +'<h2 style="font-size:'+(already?'40px':'32px')+';margin:0 0 14px;font-weight:1000">'+(already?text('כבר קיבלת את הפרס הזה','You already received this reward'):text('לקבל את הפרס?','Do you want to receive the reward?'))+'</h2>'
-      +(already?'':'<p style="font-size:20px;color:#dbe5ff;margin:0 auto 24px;line-height:1.5">'+info.desc+'</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><button id="rewardYes" style="border:0;border-radius:16px;padding:17px;font-size:21px;font-weight:1000;cursor:pointer;background:#1683ff;color:white">'+text('כן','Yes')+'</button><button id="rewardNo" style="border:0;border-radius:16px;padding:17px;font-size:21px;font-weight:1000;cursor:pointer;background:#e53935;color:white">'+text('לא','No')+'</button></div>')
-      +'</div>';
-    document.body.appendChild(wrap);
-    if(already){setTimeout(()=>{wrap.remove();removeParam()},2200);return;}
-    document.getElementById('rewardNo').onclick=()=>{wrap.remove();removeParam()};
+    if(!info)return;
+    const w=document.createElement('div');w.id='rewardCenterGameModal';
+    w.style.cssText='position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(3,8,20,.88);backdrop-filter:blur(12px);font-family:inherit;direction:'+(en?'ltr':'rtl')+';';
+    w.innerHTML='<div style="width:min(600px,94vw);padding:38px 24px;border-radius:32px;background:linear-gradient(145deg,#17213b,#0b1020);border:1px solid rgba(255,255,255,.16);box-shadow:0 30px 100px rgba(0,0,0,.6);text-align:center;color:#fff">'+
+      '<div style="font-size:78px;margin-bottom:8px">'+info.icon+'</div>'+
+      '<h2 style="font-size:'+(already?'40px':'34px')+';margin:0 0 14px;font-weight:1000">'+(already?tr('כבר קיבלת את הפרס הזה','You already received this reward'):tr('לקבל את הפרס?','Do you want to receive the reward?'))+'</h2>'+
+      (already?'':'<p style="font-size:20px;color:#dbe5ff;margin:0 auto 26px;line-height:1.5">'+info.desc+'</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><button id="rewardYes" style="border:0;border-radius:16px;padding:18px;font-size:22px;font-weight:1000;cursor:pointer;background:#1683ff;color:#fff">'+tr('כן','Yes')+'</button><button id="rewardNo" style="border:0;border-radius:16px;padding:18px;font-size:22px;font-weight:1000;cursor:pointer;background:#e53935;color:#fff">'+tr('לא','No')+'</button></div>')+
+      '</div>';
+    document.body.appendChild(w);
+    if(already){setTimeout(()=>{w.remove();clean()},2200);return;}
+    document.getElementById('rewardNo').onclick=()=>{w.remove();clean()};
     document.getElementById('rewardYes').onclick=()=>{
-      if(reward==='100gams') S.diamonds=(Number(S.diamonds)||0)+100;
-      if(reward==='7-11') S.diamonds=(Number(S.diamonds)||0)+711;
-      if(reward==='dog'){
-        S.spyRushCollected=Array.isArray(S.spyRushCollected)?S.spyRushCollected:[];
-        if(!S.spyRushCollected.includes('🐶'))S.spyRushCollected.push('🐶');
-        S.spyRushLastAnimal='🐶';
-      }
+      if(reward==='100gams')S.diamonds=(Number(S.diamonds)||0)+100;
+      else if(reward==='7-11')S.diamonds=(Number(S.diamonds)||0)+711;
+      else {S.spyRushCollected=Array.isArray(S.spyRushCollected)?S.spyRushCollected:[];if(!S.spyRushCollected.includes('🐶'))S.spyRushCollected.push('🐶');S.spyRushLastAnimal='🐶';}
       localStorage.setItem('catchSquareRewardClaimed_'+reward,'1');
-      try{save()}catch(e){localStorage.setItem('catchSquareAccountV1',JSON.stringify(S))}
-      wrap.remove();removeParam();
-      toast(reward==='dog'?text('🎉 קיבלת את הכלב!','🎉 You received the Dog!'):text('🎉 הפרס נוסף לחשבון!','🎉 Reward added to your account!'));
-      try{updateSpyFeatureVisibility()}catch(e){}
+      save();
+      try{ui()}catch(e){}
+      w.remove();clean();
+      try{toast(reward==='dog'?tr('🎉 קיבלת את הכלב!','🎉 You received the Dog!'):tr('🎉 הפרס נוסף לחשבון!','🎉 Reward added to your account!'))}catch(e){}
+      try{if(typeof updateSpyFeatureVisibility==='function')updateSpyFeatureVisibility()}catch(e){}
     };
   }
   function process(){
-    let reward=null;try{reward=new URLSearchParams(location.search).get(GAME_PARAM)}catch(e){}
+    let reward=null;try{reward=new URLSearchParams(location.search).get(PARAM)}catch(e){}
     if(!VALID.includes(reward))return true;
-    if(!window.S||typeof save!=='function')return false;
+    if(!ready())return false;
     const already=localStorage.getItem('catchSquareRewardClaimed_'+reward)==='1';
-    showRewardModal(reward,already);return true;
+    modal(reward,already);return true;
   }
   let tries=0;
-  const timer=setInterval(()=>{tries++;if(process()||tries>80)clearInterval(timer)},250);
-  window.addEventListener('load',()=>setTimeout(process,300));
+  const iv=setInterval(()=>{if(process()||++tries>=120)clearInterval(iv)},250);
+  if(document.readyState==='complete')setTimeout(process,100);
+  else window.addEventListener('load',()=>setTimeout(process,100));
 })();
 </script>
 
