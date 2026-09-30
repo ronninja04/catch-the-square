@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>🎁 מרכז המתנות — תפוס את הריבוע</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Arial,Helvetica,sans-serif}
+body{min-height:100vh;color:#fff;background:radial-gradient(circle at 20% 10%,#244b82 0,#091322 38%),radial-gradient(circle at 90% 90%,#3b1e67 0,#091322 48%);display:flex;justify-content:center;align-items:center;padding:24px;overflow-x:hidden}
+.lang{position:fixed;top:18px;right:18px;border:1px solid rgba(255,255,255,.18);background:rgba(10,20,38,.82);color:#fff;border-radius:14px;padding:10px 15px;font-weight:900;cursor:pointer;box-shadow:0 8px 30px #0005}
+.card{width:min(680px,100%);background:rgba(12,23,42,.94);border:1px solid rgba(133,188,255,.25);border-radius:32px;padding:34px 24px 28px;box-shadow:0 30px 100px #0008;text-align:center;backdrop-filter:blur(16px)}
+.logo{font-size:68px;filter:drop-shadow(0 8px 18px #0008)}h1{font-size:clamp(30px,7vw,52px);margin:8px 0 10px;font-weight:1000}h2{font-size:20px;color:#bcd0ec;margin:0 0 28px;font-weight:700}
+.input{width:100%;padding:17px 18px;border-radius:17px;border:2px solid #31527a;background:#07111f;color:#fff;outline:0;font-size:22px;text-align:center;font-weight:900;direction:ltr}.input:focus{border-color:#4ba7ff;box-shadow:0 0 0 4px #4ba7ff22}
+.mainbtn,.claim{width:100%;margin-top:14px;padding:17px;border:0;border-radius:17px;color:#fff;font-size:21px;font-weight:1000;cursor:pointer;transition:.15s transform}.mainbtn{background:linear-gradient(135deg,#1683ff,#6b55ff);box-shadow:0 12px 30px #1683ff33}.claim{background:linear-gradient(135deg,#11b976,#087fdf);box-shadow:0 12px 30px #11b97633}.mainbtn:active,.claim:active{transform:scale(.98)}
+.message{min-height:30px;margin:18px 0 0;font-size:18px;font-weight:900}.error{color:#ff667d}.ok{color:#52e7a1}.already{margin-top:22px;padding:22px;border-radius:20px;background:#2b2512;border:1px solid #f3cf55aa;color:#ffe07a;font-size:28px;font-weight:1000}
+.reward{margin-top:20px;padding:22px;border-radius:22px;background:linear-gradient(145deg,#162d4d,#111a32);border:1px solid #4777aa88}.reward-icon{font-size:64px}.reward-title{font-size:28px;font-weight:1000;margin-top:6px}.reward-desc{font-size:18px;color:#bcd0ec;margin-top:7px;line-height:1.5}.hint{margin-top:24px;color:#8fa7c8;font-size:14px;line-height:1.5}
+.hidden{display:none!important}@media(max-width:520px){body{padding:14px}.card{padding:28px 17px 22px;border-radius:25px}.lang{top:12px;right:12px}.logo{font-size:56px}h1{margin-top:4px}}
+</style>
+</head>
+<body>
+<button id="langBtn" class="lang" type="button">English</button>
+<main class="card">
+  <div class="logo">🎁</div>
+  <h1 id="title">מרכז המתנות</h1>
+  <h2 id="subtitle">הכניסו קוד מתנה כדי לקבל פרס ב״תפוס את הריבוע״</h2>
+  <input id="code" class="input" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="הקלד קוד מתנה">
+  <button id="check" class="mainbtn" type="button">בדוק קוד</button>
+  <div id="message" class="message"></div>
+  <section id="reward" class="reward hidden"></section>
+</main>
+<script>
+(function(){
+  'use strict';
+  const GAME_URL='https://ronninja04.github.io/catch-the-square/';
+  const rewards={
+    '100gams':{icon:'💎',heTitle:'100 יהלומים',enTitle:'100 Diamonds',heDesc:'קוד שמעניק 100 יהלומים במשחק.',enDesc:'A code that gives you 100 diamonds in the game.'},
+    'dog':{icon:'🐶',heTitle:'כלב מ־Spy Rush',enTitle:'Dog from Spy Rush',heDesc:'קוד שמוסיף את הכלב לאוסף Spy Rush.',enDesc:'A code that adds the Dog to your Spy Rush collection.'},
+    '7-11':{icon:'💎',heTitle:'711 יהלומים',enTitle:'711 Diamonds',heDesc:'קוד שמעניק 711 יהלומים במשחק.',enDesc:'A code that gives you 711 diamonds in the game.'}
+  };
+  let en=false;
+  const $=id=>document.getElementById(id);
+  const key=code=>'catchSquareRewardClaimed_'+code;
+  function tr(he,enText){return en?enText:he}
+  function renderBase(){
+    document.documentElement.lang=en?'en':'he';document.documentElement.dir=en?'ltr':'rtl';
+    $('langBtn').textContent=en?'עברית':'English';
+    $('title').textContent=tr('מרכז המתנות','Gift Center');
+    $('subtitle').textContent=tr('הכניסו קוד מתנה כדי לקבל פרס ב״תפוס את הריבוע״','Enter a gift code to receive a reward in Catch the Square');
+    $('code').placeholder=tr('הקלד קוד מתנה','Enter gift code');
+    $('check').textContent=tr('בדוק קוד','Check Code');
+  }
+  function clearOutput(){ $('message').textContent=''; $('message').className='message'; $('reward').className='reward hidden'; $('reward').innerHTML=''; }
+  function showCode(){
+    clearOutput();
+    const code=$('code').value.trim().toLowerCase();
+    if(!code){$('message').textContent=tr('הקלידו קוד מתנה.','Enter a gift code.');$('message').classList.add('error');return;}
+    const item=rewards[code];
+    if(!item){$('message').textContent=tr('קוד שגוי! נסו עוד פעם!','Wrong code! Try again!');$('message').classList.add('error');return;}
+    if(localStorage.getItem(key(code))==='1'){
+      $('message').innerHTML='<div class="already">'+tr('כבר קיבלת את הפרס הזה','You already received this reward')+'</div>';
+      return;
+    }
+    $('reward').className='reward';
+    $('reward').innerHTML='<div class="reward-icon">'+item.icon+'</div><div class="reward-title">'+(en?item.enTitle:item.heTitle)+'</div><div class="reward-desc">'+(en?item.enDesc:item.heDesc)+'</div><button id="claim" class="claim" type="button">'+tr('קבל את הפרס','Claim Reward')+'</button>';
+    $('claim').onclick=function(){
+      const url=GAME_URL+'?reward='+encodeURIComponent(code)+'&fromGift=1';
+      location.href=url;
+    };
+  }
+  $('check').onclick=showCode;
+  $('code').addEventListener('keydown',e=>{if(e.key==='Enter')showCode()});
+  $('langBtn').onclick=function(){en=!en;renderBase();clearOutput()};
+  renderBase();
+})();
+</script>
+</body>
+</html>
