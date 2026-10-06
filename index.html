@@ -328,8 +328,8 @@ function loadPersistentAccount(){
   }
   return null;
 }
-const defaultState={name:'רון',diamonds:100,stored:0,best:0,scores:[],daily:null,timeChest:null,maintenanceGift:false,savedFriends:[],lang:'he',spyRushCollected:[],spyRushLastAnimal:'',spyRushSpins:0};
-let S=loadPersistentAccount()||structuredClone(defaultState); if(S.lang!=='he'&&S.lang!=='en')S.lang='he'; S.secretClaimed=!!S.secretClaimed; S.room=S.room||''; S.maintenanceGift=!!S.maintenanceGift; S.spyRushCollected=Array.isArray(S.spyRushCollected)?S.spyRushCollected:[]; S.spyRushLastAnimal=S.spyRushLastAnimal||''; S.spyRushSpins=Math.max(0,Number(S.spyRushSpins)||0);
+const defaultState={name:'רון',diamonds:100,stored:0,best:0,scores:[],daily:null,timeChest:null,maintenanceGift:false,savedFriends:[],lang:'he',spyRushCollected:[],spyRushLastAnimal:'',spyRushSpins:0,animalChainStage:1,animalChainFreeWheels:0};
+let S=loadPersistentAccount()||structuredClone(defaultState); if(S.lang!=='he'&&S.lang!=='en')S.lang='he'; S.secretClaimed=!!S.secretClaimed; S.room=S.room||''; S.maintenanceGift=!!S.maintenanceGift; S.spyRushCollected=Array.isArray(S.spyRushCollected)?S.spyRushCollected:[]; S.spyRushLastAnimal=S.spyRushLastAnimal||''; S.spyRushSpins=Math.max(0,Number(S.spyRushSpins)||0); S.animalChainStage=Math.min(11,Math.max(1,Number(S.animalChainStage)||1)); S.animalChainFreeWheels=Math.max(0,Number(S.animalChainFreeWheels)||0);
 let game={active:false,time:0,score:0,interval:null,endAt:0,buys:0,animal:'🦁'};
 const $=id=>document.getElementById(id);
 function save(){localStorage.setItem(KEY,JSON.stringify(S));ui()}
@@ -368,157 +368,63 @@ function shopModal(b,c){
  dailyUI();promoChainPreview();clearInterval(window.shopTimer);window.shopTimer=setInterval(()=>{if(!$('modal').classList.contains('hidden')){dailyUI();promoChainPreview();}},1000);
 }
 function confirmTimeChest(){return buyTimeCard();}
-function promoChainState(){
- const end=new Date('2026-10-03T00:00:00+03:00').getTime();
- if(Date.now()>=end)return 8;
- return Math.min(7,Math.max(1,Number(S.promoChainStage)||1));
+function animalChainState(){
+ const all=typeof spyRushAnimals!=='undefined' && S.spyRushCollected.length>=spyRushAnimals.length;
+ if(all)return 11;
+ return Math.min(10,Math.max(1,Number(S.animalChainStage)||1));
 }
-function promoLabels(){
+function animalChainLabels(){
  return [
-  {icon:'🎁',text:'חינם',en:'FREE',price:'FREE'},
-  {icon:'🎁',text:'2 קלפי זמן',en:'2 Time Cards',price:'100 💎'},
-  {icon:'🎁',text:'3 קלפי זמן',en:'3 Time Cards',price:'120 💎'},
-  {icon:'⏱️',text:'20 שניות זמן שמור',en:'20 Saved Seconds',price:'FREE'},
-  {icon:'⚡',text:'בונוס 30 שניות',en:'30-Second Bonus',price:'100 💎'},
-  {icon:'🎁',text:'4 קלפי זמן',en:'4 Time Cards',price:'170 💎'},
-  {icon:'🎁',text:'5 קלפי זמן',en:'5 Time Cards',price:'222 💎'}
+  {icon:'🃏',text:'קלף זמן חינם',en:'Free Time Card',price:'FREE',kind:'card',count:1},
+  {icon:'⏱️',text:'20 שניות',en:'20 Seconds',price:'75 💎',kind:'seconds',seconds:20},
+  {icon:'🎡',text:'2 גלגלים',en:'2 Wheels',price:'425 💎',kind:'wheels',count:2},
+  {icon:'🎡',text:'3 גלגלים',en:'3 Wheels',price:'620 💎',kind:'wheels',count:3},
+  {icon:'🃏',text:'2 קלפי זמן חינם',en:'2 Free Time Cards',price:'FREE',kind:'card',count:2},
+  {icon:'🎡',text:'4 גלגלים',en:'4 Wheels',price:'800 💎',kind:'wheels',count:4},
+  {icon:'🃏',text:'קלף זמן ב־50',en:'1 Time Card for 50',price:'50 💎',kind:'card',count:1},
+  {icon:'🃏',text:'3 קלפי זמן ב־150',en:'3 Time Cards for 150',price:'150 💎',kind:'card',count:3},
+  {icon:'🎡',text:'5 גלגלים',en:'5 Wheels',price:'900 💎',kind:'wheels',count:5},
+  {icon:'🎡',text:'גלגל חינם',en:'Free Wheel',price:'FREE',kind:'wheels',count:1}
  ];
 }
-
+function promoChainState(){return animalChainState();}
+function promoLabels(){return animalChainLabels();}
 function applyLanguageUI(){
  if(S.lang!=='en')return;
  const map={
-  'תפוס את הריבוע':'Catch the Square','יוצר המשחק: רון':'Game creator: Ron',
-  'הגדרות':'Settings','הגדרות המשחק':'Game settings','חנות':'Shop',
-  'לוח תוצאות':'Leaderboard','טופ':'Top','התחל משחק':'Start Game',
-  'משחק חדש':'New Game','שם השחקן':'Player name','שם שחקן':'Player name',
-  'הזן את שמך':'Enter your name','שמור':'Save','מוזיקה':'Music',
-  'צלילים':'Sound','שפה':'Language','עברית':'Hebrew','אנגלית':'English',
-  'סגור':'Close','ביטול':'Cancel','אישור':'OK','חזרה':'Back',
-  'המתן':'Wait','טוען':'Loading','טוען את המשחק':'Loading the game',
-  'טעינה':'Loading','שניות':'seconds','שנייה':'second','זמן שמור':'Saved time',
-  'יהלומים':'Diamonds','שיא':'Best score','ניקוד':'Score','תוצאה':'Score',
-  'הפעל מוזיקה':'Music on','כבה מוזיקה':'Music off',
-  'המשחק הסתיים':'Game Over','נגמר הזמן':'Time is up',
-  'השתמש בזמן שמור':'Use saved time','קנה 5 שניות':'Buy 5 seconds',
-  'חינם':'FREE','שרשרת הזמן':'Time Chain','מבצע הזמן!':'Time Chain!',
-  'זמין עד יום שבת':'Available until Saturday','זמין עד יום שבת':'Available until Saturday',
-  'סיימת את שרשרת המבצעים!':'You completed the offer chain!',
-  'תיבת זמן':'Time Chest','תיבות זמן':'Time Chests','חזה יומי':'Daily Chest',
-  'המתנה היומית':'Daily Gift','פתיחה':'Open','קבל':'Claim',
-  'קבל את ההצעה':'Get the offer','שלב':'Step',
-  'תיבת זמן ×1':'FREE','תיבות זמן ×2':'Time Chests ×2',
-  'תיבות זמן ×3':'Time Chests ×3','תיבות זמן ×4':'Time Chests ×4',
-  '20 שניות':'20 seconds','30 שניות':'30 seconds','התחל':'Start',
-  'המשך':'Continue','המשך משחק':'Continue game','התחל מחדש':'Restart',
-  'סיום':'Finish','השיא שלך':'Your high score','טבלת שיאים':'High scores',
-  'מקום':'Rank','שחקן':'Player','ציון':'Score','אין עדיין שחקנים':'No players yet',
-  'פרטי המשחק':'Game info','מידע על המשחק':'Game information',
-  'המשחק נוצר על ידי רון':'The game was created by Ron',
-  'תודה ששיחקת!':'Thanks for playing!','כיף לשחק!':'Have fun playing!',
-  'ברוכים הבאים':'Welcome','לחץ על הריבוע כמה שיותר מהר!':'Click the square as fast as you can!',
-  'זמן משחק זמין':'Game time available','מחשב...':'Calculating...','מחשב זמן...':'Calculating time...'
- };
- const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT),nodes=[];
- while(w.nextNode())nodes.push(w.currentNode);
- nodes.forEach(n=>{let t=n.nodeValue;Object.keys(map).forEach(k=>t=t.split(k).join(map[k]));n.nodeValue=t;});
- document.querySelectorAll('input,button,select,textarea,[title],[placeholder],[aria-label]').forEach(el=>{
-  ['placeholder','title','aria-label'].forEach(a=>{
-   if(el.hasAttribute(a)){let t=el.getAttribute(a);Object.keys(map).forEach(k=>t=t.split(k).join(map[k]));el.setAttribute(a,t);}
-  });
- });
+  'תפוס את הריבוע':'Catch the Square','יוצר המשחק: רון':'Game creator: Ron','הגדרות':'Settings','הגדרות המשחק':'Game settings','חנות':'Shop','לוח תוצאות':'Leaderboard','טופ':'Top','התחל משחק':'Start Game','משחק חדש':'New Game','שם השחקן':'Player name','שם שחקן':'Player name','הזן את שמך':'Enter your name','שמור':'Save','מוזיקה':'Music','צלילים':'Sound','שפה':'Language','עברית':'Hebrew','אנגלית':'English','סגור':'Close','ביטול':'Cancel','אישור':'OK','חזרה':'Back','המתן':'Wait','טוען':'Loading','טוען את המשחק':'Loading the game','טעינה':'Loading','שניות':'seconds','שנייה':'second','זמן שמור':'Saved time','יהלומים':'Diamonds','שיא':'Best score','ניקוד':'Score','תוצאה':'Score','הפעל מוזיקה':'Music on','כבה מוזיקה':'Music off','המשחק הסתיים':'Game Over','נגמר הזמן':'Time is up','השתמש בזמן שמור':'Use saved time','קנה 5 שניות':'Buy 5 seconds','חינם':'FREE','שרשרת החיות':'Animal Chain','מבצע החיות!':'Animal Chain!','':'','סיימת את שרשרת החיות!':'You completed the Animal Chain!','תיבת זמן':'Time Chest','תיבות זמן':'Time Chests','חזה יומי':'Daily Chest','המתנה היומית':'Daily Gift','פתיחה':'Open','קבל':'Claim','קבל את ההצעה':'Get the offer','שלב':'Step','20 שניות':'20 seconds','30 שניות':'30 seconds','התחל':'Start','המשך':'Continue','המשך משחק':'Continue game','התחל מחדש':'Restart','סיום':'Finish','השיא שלך':'Your high score','טבלת שיאים':'High scores','מקום':'Rank','שחקן':'Player','ציון':'Score','אין עדיין שחקנים':'No players yet','פרטי המשחק':'Game info','מידע על המשחק':'Game information','המשחק נוצר על ידי רון':'The game was created by Ron','תודה ששיחקת!':'Thanks for playing!','כיף לשחק!':'Have fun playing!','ברוכים הבאים':'Welcome','לחץ על הריבוע כמה שיותר מהר!':'Click the square as fast as you can!','זמן משחק זמין':'Game time available','מחשב...':'Calculating...','מחשב זמן...':'Calculating time...'};
+ const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT),nodes=[];while(w.nextNode())nodes.push(w.currentNode);nodes.forEach(n=>{let t=n.nodeValue;Object.keys(map).forEach(k=>t=t.split(k).join(map[k]));n.nodeValue=t;});
+ document.querySelectorAll('input,button,select,textarea,[title],[placeholder],[aria-label]').forEach(el=>['placeholder','title','aria-label'].forEach(a=>{if(el.hasAttribute(a)){let t=el.getAttribute(a);Object.keys(map).forEach(k=>t=t.split(k).join(map[k]));el.setAttribute(a,t);}}));
 }
-function updateLanguageDirection(){
- document.documentElement.lang=S.lang==='en'?'en':'he';
- document.body.dir=S.lang==='en'?'ltr':'rtl';
-}
-
+function updateLanguageDirection(){document.documentElement.lang=S.lang==='en'?'en':'he';document.body.dir=S.lang==='en'?'ltr':'rtl';}
 function promoChainPreview(){
- const box=document.getElementById('promoPreview'); if(!box)return;
- const labels=promoLabels(),st=promoChainState(),en=S.lang==='en';
- const title=en?'🔥 Time Chain':'🔥 שרשרת הזמן';
- if(st>=8){box.innerHTML=`<div class="promo-mini-title">${title}</div><div class="promo-mini-finished">🎉 ${en?'Chain completed!':'השרשרת הושלמה!'}</div>`;return;}
- const item=labels[st-1];
- box.innerHTML=`<div class="promo-mini-title">${title}</div><div class="promo-mini-offer"><span class="promo-mini-icon">${item.icon}</span><div><b>${en?item.en:item.text}</b><small>${item.price}</small></div></div><button class="promo-open-btn" onclick="event.stopPropagation();openModal('promoChain')">${en?'👀 Open Chain':'👀 פתח את השרשרת'}</button>`;
+ const box=document.getElementById('promoPreview');if(!box)return;const labels=animalChainLabels(),st=animalChainState(),en=S.lang==='en';
+ if(st>=11){box.innerHTML=`<div class="promo-mini-title">🐾 ${en?'Animal Chain':'שרשרת החיות'}</div><div class="promo-mini-finished">🏆 ${en?'All animals collected!':'כל החיות נאספו!'}</div>`;return;}
+ const item=labels[st-1];box.innerHTML=`<div class="promo-mini-title">🐾 ${en?'Animal Chain':'שרשרת החיות'}</div><div class="promo-mini-offer"><span class="promo-mini-icon">${item.icon}</span><div><b>${en?item.en:item.text}</b><small>${item.price}</small></div></div><button class="promo-open-btn" onclick="event.stopPropagation();openModal('promoChain')">${en?'👀 Open Chain':'👀 פתח את השרשרת'}</button>`;
 }
 function promoChainModal(b,c){
- const labels=promoLabels(),st=promoChainState();
- let chain='';
- labels.forEach((x,i)=>{
-  const n=i+1,done=st>n,current=st===n,locked=st<n;
-  chain+=`<div class="promo-full-step ${current?'current':''} ${done?'done':''} ${locked?'locked':''}">
-   <div class="promo-full-num">${n}</div>${done?'<div class="promo-full-check">✓</div>':''}${locked?'<div class="promo-full-lock">🔒</div>':''}
-   <div class="promo-full-icon">${x.icon}</div><div class="promo-full-text">${S.lang==='en'?x.en:x.text}</div><div class="promo-full-price">${x.price}</div>
-   ${current?`<button class="promo-full-buy" onclick="promoChainConfirm()">${S.lang==='en'?'Buy / Claim':'קנייה / קבלה'}</button>`:''}
-  </div>`;
-  if(i<labels.length-1)chain+='<div class="promo-full-arrow">↓</div>';
- });
- b.innerHTML=`${c}<div class="promo-full"><div class="promo-full-title">🔥 ${S.lang==='en'?'Time Chain':'שרשרת הזמן'}</div><div class="promo-full-sub">${S.lang==='en'?'Available until Saturday':'זמין עד יום שבת'}</div><div class="promo-full-chain">${chain}</div></div>`;
+ const labels=animalChainLabels(),st=animalChainState(),en=S.lang==='en';let chain='';
+ if(st>=11){b.innerHTML=`${c}<div class="promo-full"><div class="promo-full-title">🐾 ${en?'Animal Chain':'שרשרת החיות'}</div><div class="promo-full-sub">${en?'All animals have been collected. No more chain purchases.':'כבר אספת את כל החיות. אי אפשר לקנות עוד שלבים בשרשרת.'}</div><div class="promo-full-finished">🏆 ${en?'All 15 animals collected!':'כל 15 החיות נאספו!'}</div></div>`;return;}
+ labels.forEach((x,i)=>{const n=i+1,done=st>n,current=st===n,locked=st<n;chain+=`<div class="promo-full-step ${current?'current':''} ${done?'done':''} ${locked?'locked':''}"><div class="promo-full-num">${n}</div>${done?'<div class="promo-full-check">✓</div>':''}${locked?'<div class="promo-full-lock">🔒</div>':''}<div class="promo-full-icon">${x.icon}</div><div class="promo-full-text">${en?x.en:x.text}</div><div class="promo-full-price">${x.price}</div>${current?`<button class="promo-full-buy" onclick="promoChainConfirm()">${en?'Buy / Claim':'קנייה / קבלה'}</button>`:''}</div>`;if(i<labels.length-1)chain+='<div class="promo-full-arrow">↓</div>';});
+ b.innerHTML=`${c}<div class="promo-full"><div class="promo-full-title">🐾 ${en?'Animal Chain':'שרשרת החיות'}</div><div class="promo-full-sub">${en?'':''}</div><div class="promo-full-chain">${chain}</div></div>`;
 }
-function promoChainConfirm(){
- const b=$('modalBox'),stage=promoChainState(),en=S.lang==='en';
- if(stage===8)return;
- b.querySelectorAll('.promo-full-buy').forEach(btn=>{btn.textContent=en?'רוצה לקנות?':'רוצה לקנות?';btn.onclick=()=>promoChainBuy();});
-}
+function promoChainConfirm(){const b=$('modalBox'),st=animalChainState(),en=S.lang==='en';if(st>=11)return;b.querySelectorAll('.promo-full-buy').forEach(btn=>{btn.textContent=en?'Are you sure?':'רוצה לקנות?';btn.onclick=()=>promoChainBuy();});}
 function promoChainBuy(){
- const stage=promoChainState();
- if(stage===8)return toast(S.lang==='en'?'Chain completed!':'סיימת את שרשרת המבצעים!');
- const prices={1:0,2:100,3:120,4:0,5:100,6:170,7:222};
- const price=prices[stage];
- if(S.diamonds<price)return toast(S.lang==='en'?'Not enough diamonds 💎':'אין מספיק יהלומים 💎');
- if(price)S.diamonds-=price;
- const chestCounts={1:1,2:2,3:3,6:4,7:5};
- const savedRewards={4:20,5:30};
- S.promoChainStage=stage+1;
- save();
- if(chestCounts[stage]){
-   enqueueChainChests(chestCounts[stage],stage);
- }else{
-   S.stored=(S.stored||0)+(savedRewards[stage]||0);
-   save();ui();
-   promoChainModal($('modalBox'),"<button class='close' onclick=\"openModal('shop')\">✕</button>");
-   toast(S.lang==='en'?'Next stage unlocked!':'השלב הבא נפתח!');
- }
+ const stage=animalChainState(),labels=animalChainLabels(),en=S.lang==='en';if(stage>=11)return toast(en?'All animals collected — no more chain purchases.':'כל החיות כבר נאספו — אי אפשר לקנות עוד בשרשרת.');
+ const item=labels[stage-1],price=parseInt(item.price,10)||0;if(S.diamonds<price)return toast(en?'Not enough diamonds 💎':'אין מספיק יהלומים 💎');if(price)S.diamonds-=price;
+ S.animalChainStage=stage+1;save();
+ if(item.kind==='seconds'){S.stored=(S.stored||0)+item.seconds;save();ui();promoChainModal($('modalBox'),"<button class='close' onclick=\"openModal('shop')\">✕</button>");return toast(en?'20 saved seconds added!':'נוספו 20 שניות זמן שמור!');}
+ if(item.kind==='wheels'){S.animalChainFreeWheels=(S.animalChainFreeWheels||0)+item.count;save();ui();openModal('spyWheel');return;}
+ enqueueTimeCardsSimple(item.count,stage);
 }
-
-let chainChestQueue=[];
-let chainChestStage=0;
-let pendingChainChestReward=null;
-function enqueueChainChests(count,stage){
- count=Math.max(0,Math.floor(Number(count)||0)); if(!count)return;
- chainChestStage=stage;
- for(let i=0;i<count;i++)chainChestQueue.push(1);
- closeModal(); openNextChainChest();
+let simpleTimeCardQueue=[],simpleTimeCardStage=0,simpleTimeCardReward=null;
+function enqueueTimeCardsSimple(count,stage){simpleTimeCardQueue=Array.from({length:Math.max(1,count)},()=>1);simpleTimeCardStage=stage;closeModal();openNextSimpleTimeCard();}
+function openNextSimpleTimeCard(){
+ if(!simpleTimeCardQueue.length){const st=simpleTimeCardStage;simpleTimeCardStage=0;promoChainModal($('modalBox'),"<button class='close' onclick=\"openModal('shop')\">✕</button>");return toast(S.lang==='en'?'Reward received!':'הפרס התקבל!');}
+ const en=S.lang==='en',b=$('modalBox');$('modal').classList.remove('hidden');b.innerHTML=`<button class="close" onclick="closeModal()">✕</button><div class="time-card-page"><div class="time-card-icon">🃏</div><h2>${en?'Time Card':'קלף זמן'}</h2><p>${en?'Click the card to reveal your saved time!':'לחץ על הקלף כדי לחשוף את הזמן שקיבלת!'}</p><div class="time-card" id="timeCardBox" onclick="openSimpleTimeCard()"><span>⏱️</span><b>${en?'TIME':'זמן'}</b></div><div id="timeCardReward" class="reward hidden"></div><button class="bigbtn hidden" id="timeCardContinue" onclick="claimSimpleTimeCard()">${en?'Continue':'המשך'}</button></div>`;
 }
-function openNextChainChest(){
- if(!chainChestQueue.length){
-   const doneStage=chainChestStage; chainChestStage=0; ui();
-   promoChainModal($('modalBox'),"<button class='close' onclick=\"openModal('shop')\">✕</button>");
-   toast(doneStage===7?(S.lang==='en'?'🎉 Chain completed!':'🎉 סיימת את השרשרת!'):(S.lang==='en'?'Reward received!':'הפרס התקבל!'));
-   return;
- }
- const en=S.lang==='en', total=chainChestQueue.length;
- const b=$('modalBox'); $('modal').classList.remove('hidden');
- b.innerHTML=`<button class="close" onclick="closeModal()">✕</button>
- <h2>🎁 ${en?'Time Chest':'תיבת זמן'}</h2>
- <p style="text-align:center;color:#aac0db">${en?'Click the chest to open it!':'לחץ על התיבה כדי לפתוח אותה!'}</p>
- <div class="chest" id="chainChestBox" onclick="openChainChest()">🎁</div>
- <div id="chainChestReward" class="reward hidden"></div>
- <button class="bigbtn hidden" id="chainChestClaim" onclick="claimChainChest()">✨ ${en?'Continue':'המשך'}</button>`;
-}
-function openChainChest(){
- const box=$('chainChestBox'); if(!box||box.dataset.opened==='1')return;
- box.dataset.opened='1'; box.textContent='📦'; box.classList.add('open');
- const reward=weighted(1,30,3.2), en=S.lang==='en'; pendingChainChestReward=reward;
- const r=$('chainChestReward'); if(r){r.textContent=`⏱️ +${reward} ${en?'saved seconds':'שניות זמן שמור'}`;r.classList.remove('hidden');}
- const btn=$('chainChestClaim'); if(btn){btn.textContent=chainChestQueue.length>1?(en?'📦 Open next chest':'📦 פתח את התיבה הבאה'):(en?'✨ Finish':'✨ סיום');btn.classList.remove('hidden');}
- beep(700);
-}
-function claimChainChest(){
- if(typeof pendingChainChestReward!=='number')return;
- S.stored=(S.stored||0)+pendingChainChestReward; pendingChainChestReward=null;
- save();ui(); chainChestQueue.shift(); openNextChainChest();
-}
+function openSimpleTimeCard(){const card=$('timeCardBox');if(!card||card.dataset.opened==='1')return;card.dataset.opened='1';simpleTimeCardReward=weighted(1,30,3.2);const en=S.lang==='en';card.classList.add('revealing');beep(820);setTimeout(()=>{card.classList.remove('revealing');card.classList.add('revealed');setTimeout(()=>{const r=$('timeCardReward'),c=$('timeCardContinue');if(r){r.textContent=`⏱️ +${simpleTimeCardReward} ${en?'saved seconds':'שניות זמן שמור'}`;r.classList.remove('hidden');r.classList.add('card-reward-pop');}if(c){c.classList.remove('hidden');c.classList.add('card-reward-pop');}beep(1040)},320)},720);}
+function claimSimpleTimeCard(){if(typeof simpleTimeCardReward!=='number')return;S.stored=(S.stored||0)+simpleTimeCardReward;simpleTimeCardReward=null;save();simpleTimeCardQueue.shift();openNextSimpleTimeCard();}
 
 function dailyUI(){let el=$('dailyTimer');if(!el)return;let n=new Date(),next=new Date(n);next.setHours(24,0,0,0);let ms=next-n;el.textContent=(S.lang==='en'?'Refresh in ':'הטענה בעוד ')+fmt(ms)}
 function fmt(ms){ms=Math.max(0,ms);let s=Math.floor(ms/1000),h=Math.floor(s/3600),m=Math.floor((s%3600)/60),x=s%60;return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(x).padStart(2,'0')}
@@ -849,8 +755,8 @@ const spyRushAnimals=['🦁','🐵','🐳','🐬','🐶','🐹','🦦','🐯','�
 const spyRushNames={'🦁':['אריה','Lion'],'🐵':['קוף','Monkey'],'🐳':['לוויתן','Whale'],'🐬':['דולפין','Dolphin'],'🐶':['כלב','Dog'],'🐹':['אוגר','Hamster'],'🦦':['לוטרה','Otter'],'🐯':['טיגריס','Tiger'],'🐧':['פינגווין','Penguin'],'🦓':['זברה','Zebra'],'🐻':['דוב','Bear'],'🦒':['ג׳ירפה','Giraffe'],'🐰':['ארנב','Rabbit'],'🦏':['קרנף','Rhino'],'🐼':['פנדה','Panda']};
 function spyName(a){const n=spyRushNames[a]||['חיה','Animal'];return S.lang==='en'?n[1]:n[0];}
 function spyRushAnimalsList(){return spyRushAnimals.filter(a=>!S.spyRushCollected.includes(a));}
-function spyWheelModal(b,c){const remaining=spyRushAnimalsList(),en=S.lang==='en';const items=remaining.map((a,i)=>`<span class="wheel-animal" style="--i:${i};--n:${Math.max(1,remaining.length)}">${a}</span>`).join('');b.innerHTML=`${c}<div class="spy-wheel-page"><h2>🎡 ${en?'Spy Rush Wheel':'גלגל Spy Rush'}</h2><p>${en?'Collect all 15 animals. Each spin costs 250 diamonds.':'אסוף את כל 15 החיות. כל סיבוב עולה 250 יהלומים.'}</p><div class="spy-wheel-stage"><div class="wheel-pointer">▼</div><div id="spyWheel" class="spy-wheel">${items||'<span class="wheel-empty">🏆</span>'}<div class="wheel-center">SPY<br>RUSH</div></div></div><div id="wheelResult" class="wheel-result">${remaining.length?(en?'Ready to spin':'מוכן לסיבוב'):'🎉 '+(en?'All animals collected!':'אספת את כל החיות!')}</div><button class="bigbtn" id="spinWheelBtn" onclick="spinSpyRushWheel()" ${remaining.length?'':'disabled'}>🎡 ${en?'Spin — 250 💎':'סובב — 250 💎'}</button><div class="wheel-count">${en?`${S.spyRushCollected.length}/15 collected`:`${S.spyRushCollected.length}/15 נאספו`}</div></div>`;}
-function spinSpyRushWheel(){const remaining=spyRushAnimalsList(),en=S.lang==='en';if(!remaining.length)return toast(en?'You collected them all!':'אספת את כולן!');if(S.diamonds<250)return toast(en?'Not enough diamonds 💎':'אין מספיק יהלומים 💎');const btn=$('spinWheelBtn');if(btn)btn.disabled=true;S.diamonds-=250;S.spyRushSpins++;save();const winner=remaining[Math.floor(Math.random()*remaining.length)],wheel=$('spyWheel');const index=remaining.indexOf(winner),count=remaining.length;const slice=360/count;const target=360*6+(360-(index*slice+slice/2)-270);if(wheel){wheel.classList.remove('spinning');wheel.style.transform='rotate(0deg)';void wheel.offsetWidth;wheel.style.setProperty('--wheel-target',target+'deg');wheel.classList.add('spinning');}setTimeout(()=>{S.spyRushCollected.push(winner);S.spyRushLastAnimal=winner;save();showAnimalWon(winner);},2400);}
+function spyWheelModal(b,c){const remaining=spyRushAnimalsList(),en=S.lang==='en';const items=remaining.map((a,i)=>`<span class="wheel-animal" style="--i:${i};--n:${Math.max(1,remaining.length)}">${a}</span>`).join('');b.innerHTML=`${c}<div class="spy-wheel-page"><h2>🎡 ${en?'Spy Rush Wheel':'גלגל Spy Rush'}</h2><p>${en?'Collect all 15 animals. Each spin costs 250 diamonds.':'אסוף את כל 15 החיות. כל סיבוב עולה 250 יהלומים.'}</p><div class="spy-wheel-stage"><div class="wheel-pointer">▼</div><div id="spyWheel" class="spy-wheel">${items||'<span class="wheel-empty">🏆</span>'}<div class="wheel-center">SPY<br>RUSH</div></div></div><div id="wheelResult" class="wheel-result">${remaining.length?(en?'Ready to spin':'מוכן לסיבוב'):'🎉 '+(en?'All animals collected!':'אספת את כל החיות!')}</div><button class="bigbtn" id="spinWheelBtn" onclick="spinSpyRushWheel()" ${remaining.length?'':'disabled'}>🎡 ${en?(S.animalChainFreeWheels?`Spin — FREE (${S.animalChainFreeWheels})`:'Spin — 250 💎'):(S.animalChainFreeWheels?`סובב — חינם (${S.animalChainFreeWheels})`:'סובב — 250 💎')}</button><div class="wheel-count">${en?`${S.spyRushCollected.length}/15 collected`:`${S.spyRushCollected.length}/15 נאספו`}</div></div>`;}
+function spinSpyRushWheel(){const remaining=spyRushAnimalsList(),en=S.lang==='en';if(!remaining.length)return toast(en?'You collected them all!':'אספת את כולן!');const free=Number(S.animalChainFreeWheels)||0;if(free<=0&&S.diamonds<250)return toast(en?'Not enough diamonds 💎':'אין מספיק יהלומים 💎');const btn=$('spinWheelBtn');if(btn)btn.disabled=true;if(free>0)S.animalChainFreeWheels=free-1;else S.diamonds-=250;S.spyRushSpins++;save();const winner=remaining[Math.floor(Math.random()*remaining.length)],wheel=$('spyWheel');const index=remaining.indexOf(winner),count=remaining.length;const slice=360/count;const target=360*6+(360-(index*slice+slice/2)-270);if(wheel){wheel.classList.remove('spinning');wheel.style.transform='rotate(0deg)';void wheel.offsetWidth;wheel.style.setProperty('--wheel-target',target+'deg');wheel.classList.add('spinning');}setTimeout(()=>{S.spyRushCollected.push(winner);S.spyRushLastAnimal=winner;save();showAnimalWon(winner);},2400);}
 function showAnimalWon(animal){const en=S.lang==='en';const modal=$('modalBox');const close=modal.querySelector('.close');if(close){close.disabled=true;close.style.display='none';}const old=modal.querySelector('.animal-win-panel');if(old)old.remove();const panel=document.createElement('div');panel.className='animal-win-panel';panel.innerHTML=`<div class="animal-won-glow">✨</div><div class="animal-won-title">${en?'You got a new animal!':'קיבלת חיה חדשה!'}</div><div class="animal-won-animal">${animal}</div><div class="animal-won-name">${spyName(animal)}</div><button class="bigbtn animal-accept-btn" onclick="acceptAnimalWon()">${en?'Accept':'קבלה'}</button>`;modal.appendChild(panel);const wheel=$('spyWheel');if(wheel)wheel.style.animationPlayState='paused';}
 function acceptAnimalWon(){const modal=$('modalBox');const panel=modal.querySelector('.animal-win-panel');if(panel)panel.remove();closeModal();}
 function memoryModal(b,c){const en=S.lang==='en';const cells=spyRushAnimals.map(a=>{const got=S.spyRushCollected.includes(a);return `<div class="memory-cell ${got?'got':''}"><span>${got?a:'?'}</span>${got?`<b>${spyName(a)}</b>`:''}</div>`}).join('');const all=S.spyRushCollected.length>=spyRushAnimals.length;b.innerHTML=`${c}<div class="memory-page"><div class="memory-frame"><div class="memory-frame-title">🕵️ ${en?'Spy Rush':'Spy Rush'}</div>${all?`<div class="memory-complete">${en?'No more animals':'אין עוד חיות'}</div>`:''}<div class="memory-grid">${cells}</div></div></div>`;}
@@ -1155,4 +1061,7 @@ body.maintenance-active{overflow:hidden!important}
 @media(min-width:651px){.settings-top-card{width:min(760px,100%)!important;max-width:760px!important;margin-left:auto!important;margin-right:auto!important;padding:0!important}.settings-top-button{min-height:46px!important;font-size:16px!important}}
 @media(max-width:650px){.settings-top-card{width:100%!important;max-width:760px!important;margin-left:auto!important;margin-right:auto!important;padding:0!important}.settings-top-button{min-height:46px!important;font-size:16px!important}}
 .spy-main-link{display:block!important;visibility:visible!important;opacity:1!important;position:relative!important}
+</style>
+<style>
+.time-card-page{text-align:center;max-width:700px;margin:0 auto;padding:10px 0 30px}.time-card-icon{font-size:52px;filter:drop-shadow(0 8px 20px #0007)}.time-card{width:min(300px,80vw);height:390px;margin:28px auto 22px;border-radius:28px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:linear-gradient(145deg,#6b55ff,#1683ff 55%,#12b981);border:5px solid #fff;box-shadow:0 25px 70px #0008,inset 0 0 0 6px #ffffff33;cursor:pointer;transform-style:preserve-3d;transition:transform .72s cubic-bezier(.2,1.4,.3,1),filter .35s,box-shadow .35s;position:relative;isolation:isolate}.time-card:before{content:"";position:absolute;inset:-18px;border-radius:36px;background:radial-gradient(circle,rgba(255,255,255,.82) 0%,rgba(105,210,255,.45) 28%,rgba(119,92,255,.25) 52%,transparent 72%);filter:blur(16px);opacity:0;z-index:-1;transition:opacity .35s,transform .35s;pointer-events:none}.time-card span{font-size:110px}.time-card b{font-size:34px;letter-spacing:4px}.time-card.revealing{transform:scale(1.18) rotateY(12deg);filter:brightness(1.5);box-shadow:0 0 35px #fff,0 0 85px #58c9ff,0 35px 100px #000b,inset 0 0 0 8px #ffffff66}.time-card.revealing:before{opacity:1;transform:scale(1.25)}.time-card.revealed{transform:rotateY(180deg) scale(1.03);filter:brightness(1.22);box-shadow:0 0 30px #fff,0 0 70px #5fc8ff,0 25px 75px #0009,inset 0 0 0 7px #ffffff55}.time-card.revealed:before{opacity:.75}.card-reward-pop{animation:cardRewardPop .5s cubic-bezier(.2,1.5,.4,1)}@keyframes cardRewardPop{0%{opacity:0;transform:scale(.65) translateY(14px)}70%{opacity:1;transform:scale(1.08) translateY(-2px)}100%{opacity:1;transform:scale(1) translateY(0)}}
 </style>
