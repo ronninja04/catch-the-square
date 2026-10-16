@@ -15,9 +15,11 @@ body{min-height:100vh;color:#fff;background:radial-gradient(circle at 20% 10%,#2
 .message{min-height:30px;margin:18px 0 0;font-size:18px;font-weight:900}.error{color:#ff667d}.ok{color:#52e7a1}.already{margin-top:22px;padding:22px;border-radius:20px;background:#2b2512;border:1px solid #f3cf55aa;color:#ffe07a;font-size:28px;font-weight:1000}
 .reward{margin-top:20px;padding:22px;border-radius:22px;background:linear-gradient(145deg,#162d4d,#111a32);border:1px solid #4777aa88}.reward-icon{font-size:64px}.reward-title{font-size:28px;font-weight:1000;margin-top:6px}.reward-desc{font-size:18px;color:#bcd0ec;margin-top:7px;line-height:1.5}.hint{margin-top:24px;color:#8fa7c8;font-size:14px;line-height:1.5}
 .hidden{display:none!important}@media(max-width:520px){body{padding:14px}.card{padding:28px 17px 22px;border-radius:25px}.lang{top:12px;right:12px}.logo{font-size:56px}h1{margin-top:4px}}
+.israel-bg{position:fixed;inset:0;z-index:-1;background:linear-gradient(to bottom,#0b4ea2 0 15%,#fff 15% 85%,#0b4ea2 85% 100%);display:grid;place-items:center;font-size:clamp(150px,30vw,360px);color:#0b4ea2;opacity:.98}.israel-bg:before{content:"✡"}.card{background:rgba(8,25,48,.93)}
 </style>
 </head>
 <body>
+<div class="israel-bg" aria-hidden="true"></div>
 <button id="langBtn" class="lang" type="button">English</button>
 <main class="card">
   <div class="logo">🎁</div>
@@ -34,8 +36,9 @@ body{min-height:100vh;color:#fff;background:radial-gradient(circle at 20% 10%,#2
   const GAME_URL='https://ronninja04.github.io/catch-the-square/';
   const rewards={
     '100gams':{icon:'💎',heTitle:'100 יהלומים',enTitle:'100 Diamonds',heDesc:'קוד שמעניק 100 יהלומים במשחק.',enDesc:'A code that gives you 100 diamonds in the game.'},
-    'dog':{icon:'🐶',heTitle:'כלב מ־Spy Rush',enTitle:'Dog from Spy Rush',heDesc:'קוד שמוסיף את הכלב לאוסף Spy Rush.',enDesc:'A code that adds the Dog to your Spy Rush collection.'},
-    '7-11':{icon:'💎',heTitle:'711 יהלומים',enTitle:'711 Diamonds',heDesc:'קוד שמעניק 711 יהלומים במשחק.',enDesc:'A code that gives you 711 diamonds in the game.'}
+    '7-11':{icon:'💎',heTitle:'711 יהלומים',enTitle:'711 Diamonds',heDesc:'קוד שמעניק 711 יהלומים במשחק.',enDesc:'A code that gives you 711 diamonds in the game.'},
+    'iwant10000gems':{icon:'💎',heTitle:'10,000 יהלומים',enTitle:'10,000 Diamonds',heDesc:'קוד שמעניק 10,000 יהלומים במשחק.',enDesc:'A code that gives you 10,000 diamonds in the game.'},
+    'dog':{icon:'🐶',heTitle:'חיית Spy Rush: כלב',enTitle:'Spy Rush Animal: Dog',heDesc:'קוד שמוסיף את הכלב לאוסף Spy Rush.',enDesc:'A code that adds the Dog to your Spy Rush collection.'}
   };
   let en=false;
   const $=id=>document.getElementById(id);
