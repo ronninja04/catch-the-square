@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Catch the Square - Israel Version</title>
+<title>תפוס את הריבוע</title>
 <style>
 *{box-sizing:border-box}
 :root{
@@ -237,22 +237,11 @@ body.lang-he{direction:rtl}
 @keyframes animalGlow{from{transform:scale(1);filter:brightness(1)}to{transform:scale(1.15);filter:brightness(1.35)}}
 @media(min-width:651px){.spy-wheel-stage{width:560px}.wheel-animal{font-size:38px}.settings-top-card{width:520px!important}}
 </style>
-
-<style id="israel-flag-visual-fix">
-html,body{min-height:100%;}
-body{background-color:#fff;background-image:linear-gradient(to bottom,#fff 0 32%,#0038b8 32% 39%,#fff 39% 61%,#0038b8 61% 68%,#fff 68% 100%) !important;background-attachment:fixed;background-size:100% 100%;}
-body::before{content:"🇮🇱";position:fixed;inset:0;display:flex;align-items:center;justify-content:center;font-size:min(32vw,320px);opacity:.10;pointer-events:none;z-index:0;}
-body>*{position:relative;z-index:1;}
-#modal{z-index:9999;}
-.spy-memory-section{margin-top:18px;padding:16px;border-radius:20px;background:rgba(255,255,255,.90);color:#111;box-shadow:0 8px 30px rgba(0,0,0,.15);}
-.spy-memory-grid{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:12px;}
-.spy-memory-animal{font-size:34px;min-width:58px;padding:10px;border-radius:14px;background:#fff;border:2px solid #0038b8;}
-</style>
 </head>
 <body>
 <div id="app">
 <header><div class="header-row">
-<div class="brand">🇮🇱 Catch the Square</div>
+<div class="brand">◼️ תפוס את הריבוע</div>
 <div style="display:flex;align-items:center;gap:8px">
 
 <button class="gear" onclick="openModal('settings')">⚙️</button>
@@ -260,7 +249,7 @@ body>*{position:relative;z-index:1;}
 
 <main>
 <section class="hero">
-<h1>Catch the Square - Israel Version</h1>
+<h1>תפוס את הריבוע</h1>
 <p id="welcome">תפוס כמה שיותר פעמים לפני שהזמן נגמר!</p>
 <div class="stats">
 <div class="stat">💎<span>יהלומים</span><b id="diamonds">0</b></div>
@@ -272,14 +261,17 @@ body>*{position:relative;z-index:1;}
 <button class="bigbtn" onclick="startGame()">▶️ התחל משחק</button>
 <button class="bigbtn alt" onclick="openModal('shop')">🛒 חנות</button>
 <button class="bigbtn alt" onclick="openModal('creator')">👑 יוצר המשחק: רון</button>
-<button class="bigbtn alt" id="memoryMainBtn" onclick="openModal('memory')">🧠 זיכרון</button>
-</div>
+<button class="bigbtn alt spy-feature" id="memoryMainBtn" onclick="openModal('memory')">🧠 זיכרון</button>
+<button class="bigbtn alt spy-feature spy-collab-btn" id="spyCollabMainBtn" onclick="openSpyRushMode()">🕵️ Spy Rush × Catch the Square</button>
+
+
+<button class="bigbtn spy-main-link" onclick="goToSpyRush()">🕵️ Spy Rush</button></div>
 </section>
 
 <section id="gamePanel" class="hidden">
 <div class="game-card">
 <div class="game-top"><div class="timer" id="timer">00:30</div><div class="live-score">🎯 <span id="score">0</span></div></div>
-<div class="arena" id="arena"><div id="square" aria-label="דגל ישראל" onclick="hitSquare(event)">🇮🇱</div></div>
+<div class="arena" id="arena"><div id="square" onclick="hitSquare(event)"></div></div>
 </div>
 </section>
 </main>
@@ -287,10 +279,10 @@ body>*{position:relative;z-index:1;}
 
 <div id="loader" class="overlay">
 <div class="loader" style="position:relative;overflow:hidden">
-<div style="font-size:76px;animation:float 1.5s infinite">🇮🇱</div>
+<div style="font-size:76px;animation:float 1.5s infinite">◼️</div>
 <div style="font-size:14px;letter-spacing:3px;color:#69baff;font-weight:900;margin-top:4px">RON STUDIOS</div>
-<h2 id="loaderTitle" style="font-size:clamp(32px,8vw,52px);margin:8px 0;background:linear-gradient(90deg,#fff,#70c7ff,#a68cff);-webkit-background-clip:text;color:transparent">תפוס את הריבוע - גרסת ישראל</h2>
-<p id="loaderSubtitle" style="font-size:17px">מכינים את המשחק...</p>
+<h2 style="font-size:clamp(32px,8vw,52px);margin:8px 0;background:linear-gradient(90deg,#fff,#70c7ff,#a68cff);-webkit-background-clip:text;color:transparent">תפוס את הריבוע</h2>
+<p style="font-size:17px">מתכוננים למשחק שלך...</p>
 <div class="loadnum" id="loadnum" style="text-shadow:0 0 25px #55b9ff">0%</div>
 <div class="bar"><i id="loadbar"></i></div>
 </div>
@@ -316,6 +308,14 @@ body>*{position:relative;z-index:1;}
 
 
 
+function updateLanguageDirection(){
+  document.documentElement.lang = S.lang === 'en' ? 'en' : 'he';
+  document.body.classList.toggle('lang-en', S.lang === 'en');
+  document.body.classList.toggle('lang-he', S.lang !== 'en');
+}
+
+
+
 <script>
 const KEY='catchSquareAccountV1';
 const OLD_KEYS=['catchSquareNew2026','catchSquareFinal','catchSquare','catchSquareAccount'];
@@ -328,9 +328,8 @@ function loadPersistentAccount(){
   }
   return null;
 }
-const defaultState={name:'רון',diamonds:100,stored:0,best:0,scores:[],daily:null,timeChest:null,maintenanceGift:false,savedFriends:[],lang:'he',spyRushCollected:[],spyRushLastAnimal:'',spyRushSpins:0,animalChainStage:1,animalChainFreeWheels:0,countryCollection:[],countrySpins:0};
-let S=loadPersistentAccount()||structuredClone(defaultState); if(S.lang!=='he'&&S.lang!=='en')S.lang='he'; S.secretClaimed=!!S.secretClaimed; S.room=S.room||''; S.maintenanceGift=!!S.maintenanceGift; S.spyRushCollected=Array.isArray(S.spyRushCollected)?S.spyRushCollected:[];
-S.spyRushCollected=S.spyRushCollected.filter(a=>['🦁','🐵','🐳','🐬','🐶','🐹','🦦','🐯','🐧','🦓','🐻','🦒','🐰','🦏','🐼'].includes(a)); S.spyRushLastAnimal=S.spyRushLastAnimal||''; S.spyRushSpins=Math.max(0,Number(S.spyRushSpins)||0); S.animalChainStage=Math.min(11,Math.max(1,Number(S.animalChainStage)||1)); S.animalChainFreeWheels=Math.max(0,Number(S.animalChainFreeWheels)||0);
+const defaultState={name:'רון',diamonds:100,stored:0,best:0,scores:[],daily:null,timeChest:null,maintenanceGift:false,savedFriends:[],lang:'he',spyRushCollected:[],spyRushLastAnimal:'',spyRushSpins:0,animalChainStage:1,animalChainFreeWheels:0};
+let S=loadPersistentAccount()||structuredClone(defaultState); if(S.lang!=='he'&&S.lang!=='en')S.lang='he'; S.secretClaimed=!!S.secretClaimed; S.room=S.room||''; S.maintenanceGift=!!S.maintenanceGift; S.spyRushCollected=Array.isArray(S.spyRushCollected)?S.spyRushCollected:[]; S.spyRushLastAnimal=S.spyRushLastAnimal||''; S.spyRushSpins=Math.max(0,Number(S.spyRushSpins)||0); S.animalChainStage=Math.min(11,Math.max(1,Number(S.animalChainStage)||1)); S.animalChainFreeWheels=Math.max(0,Number(S.animalChainFreeWheels)||0);
 let game={active:false,time:0,score:0,interval:null,endAt:0,buys:0,animal:'🦁'};
 const $=id=>document.getElementById(id);
 function save(){localStorage.setItem(KEY,JSON.stringify(S));ui()}
@@ -361,7 +360,7 @@ function shopModal(b,c){
  b.innerHTML=c+`<div class="premium-shop-title">🛒 ${h('החנות','Shop')}</div><p class="premium-shop-sub">${h('בחר הצעה, פתח תיבות ואסוף זמן ויהלומים.','Choose an offer, open chests, and collect time and diamonds.')}</p>
  <div class="shop-carousel">
   <div class="item promo-preview-card" onclick="openModal('promoChain')"><div id="promoPreview"></div></div>
-  <div class="item"><h3>⏱️ ${h('תיבת זמן','Time Chest')}</h3><p>${h('קלף אקראי שנותן זמן שמור.','A random time card.')}</p><div class="row"><b>💎 75</b><button class="buy" onclick="buyTimeCard()">${h('קנה תיבת זמן','Buy Chest')}</button></div></div>
+  <div class="item"><h3>⏱️ ${h('קלף זמן','Time Card')}</h3><p>${h('קלף אקראי שנותן זמן שמור.','A random time card.')}</p><div class="row"><b>💎 75</b><button class="buy" onclick="buyTimeCard()">${h('קנה קלף','Buy Card')}</button></div></div>
   <div class="item"><h3>⚡ ${h('5 שניות','5 Seconds')}</h3><div class="row"><b>30 💎</b><button class="buy" onclick="buyFive()">+5 ${h('שניות','seconds')}</button></div></div>
   <div class="item spy-feature spy-wheel-shop-card"><h3>🎡 ${h('גלגל החיות','Animal Wheel')}</h3><p>${h('אסוף את כל 15 חיות ה־Spy Rush. חיות שכבר אספת נעלמות מהגלגל.','Collect all 15 Spy Rush animals. Collected animals disappear from the wheel.')}</p><div class="row"><b>250 💎</b><button class="buy" onclick="openModal('spyWheel')">${h('פתח גלגל','Open Wheel')}</button></div></div>
   <div class="item"><h3>🎁 ${h('תיבה יומית','Daily Chest')}</h3><div class="row"><b id="dailyTimer">${h('בודק...','Checking...')}</b><button class="buy" onclick="dailyChest()">🎁 ${h('פתח תיבה','Open Chest')}</button></div></div>
@@ -376,14 +375,14 @@ function animalChainState(){
 }
 function animalChainLabels(){
  return [
-  {icon:'🃏',text:'תיבת זמן חינם',en:'Free Time Chest',price:'FREE',kind:'card',count:1},
+  {icon:'🃏',text:'קלף זמן חינם',en:'Free Time Card',price:'FREE',kind:'card',count:1},
   {icon:'⏱️',text:'20 שניות',en:'20 Seconds',price:'75 💎',kind:'seconds',seconds:20},
   {icon:'🎡',text:'2 גלגלים',en:'2 Wheels',price:'425 💎',kind:'wheels',count:2},
   {icon:'🎡',text:'3 גלגלים',en:'3 Wheels',price:'620 💎',kind:'wheels',count:3},
-  {icon:'🃏',text:'2 תיבות זמן חינם',en:'2 Free Time Chests',price:'FREE',kind:'card',count:2},
+  {icon:'🃏',text:'2 קלפי זמן חינם',en:'2 Free Time Cards',price:'FREE',kind:'card',count:2},
   {icon:'🎡',text:'4 גלגלים',en:'4 Wheels',price:'800 💎',kind:'wheels',count:4},
-  {icon:'🃏',text:'תיבת זמן ב־50',en:'1 Time Chest for 50',price:'50 💎',kind:'card',count:1},
-  {icon:'🃏',text:'3 תיבות זמן ב־150',en:'3 Time Chests for 150',price:'150 💎',kind:'card',count:3},
+  {icon:'🃏',text:'קלף זמן ב־50',en:'1 Time Card for 50',price:'50 💎',kind:'card',count:1},
+  {icon:'🃏',text:'3 קלפי זמן ב־150',en:'3 Time Cards for 150',price:'150 💎',kind:'card',count:3},
   {icon:'🎡',text:'5 גלגלים',en:'5 Wheels',price:'900 💎',kind:'wheels',count:5},
   {icon:'🎡',text:'גלגל חינם',en:'Free Wheel',price:'FREE',kind:'wheels',count:1}
  ];
@@ -422,7 +421,7 @@ let simpleTimeCardQueue=[],simpleTimeCardStage=0,simpleTimeCardReward=null;
 function enqueueTimeCardsSimple(count,stage){simpleTimeCardQueue=Array.from({length:Math.max(1,count)},()=>1);simpleTimeCardStage=stage;closeModal();openNextSimpleTimeCard();}
 function openNextSimpleTimeCard(){
  if(!simpleTimeCardQueue.length){const st=simpleTimeCardStage;simpleTimeCardStage=0;promoChainModal($('modalBox'),"<button class='close' onclick=\"openModal('shop')\">✕</button>");return toast(S.lang==='en'?'Reward received!':'הפרס התקבל!');}
- const en=S.lang==='en',b=$('modalBox');$('modal').classList.remove('hidden');b.innerHTML=`<button class="close" onclick="closeModal()">✕</button><div class="time-card-page"><div class="time-card-icon">🎁</div><h2>${en?'Time Chest':'תיבת זמן'}</h2><p>${en?'Click the card to reveal your saved time!':'לחץ על הקלף כדי לחשוף את הזמן שקיבלת!'}</p><div class="time-card" id="timeCardBox" onclick="openSimpleTimeCard()"><span>⏱️</span><b>${en?'TIME':'זמן'}</b></div><div id="timeCardReward" class="reward hidden"></div><button class="bigbtn hidden" id="timeCardContinue" onclick="claimSimpleTimeCard()">${en?'Continue':'המשך'}</button></div>`;
+ const en=S.lang==='en',b=$('modalBox');$('modal').classList.remove('hidden');b.innerHTML=`<button class="close" onclick="closeModal()">✕</button><div class="time-card-page"><div class="time-card-icon">🃏</div><h2>${en?'Time Card':'קלף זמן'}</h2><p>${en?'Click the card to reveal your saved time!':'לחץ על הקלף כדי לחשוף את הזמן שקיבלת!'}</p><div class="time-card" id="timeCardBox" onclick="openSimpleTimeCard()"><span>⏱️</span><b>${en?'TIME':'זמן'}</b></div><div id="timeCardReward" class="reward hidden"></div><button class="bigbtn hidden" id="timeCardContinue" onclick="claimSimpleTimeCard()">${en?'Continue':'המשך'}</button></div>`;
 }
 function openSimpleTimeCard(){const card=$('timeCardBox');if(!card||card.dataset.opened==='1')return;card.dataset.opened='1';simpleTimeCardReward=weighted(1,30,3.2);const en=S.lang==='en';card.classList.add('revealing');beep(820);setTimeout(()=>{card.classList.remove('revealing');card.classList.add('revealed');setTimeout(()=>{const r=$('timeCardReward'),c=$('timeCardContinue');if(r){r.textContent=`⏱️ +${simpleTimeCardReward} ${en?'saved seconds':'שניות זמן שמור'}`;r.classList.remove('hidden');r.classList.add('card-reward-pop');}if(c){c.classList.remove('hidden');c.classList.add('card-reward-pop');}beep(1040)},320)},720);}
 function claimSimpleTimeCard(){if(typeof simpleTimeCardReward!=='number')return;S.stored=(S.stored||0)+simpleTimeCardReward;simpleTimeCardReward=null;save();simpleTimeCardQueue.shift();openNextSimpleTimeCard();}
@@ -514,14 +513,12 @@ function applyLanguage(){
 }
 function settingsModal(b,c){
  const en=S.lang==='en', h=(a,e)=>en?e:a;
- b.innerHTML=c+`<h2>⚙️ ${h('הגדרות','Settings')}</h2>
- <div class="item settings-top-card"><button class="buy settings-top-button" onclick="openModal('top')">🏆 ${h('טופ','Top')}</button></div>
+ b.innerHTML=c+`<div class="settings-close-space"></div><div class="item settings-top-card"><button class="buy settings-top-button" onclick="openModal('top')">🏆 ${h('טופ','Top')}</button></div><h2>⚙️ ${h('הגדרות','Settings')}</h2>
  <div class="item"><h3>👤 ${h('שם השחקן','Player Name')}</h3><input id="nameInput" type="text" value="${esc(S.name)}" maxlength="20"><button class="buy" style="margin-top:10px" onclick="setName()">${h('שמור שם','Save Name')}</button></div>
  <div class="item"><h3>🌍 ${h('שפה','Language')}</h3><div class="langs"><button class="langbtn" onclick="setLang('he')">🇮🇱 עברית</button><button class="langbtn" onclick="setLang('en')">🇺🇸 English</button></div></div>
  <div class="item"><h3>🔊 ${h('צלילים ומוזיקה','Sound & Music')}</h3><p id="soundStatus">${soundOn?h('המוזיקה והצלילים פעילים','Sound and music are on'):h('המוזיקה והצלילים כבויים','Sound and music are off')}</p><button class="buy" onclick="toggleSound()">${h('החלף מצב צלילים','Toggle Sound')}</button></div>
  <div class="item"><h3>🗑️ ${h('משתמש','Account')}</h3><button class="buy" onclick="deleteUser()">${h('מחק את המשתמש שלי מהמכשיר','Delete my local account')}</button></div>`;
 }
-
 function esc(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function setName(){let n=$('nameInput').value.trim();if(!n)return toast(S.lang==='en'?'Enter a name':'צריך לכתוב שם');S.name=n;save();toast(S.lang==='en'?'Name saved ✔️':'השם נשמר ✔️');}
 function setLang(x){
@@ -661,7 +658,7 @@ function loading(){
  const loader=document.getElementById('loader'),num=document.getElementById('loadnum'),bar=document.getElementById('loadbar');
  if(!loader||!num||!bar)return;
  clearInterval(window.loadingTimer); clearTimeout(window.loadingFailsafe);
- const start=Date.now(),duration=2000;
+ const start=Date.now(),duration=10000;
  let finished=false;
  num.textContent='0%'; bar.style.width='0%';
  const finish=()=>{
@@ -681,7 +678,7 @@ function loading(){
    num.textContent=pct+'%'; bar.style.width=pct+'%';
    if(pct>=100)finish();
  },50);
- window.loadingFailsafe=setTimeout(finish,3000);
+ window.loadingFailsafe=setTimeout(finish,12000);
 }
 
 // Emergency loader: the loading screen must never remain stuck at 0%, even if another part of the game has a JavaScript error.
@@ -690,10 +687,10 @@ function loading(){
     const loader=document.getElementById('loader'),num=document.getElementById('loadnum'),bar=document.getElementById('loadbar');
     if(!loader||!num||!bar)return;
     let start=Date.now(),done=false;
-    const finish=()=>{if(done)return;done=true;num.textContent='100%';bar.style.width='100%';setTimeout(()=>loader.classList.add('hidden'),50);};
-    const tick=()=>{if(done)return;const pct=Math.min(100,Math.floor((Date.now()-start)/2000*100));num.textContent=pct+'%';bar.style.width=pct+'%';if(pct>=100)finish();else requestAnimationFrame(tick);};
+    const finish=()=>{if(done)return;done=true;num.textContent='100%';bar.style.width='100%';setTimeout(()=>loader.classList.add('hidden'),250);};
+    const tick=()=>{if(done)return;const pct=Math.min(100,Math.floor((Date.now()-start)/10000*100));num.textContent=pct+'%';bar.style.width=pct+'%';if(pct>=100)finish();else requestAnimationFrame(tick);};
     requestAnimationFrame(tick);
-    setTimeout(finish,3000);
+    setTimeout(finish,12000);
   };
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',run,{once:true});else run();
 })();
@@ -759,7 +756,7 @@ const spyRushNames={'🦁':['אריה','Lion'],'🐵':['קוף','Monkey'],'🐳'
 function spyName(a){const n=spyRushNames[a]||['חיה','Animal'];return S.lang==='en'?n[1]:n[0];}
 function spyRushAnimalsList(){return spyRushAnimals.filter(a=>!S.spyRushCollected.includes(a));}
 function spyWheelModal(b,c){const remaining=spyRushAnimalsList(),en=S.lang==='en';const items=remaining.map((a,i)=>`<span class="wheel-animal" style="--i:${i};--n:${Math.max(1,remaining.length)}">${a}</span>`).join('');b.innerHTML=`${c}<div class="spy-wheel-page"><h2>🎡 ${en?'Spy Rush Wheel':'גלגל Spy Rush'}</h2><p>${en?'Collect all 15 animals. Each spin costs 250 diamonds.':'אסוף את כל 15 החיות. כל סיבוב עולה 250 יהלומים.'}</p><div class="spy-wheel-stage"><div class="wheel-pointer">▼</div><div id="spyWheel" class="spy-wheel">${items||'<span class="wheel-empty">🏆</span>'}<div class="wheel-center">SPY<br>RUSH</div></div></div><div id="wheelResult" class="wheel-result">${remaining.length?(en?'Ready to spin':'מוכן לסיבוב'):'🎉 '+(en?'All animals collected!':'אספת את כל החיות!')}</div><button class="bigbtn" id="spinWheelBtn" onclick="spinSpyRushWheel()" ${remaining.length?'':'disabled'}>🎡 ${en?(S.animalChainFreeWheels?`Spin — FREE (${S.animalChainFreeWheels})`:'Spin — 250 💎'):(S.animalChainFreeWheels?`סובב — חינם (${S.animalChainFreeWheels})`:'סובב — 250 💎')}</button><div class="wheel-count">${en?`${S.spyRushCollected.length}/15 collected`:`${S.spyRushCollected.length}/15 נאספו`}</div></div>`;}
-function spinSpyRushWheel(){const remaining=spyRushAnimalsList(),en=S.lang==='en';if(!remaining.length)return toast(en?'You collected them all!':'אספת את כולן!');const free=Number(S.animalChainFreeWheels)||0;if(free<=0&&S.diamonds<250)return toast(en?'Not enough diamonds 💎':'אין מספיק יהלומים 💎');const btn=$('spinWheelBtn');if(btn)btn.disabled=true;if(free>0)S.animalChainFreeWheels=free-1;else S.diamonds-=250;S.spyRushSpins++;save();const winner=remaining[Math.floor(Math.random()*remaining.length)],wheel=$('spyWheel');const index=remaining.indexOf(winner),count=remaining.length;const slice=360/count;const target=360*6+(360-(index*slice+slice/2)-270);if(wheel){wheel.classList.remove('spinning');wheel.style.removeProperty('transform');wheel.style.setProperty('--wheel-target',target+'deg');void wheel.offsetWidth;wheel.classList.add('spinning');}setTimeout(()=>{S.spyRushCollected.push(winner);S.spyRushLastAnimal=winner;save();showAnimalWon(winner);},2400);}
+function spinSpyRushWheel(){const remaining=spyRushAnimalsList(),en=S.lang==='en';if(!remaining.length)return toast(en?'You collected them all!':'אספת את כולן!');const free=Number(S.animalChainFreeWheels)||0;if(free<=0&&S.diamonds<250)return toast(en?'Not enough diamonds 💎':'אין מספיק יהלומים 💎');const btn=$('spinWheelBtn');if(btn)btn.disabled=true;if(free>0)S.animalChainFreeWheels=free-1;else S.diamonds-=250;S.spyRushSpins++;save();const winner=remaining[Math.floor(Math.random()*remaining.length)],wheel=$('spyWheel');const index=remaining.indexOf(winner),count=remaining.length;const slice=360/count;const target=360*6+(360-(index*slice+slice/2)-270);if(wheel){wheel.classList.remove('spinning');wheel.style.transform='rotate(0deg)';void wheel.offsetWidth;wheel.style.setProperty('--wheel-target',target+'deg');wheel.classList.add('spinning');}setTimeout(()=>{S.spyRushCollected.push(winner);S.spyRushLastAnimal=winner;save();showAnimalWon(winner);},2400);}
 function showAnimalWon(animal){const en=S.lang==='en';const modal=$('modalBox');const close=modal.querySelector('.close');if(close){close.disabled=true;close.style.display='none';}const old=modal.querySelector('.animal-win-panel');if(old)old.remove();const panel=document.createElement('div');panel.className='animal-win-panel';panel.innerHTML=`<div class="animal-won-glow">✨</div><div class="animal-won-title">${en?'You got a new animal!':'קיבלת חיה חדשה!'}</div><div class="animal-won-animal">${animal}</div><div class="animal-won-name">${spyName(animal)}</div><button class="bigbtn animal-accept-btn" onclick="acceptAnimalWon()">${en?'Accept':'קבלה'}</button>`;modal.appendChild(panel);const wheel=$('spyWheel');if(wheel)wheel.style.animationPlayState='paused';}
 function acceptAnimalWon(){const modal=$('modalBox');const panel=modal.querySelector('.animal-win-panel');if(panel)panel.remove();closeModal();}
 function memoryModal(b,c){const en=S.lang==='en';const cells=spyRushAnimals.map(a=>{const got=S.spyRushCollected.includes(a);return `<div class="memory-cell ${got?'got':''}"><span>${got?a:'?'}</span>${got?`<b>${spyName(a)}</b>`:''}</div>`}).join('');const all=S.spyRushCollected.length>=spyRushAnimals.length;b.innerHTML=`${c}<div class="memory-page"><div class="memory-frame"><div class="memory-frame-title">🕵️ ${en?'Spy Rush':'Spy Rush'}</div>${all?`<div class="memory-complete">${en?'No more animals':'אין עוד חיות'}</div>`:''}<div class="memory-grid">${cells}</div></div></div>`;}
@@ -957,7 +954,7 @@ function pickSpyAnimal(){
 <script id="rewardCenterIntegration">
 (function(){
   'use strict';
-  const VALID=['100gams','dog','7-11','iwant10000gems'];
+  const VALID=['100gams','dog','7-11'];
   const claimedKey=r=>'catchSquareRewardClaimed_'+r;
   function getReward(){
     try{const q=new URLSearchParams(location.search).get('reward');if(q)return q.toLowerCase();}catch(e){}
@@ -972,10 +969,8 @@ function pickSpyAnimal(){
     if(document.getElementById('rewardCenterGameModal'))return;
     const info={
       '100gams':{icon:'💎',he:'100 יהלומים',en:'100 Diamonds',descHe:'רוצה לקבל 100 יהלומים?',descEn:'Do you want to receive 100 diamonds?'},
-      
-      '7-11':{icon:'💎',he:'711 יהלומים',en:'711 Diamonds',descHe:'רוצה לקבל 711 יהלומים?',descEn:'Do you want to receive 711 diamonds?'},
-      'iwant10000gems':{icon:'💎',he:'10,000 יהלומים',en:'10,000 Diamonds',descHe:'רוצה לקבל 10,000 יהלומים?',descEn:'Do you want to receive 10,000 diamonds?'},
-      'dog':{icon:'🐶',he:'חיית Spy Rush: כלב',en:'Spy Rush animal: Dog',descHe:'רוצה לקבל את הכלב לאוסף Spy Rush?',descEn:'Do you want to add the Dog to your Spy Rush collection?'}
+      'dog':{icon:'🐶',he:'כלב מ־Spy Rush',en:'Dog from Spy Rush',descHe:'רוצה לקבל את הכלב מגלגל החיות של Spy Rush?',descEn:'Do you want to receive the Dog from the Spy Rush wheel?'},
+      '7-11':{icon:'💎',he:'711 יהלומים',en:'711 Diamonds',descHe:'רוצה לקבל 711 יהלומים?',descEn:'Do you want to receive 711 diamonds?'}
     }[reward];
     if(!info)return;
     const wrap=document.createElement('div');wrap.id='rewardCenterGameModal';
@@ -988,9 +983,7 @@ function pickSpyAnimal(){
     wrap.querySelector('#rewardYes').onclick=function(){
       if(reward==='100gams')S.diamonds=(Number(S.diamonds)||0)+100;
       else if(reward==='7-11')S.diamonds=(Number(S.diamonds)||0)+711;
-      else if(reward==='iwant10000gems')S.diamonds=(Number(S.diamonds)||0)+10000;
-      else if(reward==='dog'){S.spyRushCollected=Array.isArray(S.spyRushCollected)?S.spyRushCollected:[];if(!S.spyRushCollected.includes('🐶'))S.spyRushCollected.push('🐶');}
-      else{toast(S.lang==='en'?'This reward is no longer available.':'הפרס הזה כבר לא זמין.');}
+      else{S.spyRushCollected=Array.isArray(S.spyRushCollected)?S.spyRushCollected:[];if(!S.spyRushCollected.includes('🐶'))S.spyRushCollected.push('🐶');S.spyRushLastAnimal='🐶';}
       localStorage.setItem(claimedKey(reward),'1');
       save();
       try{ui()}catch(e){}
@@ -1016,264 +1009,6 @@ function pickSpyAnimal(){
   window.addEventListener('error',function(e){try{console.error('Catch the Square error:',e.error||e.message)}catch(_){}});
 })();
 </script>
-
-<style id="israel-country-update">
-/* Israel theme: visible behind every main page and modal */
-html,body{background:transparent!important;color:#111!important;}
-body{position:relative;isolation:isolate;min-height:100vh;}
-body:before{content:"";position:fixed;inset:0;z-index:-1;display:block;background:linear-gradient(to bottom,#fff 0 31%,#0038b8 31% 39%,#fff 39% 61%,#0038b8 61% 69%,#fff 69% 100%);opacity:.5;pointer-events:none;}
-#app{position:relative;z-index:0;background:transparent!important;}
-header{background:rgba(5,20,45,.82)!important;}
-.hero,.stats,.actions,#gamePanel{position:relative;}
-.game-card,.item,.loader,.modalbox{background:linear-gradient(145deg,rgba(255,255,255,.96),rgba(232,242,255,.94))!important;color:#07111f!important;border-color:#0b4ea255!important;}
-.item p,.hero p,.game-hint,.stat span{color:#31516f!important;}
-.stat{background:rgba(255,255,255,.92)!important;color:#07111f!important;border-color:#0b4ea255!important;}
-.arena{background:linear-gradient(to bottom,#0b4ea2 0 18%,#fff 18% 82%,#0b4ea2 82% 100%)!important;border-color:#0b4ea2!important;}
-.arena:before{opacity:.08;}
-#square{background:transparent!important;border:0!important;box-shadow:0 0 28px rgba(11,78,162,.45)!important;display:grid!important;place-items:center!important;font-size:clamp(58px,10vw,105px)!important;width:clamp(74px,11vw,110px)!important;height:clamp(74px,11vw,110px)!important;border-radius:0!important;line-height:1!important;}
-.modal{background:rgba(5,25,55,.60)!important;}
-.modalbox{color:#07111f!important;}
-.modalbox h2,.modalbox h3{color:#07111f;}
-/* Legacy Spy Rush hiding rule removed: full Spy Rush is enabled below. */
-.settings-top-card{order:0!important;width:100%!important;max-width:760px!important;margin:0 auto 10px!important;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important;}
-.settings-top-button{width:100%!important;min-height:46px!important;font-size:16px!important;padding:11px 15px!important;border-radius:14px!important;}
-.country-memory-title{font-size:clamp(24px,4vw,38px);font-weight:1000;text-align:center;margin:26px 0 12px;}
-.country-memory-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;max-width:760px;margin:0 auto 20px;}
-.country-card{min-height:125px;border-radius:20px;background:linear-gradient(145deg,#f7fbff,#dcecff);border:2px solid #8bb8e8;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:1000;color:#07111f;box-shadow:0 10px 25px #0b4ea222;}
-.country-card .q{font-size:48px;color:#0b4ea2}.country-card .flag{font-size:50px}.country-card b{font-size:16px;margin-top:8px}
-.country-wheel-page{text-align:center;max-width:900px;margin:0 auto;padding:8px 0 30px;color:#07111f;}
-.country-wheel-stage{position:relative;width:min(82vw,560px);aspect-ratio:1;margin:24px auto 18px;display:grid;place-items:center;}
-.country-wheel{position:relative;width:100%;height:100%;border-radius:50%;border:14px solid #0b4ea2;background:conic-gradient(#fff 0 20%,#0b4ea2 20% 40%,#fff 40% 60%,#0b4ea2 60% 80%,#fff 80% 100%);box-shadow:0 18px 55px rgba(0,0,0,.3),inset 0 0 0 5px rgba(11,78,162,.15);transition:transform 2.8s cubic-bezier(.12,.78,.15,1);overflow:visible;}
-.country-wheel.spinning{transform:rotate(var(--country-wheel-target,2160deg));}
-.country-wheel-label{position:absolute;left:50%;top:50%;width:110px;height:110px;margin:-55px;display:grid;place-items:center;text-align:center;font-size:clamp(18px,3vw,28px);font-weight:1000;line-height:1.05;color:#07111f;transform:rotate(calc((var(--i) / 5)*360deg)) translateY(calc(-1 * min(34vw,220px))) rotate(calc((var(--i) / 5)*-360deg));}
-.country-wheel-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:120px;height:120px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#fff,#dcecff);border:7px solid #0b4ea2;font-size:48px;z-index:5;box-shadow:0 8px 25px rgba(0,0,0,.3);}
-.country-pointer{position:absolute;z-index:8;top:-10px;left:50%;transform:translateX(-50%);font-size:62px;color:#d71920;text-shadow:0 4px 10px rgba(0,0,0,.25);}
-.country-result{font-size:24px;font-weight:1000;min-height:38px;margin:12px auto;color:#07111f;}
-.country-price{font-size:18px;font-weight:900;color:#0b4ea2;margin:8px;}
-.country-spin-btn{width:min(520px,100%);min-height:70px;font-size:24px!important;}
-@media(max-width:650px){.country-memory-grid{grid-template-columns:repeat(2,1fr)}.country-card:last-child{grid-column:1/-1;max-width:50%;justify-self:center}.country-wheel-label{font-size:16px}.country-wheel-center{width:92px;height:92px;font-size:38px}}
-</style>
-<script id="israel-country-system">
-(function(){
-  const COUNTRY_LIST=[
-    {he:'ישראל',en:'Israel',flag:'🇮🇱'},
-    {he:'ארה״ב',en:'USA',flag:'🇺🇸'},
-    {he:'גרמניה',en:'Germany',flag:'🇩🇪'},
-    {he:'ארגנטינה',en:'Argentina',flag:'🇦🇷'},
-    {he:'הודו',en:'India',flag:'🇮🇳'}
-  ];
-  if(typeof S!=='undefined'){
-    S.countryCollection=Array.isArray(S.countryCollection)?S.countryCollection:[];
-    S.countryCollection=S.countryCollection.filter(x=>COUNTRY_LIST.some(c=>c.he===x));
-    S.spyRushCollected=Array.isArray(S.spyRushCollected)?S.spyRushCollected:[];S.spyRushLastAnimal=S.spyRushLastAnimal||'';S.spyRushSpins=Math.max(0,Number(S.spyRushSpins)||0);
-    if(!Number.isFinite(Number(S.countrySpins)))S.countrySpins=0;
-  }
-  function countryName(c){return S.lang==='en'?c.en:c.he}
-  function countryByHe(name){return COUNTRY_LIST.find(c=>c.he===name)}
-  // Draw flags as inline SVG so they appear reliably on Windows desktop even without emoji flag fonts.
-  function countryFlagMarkup(country){
-    const common='viewBox="0 0 60 40" preserveAspectRatio="xMidYMid meet" role="img" aria-label="'+country.en+' flag"';
-    let art='';
-    if(country.en==='Israel'){
-      // White field, two blue stripes and a correctly proportioned six-point Star of David.
-      art='<rect width="60" height="40" fill="#fff"/><rect y="5.2" width="60" height="4.7" fill="#0038b8"/><rect y="30.1" width="60" height="4.7" fill="#0038b8"/><polygon points="30,11.2 38.1,25.2 21.9,25.2" fill="none" stroke="#0038b8" stroke-width="2.1"/><polygon points="30,28.8 21.9,14.8 38.1,14.8" fill="none" stroke="#0038b8" stroke-width="2.1"/>';
-    } else if(country.en==='Germany'){
-      art='<rect width="60" height="13.333" fill="#000"/><rect y="13.333" width="60" height="13.334" fill="#dd0000"/><rect y="26.667" width="60" height="13.333" fill="#ffce00"/>';
-    } else if(country.en==='Argentina'){
-      // Sky blue / white / sky blue with the Sun of May, including rays.
-      let rays=''; for(let i=0;i<12;i++){const a=i*Math.PI/6;const x1=30+Math.cos(a)*5.1,y1=20+Math.sin(a)*5.1,x2=30+Math.cos(a)*7.4,y2=20+Math.sin(a)*7.4;rays+=`<line x1="${x1.toFixed(2)}" y1="${y1.toFixed(2)}" x2="${x2.toFixed(2)}" y2="${y2.toFixed(2)}" stroke="#f6b40e" stroke-width="1.2"/>`;}
-      art='<rect width="60" height="13.333" fill="#74acdf"/><rect y="13.333" width="60" height="13.334" fill="#fff"/><rect y="26.667" width="60" height="13.333" fill="#74acdf"/><g>'+rays+'</g><circle cx="30" cy="20" r="4.6" fill="#f6b40e" stroke="#c98b16" stroke-width=".5"/>';
-    } else if(country.en==='India'){
-      let spokes=''; for(let i=0;i<24;i++){const a=i*Math.PI/12;spokes+=`<line x1="${(30+Math.cos(a)*1.1).toFixed(2)}" y1="${(20+Math.sin(a)*1.1).toFixed(2)}" x2="${(30+Math.cos(a)*4.2).toFixed(2)}" y2="${(20+Math.sin(a)*4.2).toFixed(2)}" stroke="#000080" stroke-width=".35"/>`;}
-      art='<rect width="60" height="13.333" fill="#ff9933"/><rect y="13.333" width="60" height="13.334" fill="#fff"/><rect y="26.667" width="60" height="13.333" fill="#138808"/><circle cx="30" cy="20" r="4.4" fill="none" stroke="#000080" stroke-width=".8"/><g>'+spokes+'</g><circle cx="30" cy="20" r=".8" fill="#000080"/>';
-    } else {
-      // United States: 13 alternating stripes and a blue canton with the 50-star pattern.
-      let stripes=''; for(let i=0;i<13;i++){if(i%2===0)stripes+=`<rect y="${(i*40/13).toFixed(3)}" width="60" height="${(40/13+.02).toFixed(3)}" fill="#b22234"/>`;}
-      let stars=''; for(let r=0;r<9;r++){const count=r%2===0?6:5;for(let c=0;c<count;c++){const x=count===6?2.2+c*3.75:4.05+c*3.75;const y=1.5+r*2.42;stars+=`<polygon points="${x},${(y-0.9).toFixed(2)} ${(x+0.25).toFixed(2)},${(y-0.28).toFixed(2)} ${(x+0.9).toFixed(2)},${(y-0.28).toFixed(2)} ${(x+0.38).toFixed(2)},${(y+0.12).toFixed(2)} ${(x+0.58).toFixed(2)},${(y+0.78).toFixed(2)} ${x},${(y+0.38).toFixed(2)} ${(x-0.58).toFixed(2)},${(y+0.78).toFixed(2)} ${(x-0.38).toFixed(2)},${(y+0.12).toFixed(2)} ${(x-0.9).toFixed(2)},${(y-0.28).toFixed(2)} ${(x-0.25).toFixed(2)},${(y-0.28).toFixed(2)}" fill="#fff"/>`;}}
-      art='<rect width="60" height="40" fill="#fff"/>'+stripes+'<rect width="25" height="21.54" fill="#3c3b6e"/>'+stars;
-    }
-    return '<svg class="country-flag-svg" '+common+'>'+art+'</svg>';
-  }
-  window.countryFlagMarkup=countryFlagMarkup;
-  window.countryList=COUNTRY_LIST;
-  window.countryWheelModal=function(b,c){
-    const owned=(S.countryCollection||[]),remaining=COUNTRY_LIST.filter(x=>!owned.includes(x.he)),en=S.lang==='en';
-    const labels=COUNTRY_LIST.map((x,i)=>`<div class="country-wheel-label" style="--i:${i}"><span class="flag-wrap">${countryFlagMarkup(x)}</span><small>${countryName(x)}</small></div>`).join('');
-    b.innerHTML=`${c}<div class="country-wheel-page"><h2>🎡 ${en?'Countries Wheel':'גלגל המדינות'}</h2><p>${en?'Spin to collect countries that love Israel. Each spin costs 150 diamonds.':'סובבו כדי לאסוף מדינות שאוהבות את ישראל. כל סיבוב עולה 150 יהלומים.'}</p><div class="country-wheel-stage"><div class="country-pointer">▼</div><div id="countryWheel" class="country-wheel">${labels}<div class="country-wheel-center">${countryFlagMarkup(COUNTRY_LIST[0])}</div></div></div><div id="countryResult" class="country-result">${remaining.length?(en?'Ready to spin':'מוכן לסיבוב'):(en?'All 5 countries collected!':'אספת את כל 5 המדינות!')}</div><div class="country-price">150 💎</div><button class="bigbtn country-spin-btn" id="countrySpinBtn" ${remaining.length?'':'disabled'}>🎡 ${en?'Spin — 150 💎':'סובב — 150 💎'}</button><div style="font-weight:900;margin-top:12px">${owned.length}/5 ${en?'collected':'נאספו'}</div></div>`;
-  };
-  window.spinCountryWheel=function(){
-    const owned=(S.countryCollection||[]),remaining=COUNTRY_LIST.filter(x=>!owned.includes(x.he));
-    const en=S.lang==='en';
-    if(!remaining.length)return toast(en?'You collected all 5 countries!':'אספת את כל 5 המדינות!');
-    if(Number(S.diamonds)<150)return toast(en?'Not enough diamonds 💎':'אין מספיק יהלומים 💎');
-    const btn=$('countrySpinBtn');if(btn)btn.disabled=true;
-    S.diamonds-=150;S.countrySpins=(Number(S.countrySpins)||0)+1;save();
-    const winner=remaining[Math.floor(Math.random()*remaining.length)];
-    const wheel=$('countryWheel');
-    if(wheel){
-      const index=COUNTRY_LIST.indexOf(winner);
-      const slice=360/COUNTRY_LIST.length;
-      const finalOffset=(360-(index*slice+slice/2)-270+360)%360;
-      const target=360*7+finalOffset;
-      try{
-        wheel.getAnimations().forEach(a=>a.cancel());
-        wheel.classList.remove('spinning');
-        wheel.style.removeProperty('transform');
-        wheel.style.setProperty('--country-wheel-target',target+'deg');
-        void wheel.offsetWidth;
-        // Animate with the Web Animations API; CSS !important transforms can cancel the motion.
-        if(typeof wheel.animate==='function'){
-          const animation=wheel.animate(
-            [{transform:'rotate(0deg)'},{transform:'rotate('+target+'deg)'}],
-            {duration:3200,easing:'cubic-bezier(.12,.78,.15,1)',fill:'forwards'}
-          );
-          animation.onfinish=()=>{wheel.style.transform='rotate('+target+'deg)';};
-        }else{
-          wheel.style.transition='transform 3.2s cubic-bezier(.12,.78,.15,1)';
-          requestAnimationFrame(()=>requestAnimationFrame(()=>{wheel.style.transform='rotate('+target+'deg)';}));
-        }
-      }catch(err){
-        wheel.style.transition='transform 3.2s cubic-bezier(.12,.78,.15,1)';
-        wheel.style.transform='rotate('+target+'deg)';
-      }
-    }
-    setTimeout(()=>{
-      if(!S.countryCollection.includes(winner.he))S.countryCollection.push(winner.he);
-      save();
-      const result=$('countryResult');if(result)result.innerHTML=`🎉 ${en?'You got':'קיבלת'} <b><span class="result-flag-wrap">${countryFlagMarkup(winner)}</span> ${countryName(winner)}</b>`;
-      beep(820);
-      setTimeout(()=>{countryWheelModal($('modalBox'),'<button class="close" onclick="closeModal()">✕</button>')},900);
-    },2900);
-  };
-  window.memoryModal=function(b,c){
-    const en=S.lang==='en',owned=S.countryCollection||[];
-    const cells=COUNTRY_LIST.map(x=>{const got=owned.includes(x.he);return `<div class="country-card ${got?'got':''}">${got?`<span class="flag">${countryFlagMarkup(x)}</span><b>${countryName(x)}</b>`:`<span class="q">?</span>`}</div>`}).join('');
-    b.innerHTML=`${c}<div class="memory-page"><div class="memory-frame"><div class="memory-frame-title">🧠 ${en?'Memory':'זיכרון'}</div><div class="country-memory-title">🇮🇱 ${en?'Countries that love Israel':'מדינות שאוהבות את ישראל'}</div><p style="text-align:center;color:#31516f">${en?'Open the mystery cubes by collecting countries from the wheel.':'פתחו את קוביות סימן השאלה על ידי איסוף המדינות בגלגל.'}</p><div class="country-memory-grid">${cells}</div></div></div>`;
-  };
-  window.shopModal=function(b,c){
-    const en=S.lang==='en',h=(a,e)=>en?e:a;
-    b.innerHTML=c+`<div class="premium-shop-title">🛒 ${h('החנות','Shop')}</div><p class="premium-shop-sub">${h('בחרו הצעה, אספו זמן, יהלומים ומדינות.','Choose an offer and collect time, diamonds and countries.')}</p><div class="shop-carousel">
-      <div class="item"><h3>⏱️ ${h('תיבת זמן','Time Chest')}</h3><p>${h('קלף אקראי שנותן זמן שמור.','A random time card.')}</p><div class="row"><b>75 💎</b><button class="buy" onclick="buyTimeCard()">${h('קנה תיבת זמן','Buy Chest')}</button></div></div>
-      <div class="item"><h3>⚡ ${h('5 שניות','5 Seconds')}</h3><div class="row"><b>30 💎</b><button class="buy" onclick="buyFive()">+5 ${h('שניות','seconds')}</button></div></div>
-      <div class="item country-shop-card"><h3>🎡 ${h('גלגל המדינות','Countries Wheel')}</h3><p>${h('גלגל עם 5 מדינות: ישראל, ארה״ב, גרמניה, ארגנטינה והודו. כל סיבוב עולה 150 יהלומים.','A wheel with 5 countries: Israel, USA, Germany, Argentina and India. Each spin costs 150 diamonds.')}</p><div class="row"><b>150 💎</b><button class="buy" onclick="openModal('countryWheel')">${h('פתח גלגל','Open Wheel')}</button></div></div>
-      <div class="item"><h3>🎁 ${h('תיבה יומית','Daily Chest')}</h3><div class="row"><b id="dailyTimer">${h('בודק...','Checking...')}</b><button class="buy" onclick="dailyChest()">🎁 ${h('פתח תיבה','Open Chest')}</button></div></div>
-    </div>`;
-    dailyUI();
-  };
-  window.settingsModal=function(b,c){
-    const en=S.lang==='en',h=(a,e)=>en?e:a;
-    b.innerHTML=c+`<h2>⚙️ ${h('הגדרות','Settings')}</h2><div class="item settings-top-card"><button class="buy settings-top-button" onclick="openModal('top')">🏆 ${h('טופ','Top')}</button></div><div class="item"><h3>👤 ${h('שם השחקן','Player Name')}</h3><input id="nameInput" type="text" value="${esc(S.name)}" maxlength="20"><button class="buy" style="margin-top:10px" onclick="setName()">${h('שמור שם','Save Name')}</button></div><div class="item"><h3>🌍 ${h('שפה','Language')}</h3><div class="langs"><button class="langbtn" onclick="setLang('he')">🇮🇱 עברית</button><button class="langbtn" onclick="setLang('en')">🇺🇸 English</button></div></div><div class="item"><h3>🔊 ${h('צלילים','Sound')}</h3><p>${soundOn?h('הצלילים פעילים','Sound is on'):h('הצלילים כבויים','Sound is off')}</p><button class="buy" onclick="toggleSound()">${h('החלף מצב צלילים','Toggle Sound')}</button></div><div class="item"><h3>🗑️ ${h('משתמש','Account')}</h3><button class="buy" onclick="deleteUser()">${h('מחק את המשתמש שלי מהמכשיר','Delete my local account')}</button></div>`;
-  };
-  const oldOpenModal=window.openModal;
-  window.openModal=function(type){
-    if(type==='spyWheel'||type==='duel'||type==='spyCollab'||type==='spyMode')return toast(S.lang==='en'?'Spy Rush is no longer available.':'Spy Rush כבר לא זמין.');
-    if(type==='countryWheel'){if(maintenance())return;window.pendingChest=null;window.savedTimeChoosing=false;$('modal').classList.remove('hidden');countryWheelModal($('modalBox'),'<button class="close" onclick="closeModal()">✕</button>');return;}
-    return oldOpenModal(type);
-  };
-  window.startGame=function(){if(maintenance())return;closeModal();$('gamePanel').classList.remove('hidden');$('gamePanel').scrollIntoView({behavior:'smooth',block:'center'});game.active=true;game.score=0;game.buys=0;game.time=30;game.animal='🇮🇱';$('square').textContent='🇮🇱';save();placeSquare();renderGame();clearInterval(game.interval);game.endAt=Date.now()+game.time*1000;game.interval=setInterval(tick,100);beep(900);};
-  window.placeSquare=function(){const a=$('arena'),s=$('square');if(!a||!s)return;const size=Math.max(50,88-Math.floor(game.score/8)*2);s.style.width=size+'px';s.style.height=size+'px';const maxX=Math.max(0,a.clientWidth-size),maxY=Math.max(0,a.clientHeight-size);s.style.left=Math.random()*maxX+'px';s.style.top=Math.random()*maxY+'px';s.textContent='🇮🇱';s.setAttribute('aria-label',S.lang==='en'?'Israeli flag':'דגל ישראל');};
-  window.hitSquare=function(e){if(maintenance()||!game.active)return;e.stopPropagation();game.score++;if(game.score%10===0)S.diamonds++;document.body.classList.remove('shake');void document.body.offsetWidth;document.body.classList.add('shake');beep(300);setTimeout(()=>beep(850),25);placeSquare();renderGame();save();};
-  const oldApplyLanguage=window.applyLanguage;
-  window.applyLanguage=function(){try{oldApplyLanguage()}catch(e){};const mb=$('memoryMainBtn');if(mb)mb.textContent=S.lang==='en'?'🧠 Memory':'🧠 זיכרון';document.querySelectorAll('.spy-feature,.spy-main-link,#spyCollabMainBtn,#spyMainLinkBtn').forEach(x=>x.style.removeProperty('display'));};
-  window.updateCountryMemoryButton=function(){};
-  // Hide all old Spy Rush UI even if a stale modal/function creates it.
-  document.querySelectorAll('.spy-feature,.spy-main-link,#spyCollabMainBtn,#spyMainLinkBtn').forEach(x=>x.style.removeProperty('display'));
-})();
-</script>
-
-<div id="spyMemoryAnimals" class="spy-memory-section" style="display:none!important">
-<h2>🕵️ חיות Spy Rush</h2>
-<p id="spyMemoryEmpty">עדיין לא אספת חיות</p>
-<div id="spyMemoryGrid" class="spy-memory-grid"></div>
-</div>
-<script>
-function renderSpyMemoryAnimals(){
- const box=document.getElementById('spyMemoryAnimals'),grid=document.getElementById('spyMemoryGrid'),empty=document.getElementById('spyMemoryEmpty');
- if(!box||!grid)return; const animals=['🦁','🐵','🐳','🐬','🐶','🐹','🦦','🐯','🐧','🦓','🐻','🦒','🐰','🦏','🐼'];
- const got=(Array.isArray(S.spyRushCollected)?S.spyRushCollected:[]).filter(a=>animals.includes(a));
- box.style.display='block'; grid.innerHTML=got.map(a=>'<div class="spy-memory-animal">'+a+'</div>').join(''); empty.style.display=got.length?'none':'block';
-}
-const _oldUi=ui; ui=function(){_oldUi();renderSpyMemoryAnimals();};
-setTimeout(renderSpyMemoryAnimals,0);
-</script>
-
-<style id="final-israel-english-polish">
-/* Final Israel presentation: normal game layout, Israeli flag target, readable text */
-html,body{background:#fff!important;color:#07111f!important;}
-body:before{content:"";position:fixed;inset:0;z-index:-5;pointer-events:none;background:linear-gradient(to bottom,#fff 0 31%,#0038b8 31% 39%,#fff 39% 61%,#0038b8 61% 69%,#fff 69% 100%);opacity:.34;}
-.game-card,.item,.loader,.modalbox{background:rgba(7,17,31,.94)!important;color:#fff!important;border:1px solid rgba(105,186,255,.35)!important;box-shadow:0 18px 55px rgba(0,0,0,.28)!important;}
-.game-card p,.item p,.modalbox p,.creator-text,.creator-text p,.modalbox h2,.modalbox h3,.modalbox label,.modalbox b{color:#fff!important;}
-.hero h1,.hero p{color:#07111f;text-shadow:0 2px 8px rgba(255,255,255,.8);}
-.hero p{font-weight:800;}
-.stat{background:rgba(7,17,31,.92)!important;color:#fff!important;border-color:rgba(105,186,255,.45)!important;}
-.stat span,.item small{color:#dcecff!important;}
-.arena{background:linear-gradient(to bottom,#0b4ea2 0 18%,#fff 18% 82%,#0b4ea2 82% 100%)!important;}
-#square{background:transparent!important;border:0!important;box-shadow:none!important;font-size:clamp(58px,10vw,105px)!important;width:clamp(74px,11vw,110px)!important;height:clamp(74px,11vw,110px)!important;border-radius:0!important;}
-.memory-frame{background:rgba(7,17,31,.95)!important;color:#fff!important;}
-.memory-frame-title,.country-memory-title{color:#fff!important;}
-.country-card{background:rgba(255,255,255,.96)!important;color:#07111f!important;}
-.country-card b{color:#07111f!important;}
-.spy-memory-section{display:block!important;background:rgba(7,17,31,.95)!important;color:#fff!important;border:1px solid rgba(105,186,255,.35);}
-.spy-memory-section h2,.spy-memory-section p{color:#fff!important;}
-.spy-memory-animal{background:rgba(255,255,255,.96)!important;color:#07111f!important;}
-/* Keep Spy Rush out of Shop while retaining its collection in Memory. */
-/* Legacy Spy Rush hiding rule removed: full Spy Rush is enabled below. */
-</style>
-<script id="final-memory-combined">
-(function(){
-  const ANIMALS=['🦁','🐵','🐳','🐬','🐶','🐹','🦦','🐯','🐧','🦓','🐻','🦒','🐰','🦏','🐼'];
-  const NAMES={
-    '🦁':['Lion','Lion'],'🐵':['Monkey','Monkey'],'🐳':['Whale','Whale'],'🐬':['Dolphin','Dolphin'],'🐶':['Dog','Dog'],'🐹':['Hamster','Hamster'],'🦦':['Otter','Otter'],'🐯':['Tiger','Tiger'],'🐧':['Penguin','Penguin'],'🦓':['Zebra','Zebra'],'🐻':['Bear','Bear'],'🦒':['Giraffe','Giraffe'],'🐰':['Rabbit','Rabbit'],'🦏':['Rhino','Rhino'],'🐼':['Panda','Panda']
-  };
-  function name(a){return NAMES[a]?.[0]||'Animal';}
-  window.memoryModal=function(b,c){
-    const en=S.lang==='en';
-    const collected=Array.isArray(S.spyRushCollected)?S.spyRushCollected:[];
-    const countries=Array.isArray(S.countryCollection)?S.countryCollection:[];
-    const animals=ANIMALS.map(a=>{const got=collected.includes(a);return `<div class="memory-cell ${got?'got':''}"><span>${got?a:'?'}</span><b>${got?name(a):(en?'Locked':'נעול')}</b></div>`}).join('');
-    const countryData=(window.countryList||[]);
-    const countryCells=countryData.map(x=>{const got=countries.includes(x.he);return `<div class="country-card"><div class="q" style="display:${got?'none':'block'}">?</div><div class="flag" style="display:${got?'block':'none'}">${window.countryFlagMarkup(x)}</div><b>${got?(en?x.en:x.he):(en?'Locked':'נעול')}</b></div>`}).join('');
-    b.innerHTML=`${c}<div class="memory-page"><div class="memory-frame"><div class="memory-frame-title">🧠 ${en?'Memory':'זיכרון'}</div>
-      <h2 style="margin:20px 0 8px;color:#fff!important">🕵️ Spy Rush</h2>
-      <p style="text-align:center;color:#dcecff!important">${en?'Animals you have collected':'החיות שאספת'}</p>
-      <div class="memory-grid">${animals}</div>
-      <div class="country-memory-title">🇮🇱 ${en?'Countries that love Israel':'מדינות שאוהבות את ישראל'}</div>
-      <p style="text-align:center;color:#dcecff!important">${en?'Countries you have collected from the wheel':'המדינות שאספת מהגלגל'}</p>
-      <div class="country-memory-grid">${countryCells}</div>
-    </div></div>`;
-  };
-  // Keep the normal flag as the clickable game target.
-  window.placeSquare=window.placeSquare||function(){};
-  const oldApply=window.applyLanguage;
-  window.applyLanguage=function(){try{oldApply&&oldApply();}catch(e){};const title=document.querySelector('.hero h1');if(title)title.textContent=S.lang==='en'?'Catch the Square - Israel Version':'תפוס את הריבוע - גרסת ישראל';};
-})();
-</script>
-
-<style id="desktop-flags-and-real-wheel-motion-fix">
-.country-flag-svg{display:block;width:clamp(42px,7vw,72px);height:auto;aspect-ratio:3/2;border-radius:5px;border:1px solid #64748b;box-shadow:0 2px 6px #0002;flex:none}
-.flag-wrap{display:grid;place-items:center;min-height:46px}
-.country-wheel-label .country-flag-svg{width:clamp(42px,6.5vw,66px);max-width:100%}
-.country-wheel-center .country-flag-svg{width:68%;border-radius:7px}
-.country-card .flag .country-flag-svg{width:clamp(52px,7vw,72px);max-width:100%;margin:auto}
-.result-flag-wrap{display:inline-flex;vertical-align:middle;align-items:center;margin:0 6px}
-.result-flag-wrap .country-flag-svg{width:58px}
-.country-wheel{transform:rotate(0deg);transform-origin:50% 50%;will-change:transform}
-.country-wheel.spinning{transform:rotate(var(--country-wheel-target,2520deg));}
-</style>
-<script id="desktop-wheel-spin-click-fix">
-(function(){
-  // Delegate the click so the wheel still responds if the modal is re-rendered.
-  document.addEventListener('click',function(event){
-    const button=event.target&&event.target.closest&&event.target.closest('#countrySpinBtn');
-    if(!button||button.disabled)return;
-    if(typeof window.spinCountryWheel==='function'){
-      event.preventDefault();
-      window.spinCountryWheel();
-    }
-  },true);
-})();
-</script>
-
 </body>
 
 <style>
@@ -1330,259 +1065,3 @@ body.maintenance-active{overflow:hidden!important}
 <style>
 .time-card-page{text-align:center;max-width:700px;margin:0 auto;padding:10px 0 30px}.time-card-icon{font-size:52px;filter:drop-shadow(0 8px 20px #0007)}.time-card{width:min(300px,80vw);height:390px;margin:28px auto 22px;border-radius:28px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:linear-gradient(145deg,#6b55ff,#1683ff 55%,#12b981);border:5px solid #fff;box-shadow:0 25px 70px #0008,inset 0 0 0 6px #ffffff33;cursor:pointer;transform-style:preserve-3d;transition:transform .72s cubic-bezier(.2,1.4,.3,1),filter .35s,box-shadow .35s;position:relative;isolation:isolate}.time-card:before{content:"";position:absolute;inset:-18px;border-radius:36px;background:radial-gradient(circle,rgba(255,255,255,.82) 0%,rgba(105,210,255,.45) 28%,rgba(119,92,255,.25) 52%,transparent 72%);filter:blur(16px);opacity:0;z-index:-1;transition:opacity .35s,transform .35s;pointer-events:none}.time-card span{font-size:110px}.time-card b{font-size:34px;letter-spacing:4px}.time-card.revealing{transform:scale(1.18) rotateY(12deg);filter:brightness(1.5);box-shadow:0 0 35px #fff,0 0 85px #58c9ff,0 35px 100px #000b,inset 0 0 0 8px #ffffff66}.time-card.revealing:before{opacity:1;transform:scale(1.25)}.time-card.revealed{transform:rotateY(180deg) scale(1.03);filter:brightness(1.22);box-shadow:0 0 30px #fff,0 0 70px #5fc8ff,0 25px 75px #0009,inset 0 0 0 7px #ffffff55}.time-card.revealed:before{opacity:.75}.card-reward-pop{animation:cardRewardPop .5s cubic-bezier(.2,1.5,.4,1)}@keyframes cardRewardPop{0%{opacity:0;transform:scale(.65) translateY(14px)}70%{opacity:1;transform:scale(1.08) translateY(-2px)}100%{opacity:1;transform:scale(1) translateY(0)}}
 </style>
-
-<style id="final-polish-oct09">
-/* Do not show the old empty standalone Spy Rush memory card; both collections live inside Memory. */
-#spyMemoryAnimals{display:none!important}
-/* Israeli flag background with enough contrast for all copy. */
-body:before{background:linear-gradient(to bottom,#fff 0 31%,#0038b8 31% 39%,#fff 39% 61%,#0038b8 61% 69%,#fff 69% 100%)!important;opacity:.5!important;z-index:-1!important;}
-/* Start screen: polished, readable and game-like. */
-.hero{position:relative;overflow:hidden;border-radius:30px;padding:clamp(22px,4vw,42px)!important;background:linear-gradient(145deg,rgba(7,17,31,.97),rgba(11,78,162,.94))!important;color:#fff!important;border:2px solid rgba(255,255,255,.65);box-shadow:0 22px 60px rgba(0,0,0,.24),inset 0 0 0 1px rgba(255,255,255,.12);}
-.hero:before{content:"🇮🇱";position:absolute;right:14px;top:8px;font-size:clamp(55px,10vw,100px);opacity:.12;pointer-events:none;}
-.hero h1,.hero p{position:relative;color:#fff!important;text-shadow:0 2px 10px rgba(0,0,0,.4)!important;}
-.hero h1{font-size:clamp(30px,5vw,52px)!important;line-height:1.12;font-weight:1000;}
-.hero p{font-size:clamp(16px,2vw,21px)!important;}
-.actions .bigbtn{box-shadow:0 9px 0 rgba(0,0,0,.18),0 14px 25px rgba(0,0,0,.18);transition:transform .16s ease,filter .16s ease;}
-.actions .bigbtn:active{transform:translateY(3px) scale(.99);filter:brightness(1.1);}
-/* A bright, segmented country wheel with a premium rim, clear pointer and labels. */
-.country-wheel-stage{width:min(86vw,590px)!important;filter:drop-shadow(0 18px 24px rgba(0,0,0,.3));}
-.country-wheel{border:12px solid #ffd76a!important;outline:5px solid #0b4ea2;outline-offset:3px;background:conic-gradient(from -90deg,#e7f3ff 0 20%,#1461bf 20% 40%,#fff 40% 60%,#0b4ea2 60% 80%,#d5e9ff 80% 100%)!important;box-shadow:0 0 0 8px rgba(255,255,255,.8),0 20px 45px rgba(0,0,0,.34),inset 0 0 0 4px rgba(255,255,255,.6)!important;}
-.country-wheel-label{width:clamp(68px,15vw,112px)!important;height:clamp(68px,15vw,112px)!important;margin:calc(clamp(68px,15vw,112px)/-2)!important;display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:4px;box-sizing:border-box;border-radius:18px;background:rgba(255,255,255,.88);box-shadow:0 4px 12px rgba(0,0,0,.16);}
-.country-wheel-label span{font-size:clamp(26px,5vw,42px);line-height:1.1;}
-.country-wheel-label small{font-size:clamp(10px,1.8vw,15px);font-weight:1000;color:#07111f;}
-.country-wheel-center{width:clamp(84px,17vw,124px)!important;height:clamp(84px,17vw,124px)!important;border:8px solid #ffd76a!important;background:radial-gradient(circle at 35% 25%,#fff,#d5e9ff 58%,#6ba5f5)!important;box-shadow:0 0 0 5px #fff,0 8px 22px rgba(0,0,0,.32)!important;}
-.country-pointer{top:-21px!important;color:#e51e2a!important;font-size:clamp(48px,8vw,68px)!important;text-shadow:0 3px 0 #fff,0 6px 10px rgba(0,0,0,.3)!important;}
-.country-spin-btn{background:linear-gradient(135deg,#ffd65a,#ff9e2c)!important;color:#172033!important;border:2px solid #fff!important;box-shadow:0 7px 0 #bd6d14,0 12px 24px rgba(0,0,0,.22)!important;font-weight:1000!important;}
-.country-result{color:#fff!important;text-shadow:0 2px 8px rgba(0,0,0,.5);}
-@media(max-width:650px){.country-wheel-label{border-radius:12px;padding:2px}.hero{margin:10px!important}}
-</style>
-
-<style id="latest-arena-and-memory-fix">
-/* The Israeli flag background stays visible behind every screen, not just the home page. */
-html,body{background:transparent!important;}
-body:before{z-index:-1!important;opacity:.5!important;}
-/* Remove the blue strips at the top and bottom of the playing field. */
-.arena{background:radial-gradient(ellipse at center,rgba(230,243,255,.98),rgba(196,220,246,.96))!important;border:2px solid #527ba9!important;box-shadow:inset 0 0 0 2px rgba(255,255,255,.7),0 12px 30px rgba(0,0,0,.16)!important;}
-.arena:before{background-image:linear-gradient(rgba(11,78,162,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(11,78,162,.07) 1px,transparent 1px)!important;opacity:1!important;}
-/* Keep the flag itself as the target; do not add a separate Star of David graphic. */
-#square{background:transparent!important;box-shadow:none!important;}
-</style>
-
-<style id="requested-top-button-style">
-/* Top sits directly below the Settings heading and uses the same button treatment as other settings actions. */
-.modalbox .settings-top-card{
-  display:block!important;order:0!important;width:100%!important;max-width:none!important;
-  box-sizing:border-box!important;margin:10px 0 16px!important;padding:16px!important;
-  text-align:start!important;background:#0d1b2e!important;border:1px solid #27415f!important;
-  border-radius:20px!important;box-shadow:none!important;
-}
-.modalbox .settings-top-button{
-  display:inline-block!important;width:auto!important;min-height:0!important;margin:0!important;
-  box-sizing:border-box!important;padding:11px 15px!important;border:0!important;border-radius:14px!important;
-  background:linear-gradient(135deg,#2d91ff,#6b5cff)!important;color:#fff!important;
-  font-size:16px!important;font-weight:900!important;box-shadow:none!important;
-}
-@media(min-width:651px){.modalbox .settings-top-card{margin-top:10px!important}.modalbox .settings-top-button{font-size:16px!important}}
-</style>
-<script id="requested-loader-language-fix">
-(function(){
-  function updateLoaderLanguage(){
-    const en=typeof S!=='undefined'&&S.lang==='en';
-    const title=document.getElementById('loaderTitle');
-    const subtitle=document.getElementById('loaderSubtitle');
-    const brand=document.querySelector('#loader .loader div[style*="letter-spacing"]');
-    if(title)title.textContent=en?'Catch the Square - Israel Version':'תפוס את הריבוע - גרסת ישראל';
-    if(subtitle)subtitle.textContent=en?'Getting your game ready...':'מכינים את המשחק...';
-    if(brand)brand.textContent=en?'RON STUDIOS':'RON STUDIOS';
-    const loader=document.getElementById('loader');
-    if(loader)loader.setAttribute('aria-label',en?'Loading the game':'טעינת המשחק');
-  }
-  const previousApply=window.applyLanguage;
-  if(typeof previousApply==='function'){
-    window.applyLanguage=function(){previousApply.apply(this,arguments);updateLoaderLanguage();};
-  }
-  updateLoaderLanguage();
-})();
-</script>
-
-<style id="wheel-animation-and-country-memory-fix">
-/* Let the wheel's CSS transform transition run; an inline transform would override the spinning class. */
-.spy-wheel:not(.spinning),.country-wheel:not(.spinning){transform:rotate(0deg);}
-.spy-wheel.spinning{transform:rotate(var(--wheel-target,2160deg))!important;}
-/* The wheel is animated with Web Animations API; do not force an !important transform here. */
-/* Keep all five country cards equally readable; the fifth card gets a full row on phones. */
-.country-memory-grid{align-items:stretch!important;grid-auto-rows:minmax(125px,auto)!important;}
-.country-card{width:100%!important;min-width:0!important;box-sizing:border-box!important;min-height:125px!important;}
-@media(max-width:650px){.country-memory-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;} .country-card:last-child{grid-column:auto!important;width:100%!important;max-width:none!important;justify-self:stretch!important;min-height:125px!important;}.country-card .flag{font-size:clamp(30px,9vw,48px)!important}.country-card .q{font-size:clamp(32px,10vw,48px)!important}.country-card b{font-size:clamp(11px,3vw,16px)!important;}}
-</style>
-
-<style id="top-button-align-final-fix">
-/* Top should occupy the same full row as the other settings actions on desktop and mobile. */
-.modalbox .settings-top-card{display:block!important;float:none!important;position:relative!important;inset:auto!important;grid-column:1/-1!important;align-self:stretch!important;width:100%!important;max-width:none!important;margin:10px 0 16px!important;padding:0!important;box-sizing:border-box!important;background:transparent!important;border:0!important;box-shadow:none!important;text-align:initial!important;order:0!important;}
-.modalbox .settings-top-button{display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;max-width:none!important;min-height:48px!important;margin:0!important;padding:12px 16px!important;box-sizing:border-box!important;border-radius:14px!important;font:inherit!important;font-size:16px!important;font-weight:900!important;color:#fff!important;background:linear-gradient(135deg,#2d91ff,#6b5cff)!important;border:0!important;box-shadow:0 6px 0 rgba(0,0,0,.18),0 10px 20px rgba(0,0,0,.12)!important;float:none!important;}
-@media(min-width:651px){.modalbox .settings-top-card{width:100%!important;max-width:none!important;margin-left:0!important;margin-right:0!important}.modalbox .settings-top-button{width:100%!important;}}
-</style>
-
-
-<style id="restore-spy-rush-final">
-/* Restore Spy Rush shop card and its main-mode button without changing the Israeli-flag target. */
-.spy-feature,.spy-main-link,#spyCollabMainBtn,#spyMainLinkBtn,#spyRushModeModal{display:initial!important;visibility:visible!important;}
-.spy-feature.item{display:block!important;}
-#spyCollabMainBtn,#spyMainLinkBtn{display:inline-flex!important;}
-#spyRushModeModal{display:none!important;}#spyRushModeModal.show{display:flex!important;}
-.spy-wheel{will-change:transform;}
-.spy-memory-section{display:block!important;}
-</style>
-<script id="restore-spy-rush-final-script">
-(function(){
-  // Keep the existing Israeli flag target, but re-enable Spy Rush screens and collections.
-  window.spyUnlocked=function(){return true;};
-  window.updateSpyFeatureVisibility=function(){document.querySelectorAll('.spy-feature').forEach(el=>{el.style.removeProperty('display');});};
-  const previousOpen=window.openModal;
-  window.openModal=function(type){
-    if(type==='spyWheel'||type==='memory'||type==='promoChain'){
-      if(typeof maintenance==='function'&&maintenance())return;
-      window.pendingChest=null;window.savedTimeChoosing=false;
-      const box=document.getElementById('modalBox');const modal=document.getElementById('modal');
-      if(!box||!modal)return;
-      modal.classList.remove('hidden');
-      const close='<button class="close" onclick="closeModal()">✕</button>';
-      if(type==='spyWheel'&&typeof spyWheelModal==='function')return spyWheelModal(box,close);
-      if(type==='memory'&&typeof memoryModal==='function')return memoryModal(box,close);
-      if(type==='promoChain'&&typeof promoChainModal==='function')return promoChainModal(box,close);
-    }
-    if(type==='spyMode'||type==='spyCollab')return typeof openSpyRushMode==='function'?openSpyRushMode():null;
-    return previousOpen(type);
-  };
-  // Robust animation: animate an explicit transform rather than relying on a CSS class transition.
-  window.spinSpyRushWheel=function(){
-    const remaining=typeof spyRushAnimalsList==='function'?spyRushAnimalsList():[];
-    const en=typeof S!=='undefined'&&S.lang==='en';
-    if(!remaining.length){if(typeof toast==='function')toast(en?'You collected them all!':'אספת את כולן!');return;}
-    const free=Number(S.animalChainFreeWheels)||0;
-    if(free<=0&&Number(S.diamonds)<250){if(typeof toast==='function')toast(en?'Not enough diamonds 💎':'אין מספיק יהלומים 💎');return;}
-    const btn=document.getElementById('spinWheelBtn');if(btn)btn.disabled=true;
-    if(free>0)S.animalChainFreeWheels=free-1;else S.diamonds-=250;
-    S.spyRushSpins=(Number(S.spyRushSpins)||0)+1;if(typeof save==='function')save();
-    const winner=remaining[Math.floor(Math.random()*remaining.length)];
-    const wheel=document.getElementById('spyWheel');
-    if(wheel){
-      if(wheel._spyAnimation)wheel._spyAnimation.cancel();
-      const start=Number(wheel.dataset.rotation||0),target=start+360*7+(Math.random()*180+900);
-      wheel.classList.add('spinning');wheel.style.removeProperty('--wheel-target');wheel.style.transition='none';wheel.style.transform='rotate('+start+'deg)';
-      if(typeof wheel.animate==='function'){
-        const anim=wheel.animate([{transform:'rotate('+start+'deg)'},{transform:'rotate('+target+'deg)'}],{duration:3200,easing:'cubic-bezier(.12,.78,.15,1)',fill:'forwards'});
-        wheel._spyAnimation=anim;anim.onfinish=()=>{wheel.dataset.rotation=String(target%360);wheel.style.transform='rotate('+(target%360)+'deg)';wheel.classList.remove('spinning');};
-      }else{wheel.style.transition='transform 3.2s cubic-bezier(.12,.78,.15,1)';requestAnimationFrame(()=>requestAnimationFrame(()=>wheel.style.transform='rotate('+target+'deg)'));setTimeout(()=>{wheel.dataset.rotation=String(target%360);wheel.style.transition='none';wheel.style.transform='rotate('+(target%360)+'deg)';wheel.classList.remove('spinning');},3250);}
-    }
-    setTimeout(()=>{if(!S.spyRushCollected.includes(winner))S.spyRushCollected.push(winner);S.spyRushLastAnimal=winner;if(typeof save==='function')save();if(typeof showAnimalWon==='function')showAnimalWon(winner);else if(typeof spyWheelModal==='function')spyWheelModal(document.getElementById('modalBox'),'<button class="close" onclick="closeModal()">✕</button>');},3300);
-  };
-  // Bring back the Spy Rush quiz as a regular, visible main-screen button.
-  function addModeButton(){
-    const actions=document.querySelector('.actions');if(!actions||document.getElementById('spyCollabMainBtn'))return;
-    const b=document.createElement('button');b.id='spyCollabMainBtn';b.className='bigbtn alt spy-collab-btn';b.textContent=(typeof S!=='undefined'&&S.lang==='en')?'🕵️ Spy Rush × Catch the Square':'🕵️ Spy Rush × תפוס את הריבוע';b.onclick=()=>window.openSpyRushMode&&window.openSpyRushMode();
-    actions.appendChild(b);
-  }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{addModeButton();window.updateSpyFeatureVisibility();});else{addModeButton();window.updateSpyFeatureVisibility();}
-  const oldApply=window.applyLanguage;
-  if(typeof oldApply==='function')window.applyLanguage=function(){oldApply.apply(this,arguments);const b=document.getElementById('spyCollabMainBtn');if(b)b.textContent=S.lang==='en'?'🕵️ Spy Rush × Catch the Square':'🕵️ Spy Rush × תפוס את הריבוע';window.updateSpyFeatureVisibility();};
-})();
-</script>
-
-<!-- Final explicit Spy Rush restore: overrides legacy hide rules from earlier versions. -->
-<style id="spy-rush-visible-final">
-  .spy-feature,.spy-main-link,#spyCollabMainBtn,#spyMainLinkBtn{display:block!important;visibility:visible!important;opacity:1!important;}
-  .spy-feature.item{display:block!important;}
-  #spyCollabMainBtn,#spyMainLinkBtn{display:flex!important;}
-  #spyRushModeModal.show{display:flex!important;}
-  .spy-wheel{transform-origin:center center;will-change:transform;}
-  .spy-wheel.spinning{transition:none!important;}
-</style>
-<script id="spy-rush-restore-final-script">
-(function(){
-  const ANIMALS=['🦁','🐵','🐳','🐬','🐶','🐹','🦦','🐯','🐧','🦓','🐻','🦒','🐰','🦏','🐼'];
-  const NAMES={'🦁':['אריה','Lion'],'🐵':['קוף','Monkey'],'🐳':['לוויתן','Whale'],'🐬':['דולפין','Dolphin'],'🐶':['כלב','Dog'],'🐹':['אוגר','Hamster'],'🦦':['לוטרה','Otter'],'🐯':['טיגריס','Tiger'],'🐧':['פינגווין','Penguin'],'🦓':['זברה','Zebra'],'🐻':['דוב','Bear'],'🦒':['ג׳ירפה','Giraffe'],'🐰':['ארנב','Rabbit'],'🦏':['קרנף','Rhino'],'🐼':['פנדה','Panda']};
-  const h=(he,en)=>S.lang==='en'?en:he;
-  window.spyUnlocked=()=>true;
-  window.updateSpyFeatureVisibility=function(){document.querySelectorAll('.spy-feature,.spy-main-link,#spyCollabMainBtn,#spyMainLinkBtn').forEach(el=>{el.style.removeProperty('display');el.style.removeProperty('visibility');el.style.removeProperty('opacity');});};
-  window.memoryModal=function(b,c){
-    const animals=ANIMALS.map(a=>{const got=(S.spyRushCollected||[]).includes(a);return `<div class="memory-cell ${got?'got':''}"><span>${got?a:'?'}</span><b>${got?NAMES[a][S.lang==='en'?1:0]:h('נעול','Locked')}</b></div>`}).join('');
-    const countries=(window.countryList||[]).map(x=>{const got=(S.countryCollection||[]).includes(x.he);return `<div class="country-card ${got?'got':''}">${got?`<span class="flag">${window.countryFlagMarkup(x)}</span>`:'<span class="q">?</span>'}<b>${got?(S.lang==='en'?x.en:x.he):h('נעול','Locked')}</b></div>`}).join('');
-    b.innerHTML=`${c}<div class="memory-page"><div class="memory-frame"><div class="memory-frame-title">🧠 ${h('זיכרון','Memory')}</div><h2 style="text-align:center">🕵️ Spy Rush</h2><p style="text-align:center">${h('החיות שאספת','Collected animals')}</p><div class="memory-grid">${animals}</div><div class="country-memory-title">🇮🇱 ${h('מדינות שאוהבות את ישראל','Countries that love Israel')}</div><p style="text-align:center">${h('המדינות שאספת מהגלגל','Countries collected from the wheel')}</p><div class="country-memory-grid">${countries}</div></div></div>`;
-  };
-  const priorShop=window.shopModal;
-  window.shopModal=function(b,c){
-    if(typeof priorShop==='function')priorShop(b,c);
-    const en=S.lang==='en';
-    const card=`<div class="item spy-feature spy-wheel-shop-card"><h3>🎡 ${h('גלגל החיות Spy Rush','Spy Rush Animal Wheel')}</h3><p>${h('אסוף את כל 15 החיות. חיות שכבר אספת לא יופיעו שוב.','Collect all 15 animals. Animals you already own will not appear again.')}</p><div class="row"><b>250 💎</b><button class="buy" onclick="openModal('spyWheel')">${h('סובב גלגל','Open Wheel')}</button></div></div>`;
-    const list=b.querySelector('.shop-carousel');if(list&&!list.querySelector('.spy-wheel-shop-card'))list.insertAdjacentHTML('afterbegin',card);
-    window.updateSpyFeatureVisibility();
-  };
-  const oldOpen=window.openModal;
-  window.openModal=function(type){
-    if(type==='spyWheel'){
-      if(typeof maintenance==='function'&&maintenance())return;
-      const modal=document.getElementById('modal'),box=document.getElementById('modalBox');if(!modal||!box)return;
-      modal.classList.remove('hidden');window.pendingChest=null;window.savedTimeChoosing=false;
-      spyWheelModal(box,'<button class="close" onclick="closeModal()">✕</button>');return;
-    }
-    if(type==='spyMode'||type==='spyCollab')return window.openSpyRushMode&&window.openSpyRushMode();
-    return oldOpen(type);
-  };
-  window.spinSpyRushWheel=function(){
-    const remaining=typeof spyRushAnimalsList==='function'?spyRushAnimalsList():ANIMALS.filter(a=>!(S.spyRushCollected||[]).includes(a));
-    if(!remaining.length){toast(h('אספת את כולן!','You collected them all!'));return;}
-    const free=Number(S.animalChainFreeWheels)||0;
-    if(free<=0&&Number(S.diamonds)<250){toast(h('אין מספיק יהלומים 💎','Not enough diamonds 💎'));return;}
-    const btn=document.getElementById('spinWheelBtn');if(btn)btn.disabled=true;
-    if(free>0)S.animalChainFreeWheels=free-1;else S.diamonds=Number(S.diamonds)-250;
-    S.spyRushSpins=(Number(S.spyRushSpins)||0)+1;save();
-    const winner=remaining[Math.floor(Math.random()*remaining.length)],wheel=document.getElementById('spyWheel');
-    if(wheel){const start=Number(wheel.dataset.rotation||0),target=start+360*8+Math.floor(Math.random()*360);wheel.style.transform='rotate('+start+'deg)';wheel.style.transition='none';void wheel.offsetWidth;
-      if(wheel.animate){const anim=wheel.animate([{transform:'rotate('+start+'deg)'},{transform:'rotate('+target+'deg)'}],{duration:3200,easing:'cubic-bezier(.12,.78,.15,1)',fill:'forwards'});wheel._spyAnimation=anim;anim.onfinish=()=>{wheel.dataset.rotation=String(target%360);wheel.style.transform='rotate('+(target%360)+'deg)';};}
-      else{wheel.style.transition='transform 3.2s cubic-bezier(.12,.78,.15,1)';requestAnimationFrame(()=>{wheel.style.transform='rotate('+target+'deg)';});setTimeout(()=>{wheel.dataset.rotation=String(target%360);wheel.style.transition='none';wheel.style.transform='rotate('+(target%360)+'deg)';},3250);}
-    }
-    setTimeout(()=>{S.spyRushCollected=Array.isArray(S.spyRushCollected)?S.spyRushCollected:[];if(!S.spyRushCollected.includes(winner))S.spyRushCollected.push(winner);S.spyRushLastAnimal=winner;save();if(typeof showAnimalWon==='function')showAnimalWon(winner);else{const box=document.getElementById('modalBox');spyWheelModal(box,'<button class="close" onclick="closeModal()">✕</button>');}},3300);
-  };
-  function addButton(){const actions=document.querySelector('.actions');if(!actions||document.getElementById('spyCollabMainBtn'))return;const b=document.createElement('button');b.id='spyCollabMainBtn';b.className='bigbtn alt spy-collab-btn';b.textContent='🕵️ Spy Rush × '+h('תפוס את הריבוע','Catch the Square');b.onclick=()=>window.openSpyRushMode&&window.openSpyRushMode();actions.appendChild(b);}
-  function boot(){addButton();window.updateSpyFeatureVisibility();}
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
-  const apply=window.applyLanguage;if(typeof apply==='function')window.applyLanguage=function(){apply.apply(this,arguments);boot();};
-})();
-</script>
-
-
-<style id="spy-rush-restore-authoritative">
-  .spy-feature,.spy-main-link,#spyCollabMainBtn,#spyMainLinkBtn{display:flex!important;visibility:visible!important;opacity:1!important;}
-  .spy-feature.item{display:block!important;}
-  #spyRushModeModal{display:none!important;}
-  #spyRushModeModal.show{display:flex!important;}
-  #spyCollabMainBtn,#spyMainLinkBtn{align-items:center!important;justify-content:center!important;}
-  .spy-wheel{transform-origin:50% 50%;will-change:transform;}
-</style>
-<script id="spy-rush-restore-authoritative-script">
-(function(){
-  const selectors='.spy-feature,.spy-main-link,#spyCollabMainBtn,#spyMainLinkBtn';
-  function showAll(){
-    document.querySelectorAll(selectors).forEach(el=>{
-      el.style.removeProperty('display');el.style.removeProperty('visibility');el.style.removeProperty('opacity');
-    });
-    document.querySelectorAll('.spy-feature').forEach(el=>{if(getComputedStyle(el).display==='none')el.style.setProperty('display',el.classList.contains('item')?'block':'flex','important');});
-    const actions=document.querySelector('.actions');
-    if(actions&&!document.getElementById('spyCollabMainBtn')){
-      const b=document.createElement('button');b.id='spyCollabMainBtn';b.className='bigbtn alt spy-collab-btn';
-      b.textContent=(S.lang==='en')?'🕵️ Spy Rush × Catch the Square':'🕵️ Spy Rush × תפוס את הריבוע';
-      b.onclick=()=>window.openSpyRushMode&&window.openSpyRushMode();actions.appendChild(b);
-    }
-  }
-  window.spyUnlocked=()=>true;
-  const oldUpdate=window.updateSpyFeatureVisibility;
-  window.updateSpyFeatureVisibility=function(){if(typeof oldUpdate==='function'){try{oldUpdate()}catch(e){}}showAll();};
-  const oldApply=window.applyLanguage;
-  if(typeof oldApply==='function')window.applyLanguage=function(){oldApply.apply(this,arguments);showAll();const b=document.getElementById('spyCollabMainBtn');if(b)b.textContent=S.lang==='en'?'🕵️ Spy Rush × Catch the Square':'🕵️ Spy Rush × תפוס את הריבוע';};
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',showAll);else showAll();
-  // Guard against legacy initialization code hiding the restored controls afterward.
-  const observer=new MutationObserver(()=>showAll());
-  observer.observe(document.documentElement,{subtree:true,attributes:true,attributeFilter:['style','class']});
-})();
-</script>
